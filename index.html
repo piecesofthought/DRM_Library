@@ -179,7 +179,7 @@
             const categories = [
                 {
                     id: 'ebook_main',
-                    title: '📱 주요 E-Book 플랫폼',
+                    title: 'E-Book',
                     links: [
                         { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}` },
                         { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}` },
@@ -190,7 +190,7 @@
                 },
                 {
                     id: 'seoul_joined',
-                    title: '🟢 서울시 자치구 (가입 완료)',
+                    title: '서울시 자치구 (가입 완료)',
                     // 💡 제일 자주 가는 도서관 3개를 위로 올려두세요!
                     links: [
                         { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
@@ -205,7 +205,7 @@
                 },
                 {
                     id: 'seoul_unjoined',
-                    title: '⚪ 서울시 자치구 (미가입)',
+                    title: '서울시 자치구 (미가입)',
                     // 💡 제일 자주 가는 도서관 3개를 위로 올려두세요!
                     links: [
                         { name: '성동구', url: `javascript:(function(){var f=document.createElement('form');f.action='http://ebook.sdlib.or.kr:8092/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
@@ -231,7 +231,7 @@
                 },
                 {
                     id: 'physical',
-                    title: '🏛️ 종이책',
+                    title: '종이책',
                     links: [
                         { name: '서울도서관 통합', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` },
                         { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}` },
@@ -240,7 +240,7 @@
                 },
                 {
                     id: 'used',
-                    title: '♻️ 중고 서점',
+                    title: '중고 서점',
                     links: [
                         { name: '알라딘 중고 (온라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}` },
                         { name: '알라딘 중고 (오프라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` },
