@@ -192,8 +192,9 @@
                     ]
                 },
                 {
-                    id: 'seoul_joined',
-                    title: '서울시 자치구 (회원)',
+                    // 🔥 서울시 자치구 (회원/비회원 통합)
+                    id: 'seoul',
+                    title: '서울시 자치구',
                     links: [
                         { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
                         { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
@@ -203,12 +204,8 @@
                         { name: '동대문구', url: `https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '성북구', url: `https://elibrary.sblib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '중랑구', url: `https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` }
-                    ]
-                },
-                {
-                    id: 'seoul_unjoined',
-                    title: '서울시 자치구 (비회원)',
-                    links: [
+                    ],
+                    unjoinedLinks: [
                         { name: '강남구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '서초구', url: `https://e-book.seocholib.or.kr/search?keyword=${encodedQuery}` },
                         { name: '동작구', url: `https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
@@ -227,13 +224,11 @@
                         { name: '양천구', url: `https://lib.yangcheon.or.kr/main/site/search/bookSearch.do?detail=ok&cmd_name=bookandnonbooksearch&search_type=detail&use_facet=N&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=&search_title=${encodedQuery}&search_isbn_issn=&search_author=&media_code=EB&search_publisher=&manage_code=MA%2CMB%2CMC%2CMD%2CME%2CMF%2CMG%2CSG%2CMH%2CSA%2CSB%2CSC%2CSD%2CSF%2CSH%2CSJ%2CSK%2CSM%2CUA%2CUB%2CUD%2CUE%2CFA&search_shelf=&search_shelf=&search_year_start=&search_year_end=&subject_code=&search_keyword=&sh_orderby=&search_bt2=%EA%B2%80%EC%83%89%ED%95%98%EA%B8%B0#detail` },
                         { name: '금천구', url: `https://elib.geumcheonlib.seoul.kr/FxLibrary/m/product/search/?searchstr=${encodedQuery}` },
                         { name: '도봉구', url: `https://www.unilib.dobong.kr/site/search/search08.do?cmd_name=nonbooksearch&search_type=detail&manage_code=MA%2CMB%2CMC%2CME%2CMG%2CMJ%2CMF%2CMH%2CSA%2CMD%2CSB%2CSL%2CSM%2CSN%2CSO%2CSP%2CSK%2CSQ%2CSR%2CSS%2CST%2CSU%2CSG%2CSC&search_item_add=&search_txt_add=&use_facet=Y&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=EB&search_item=search_title&sh_orderby=&search_txt=${encodedQuery}` }
-                        
                     ]
                 },
                 {
                     id: 'physical',
                     title: '현장 대여',
-                    // 🔥 현장 대여 우측 텍스트 링크 버튼 설정
                     headerLink: { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` },
                     links: [
                         { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` }
@@ -242,7 +237,6 @@
                 {
                     id: 'bookstore',
                     title: '서점',
-                    // 🔥 서점 우측 텍스트 링크 버튼 설정
                     headerLink: { name: '팔수있는 중고서적 찾아보기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
                     links: [
                         { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`},
@@ -259,7 +253,7 @@
                 const group = document.createElement('div');
                 group.className = 'category-group';
                 
-                // 🔥 타이틀과 버튼을 감싸는 헤더 영역
+                // 타이틀과 버튼을 감싸는 헤더 영역
                 const header = document.createElement('div');
                 header.className = 'category-header';
                 
@@ -268,7 +262,7 @@
                 title.textContent = cat.title;
                 header.appendChild(title);
                 
-                // 🔥 우측 텍스트 링크가 설정된 경우 렌더링
+                // 우측 텍스트 링크가 설정된 경우 (현장 대여, 서점)
                 if (cat.headerLink) {
                     const hLink = document.createElement('a');
                     hLink.className = 'header-text-link';
@@ -281,37 +275,24 @@
                 let toggleBtn = null;
                 const grid = document.createElement('div');
                 
-                // 🔥 그리드 클래스 적용 분기
-                if (cat.id.startsWith('seoul_')) {
+                // 그리드 클래스 적용
+                if (cat.id === 'seoul') {
                     grid.className = 'links-grid district-grid';
-                } else if (cat.id === 'bookstore') {
-                    grid.className = 'links-grid bookstore-grid'; // 서점 2열 적용
-                } else {
-                    grid.className = 'links-grid';
-                }
-
-                // '비회원' 그룹에만 심플 토글 버튼 추가 및 초기 숨김 처리
-                if (cat.id === 'seoul_unjoined') {
+                    
+                    // 서울시 자치구 헤더에 더보기 버튼 추가
                     toggleBtn = document.createElement('button');
                     toggleBtn.className = 'toggle-text-btn';
                     toggleBtn.textContent = '더보기';
                     header.appendChild(toggleBtn);
-                    
-                    grid.style.display = 'none'; // 처음에 숨겨둠
-                    
-                    toggleBtn.onclick = () => {
-                        if (grid.style.display === 'none') {
-                            grid.style.display = 'grid';
-                            toggleBtn.textContent = '숨기기';
-                        } else {
-                            grid.style.display = 'none';
-                            toggleBtn.textContent = '더보기';
-                        }
-                    };
+                } else if (cat.id === 'bookstore') {
+                    grid.className = 'links-grid bookstore-grid';
+                } else {
+                    grid.className = 'links-grid';
                 }
 
                 group.appendChild(header);
 
+                // 메인 링크 렌더링 (회원 도서관, 서점 등)
                 cat.links.forEach(lib => {
                     const link = document.createElement('a');
                     link.textContent = lib.name;
@@ -328,8 +309,47 @@
                     }
                     grid.appendChild(link);
                 });
-                
                 group.appendChild(grid);
+
+                // 서브 링크 렌더링 (비회원 도서관 등)
+                if (cat.unjoinedLinks) {
+                    const unjoinedGrid = document.createElement('div');
+                    unjoinedGrid.className = 'links-grid district-grid';
+                    unjoinedGrid.style.display = 'none'; // 초기엔 숨김
+                    unjoinedGrid.style.marginTop = '8px'; // 상단 그리드와의 간격
+
+                    cat.unjoinedLinks.forEach(lib => {
+                        const link = document.createElement('a');
+                        link.textContent = lib.name;
+                        
+                        if (lib.url.startsWith('javascript:')) {
+                            link.href = "#";
+                            link.onclick = (e) => {
+                                e.preventDefault();
+                                eval(lib.url.substring(11));
+                            };
+                        } else {
+                            link.href = lib.url;
+                            link.target = '_blank';
+                        }
+                        unjoinedGrid.appendChild(link);
+                    });
+                    group.appendChild(unjoinedGrid);
+
+                    // 더보기 버튼 클릭 이벤트 연결
+                    if (toggleBtn) {
+                        toggleBtn.onclick = () => {
+                            if (unjoinedGrid.style.display === 'none') {
+                                unjoinedGrid.style.display = 'grid'; // .links-grid가 display: grid를 지원하므로
+                                toggleBtn.textContent = '숨기기';
+                            } else {
+                                unjoinedGrid.style.display = 'none';
+                                toggleBtn.textContent = '더보기';
+                            }
+                        };
+                    }
+                }
+
                 resultsDiv.appendChild(group);
             });
         }
