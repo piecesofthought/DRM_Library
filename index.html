@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>통합 도서 검색</title>
-<link rel="icon" type="image/png" href="icon (1).png">
-<link rel="apple-touch-icon" href="icon (1).png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href='data:application/manifest+json,{"short_name":"도서 찾기","name":"도서 찾기","display":"standalone"}'>
     <style>
         body { 
@@ -208,7 +208,8 @@
                     title: '서울시 자치구 (미가입)',
                     // 💡 제일 자주 가는 도서관 3개를 위로 올려두세요!
                     links: [
-                        { name: '성동구', url: `javascript:(function(){var f=document.createElement('form');f.action='http://ebook.sdlib.or.kr:8092/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        /* 🔥 성동구 주소를 https로, 포트번호를 제거하여 최신화했습니다 🔥 */
+                        { name: '성동구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.sdlib.or.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '강남구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '서초구', url: `https://e-book.seocholib.or.kr/search?keyword=${encodedQuery}` },
                         { name: '구로구', url: `https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
