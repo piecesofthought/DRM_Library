@@ -89,8 +89,8 @@
         .category-group:first-child .category-header { margin-top: 0; }
         .category-title { font-size: 16px; font-weight: 600; color: #1d1d1f; margin: 0; }
         
-        /* 🔥 심플한 텍스트 토글 버튼 스타일 */
-        .toggle-text-btn {
+        /* 🔥 심플한 텍스트 토글/링크 버튼 스타일 */
+        .toggle-text-btn, .header-text-link {
             background-color: transparent; border: none; color: #8e8e93;
             font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;
         }
@@ -98,9 +98,10 @@
         .category-group { margin-bottom: 10px; }
 
         .links-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        /* 🔥 자치구 3열 변경 */
+        /* 🔥 자치구 3열 및 서점 2열 변경 */
         .district-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .district-grid a { font-size: 13px !important; padding: 10px 4px !important; }
+        .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
 
         .links-grid a { 
             display: flex; align-items: center; justify-content: center;
@@ -124,6 +125,7 @@
             .right-panel { width: 65%; }
             .links-grid { grid-template-columns: 1fr 1fr; }
             .district-grid { grid-template-columns: repeat(5, 1fr); }
+            .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -177,7 +179,7 @@
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 🔥 카테고리 데이터 재배치 완료 🔥
+            // 🔥 카테고리 데이터
             const categories = [
                 {
                     id: 'ebook_main',
@@ -231,20 +233,22 @@
                 {
                     id: 'physical',
                     title: '현장 대여',
+                    // 🔥 현장 대여 우측 텍스트 링크 버튼 설정
+                    headerLink: { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` },
                     links: [
-                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` },
-                        { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` }
+                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` }
                     ]
                 },
                 {
                     id: 'bookstore',
                     title: '서점',
+                    // 🔥 서점 우측 텍스트 링크 버튼 설정
+                    headerLink: { name: '팔수있는 중고서적 찾아보기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
                     links: [
                         { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`},
                         { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}` },
                         { name: '알라딘 중고 온라인', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}` },
-                        { name: '알라딘 오프라인 매장', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` },
-                        { name: '팔수있는 중고서적 찾아보기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` }
+                        { name: '알라딘 오프라인 매장', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` }
                     ]
                 }
             ];
@@ -264,16 +268,29 @@
                 title.textContent = cat.title;
                 header.appendChild(title);
                 
+                // 🔥 우측 텍스트 링크가 설정된 경우 렌더링
+                if (cat.headerLink) {
+                    const hLink = document.createElement('a');
+                    hLink.className = 'header-text-link';
+                    hLink.textContent = cat.headerLink.name;
+                    hLink.href = cat.headerLink.url;
+                    hLink.target = '_blank';
+                    header.appendChild(hLink);
+                }
+
                 let toggleBtn = null;
                 const grid = document.createElement('div');
                 
+                // 🔥 그리드 클래스 적용 분기
                 if (cat.id.startsWith('seoul_')) {
                     grid.className = 'links-grid district-grid';
+                } else if (cat.id === 'bookstore') {
+                    grid.className = 'links-grid bookstore-grid'; // 서점 2열 적용
                 } else {
                     grid.className = 'links-grid';
                 }
 
-                // 🔥 '비회원' 그룹에만 심플 토글 버튼 추가 및 초기 숨김 처리
+                // '비회원' 그룹에만 심플 토글 버튼 추가 및 초기 숨김 처리
                 if (cat.id === 'seoul_unjoined') {
                     toggleBtn = document.createElement('button');
                     toggleBtn.className = 'toggle-text-btn';
