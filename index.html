@@ -3,176 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>통합 도서 검색 Pro</title>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <title>통합 도서 검색</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href='data:application/manifest+json,{"short_name":"도서 찾기","name":"도서 찾기","display":"standalone"}'>
     <style>
-        :root {
-            --primary-color: #007aff;
-            --bg-color: #f5f5f7;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --text-main: #1d1d1f;
-            --text-sub: #86868b;
-        }
-
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            padding: env(safe-area-inset-top) 20px 20px 20px;
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; 
+            padding: 20px; 
+            background-color: #f5f5f7; 
+            color: #1d1d1f; 
+            line-height: 1.5; 
         }
         
         .container { 
             width: 100%; 
-            max-width: 900px; 
+            max-width: 500px; 
             margin: 0 auto; 
+            transition: max-width 0.3s ease;
         }
 
         h1 { 
             text-align: center; 
-            font-size: 28px; 
-            font-weight: 700;
-            margin: 40px 0 30px;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            color: #1d1d1f; 
+            font-size: 22px; 
+            margin-bottom: 25px; 
+            word-break: keep-all;
         }
 
-        /* 검색 영역 - Glassmorphism */
-        .top-search-section { 
-            position: sticky;
-            top: 10px;
-            z-index: 100;
-            background: rgba(245, 245, 247, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 10px 0;
-            margin-bottom: 30px; 
-        }
-
-        #search-box { display: flex; gap: 10px; }
-        
+        .top-search-section { width: 100%; margin-bottom: 25px; }
+        #search-box { display: flex; gap: 10px; width: 100%; }
         #search-input { 
-            flex-grow: 1; padding: 16px 20px; font-size: 16px; 
-            border: 1px solid #d2d2d7; border-radius: 16px; 
-            background: white; outline: none;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-grow: 1; min-width: 0; padding: 16px; font-size: 16px; 
+            border: 1px solid #d2d2d7; border-radius: 12px; 
+            -webkit-appearance: none; outline-color: #007aff; background-color: white;
         }
-
-        #search-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(0,122,255,0.1); }
-
         #search-button { 
-            padding: 0 24px; font-weight: 600; color: white; 
-            background-color: var(--primary-color); border: none; border-radius: 16px; 
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: transform 0.1s;
+            padding: 0 25px; font-size: 16px; font-weight: bold; color: white; 
+            background-color: #007aff; border: none; border-radius: 12px; 
+            cursor: pointer; white-space: nowrap; 
         }
-        #search-button:active { transform: scale(0.96); }
 
-        /* 즐겨찾기 & 최근검색어 태그 */
-        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; }
+        .add-wish-container { text-align: right; margin-top: 6px; }
+        .add-wish-text-btn { 
+            background-color: transparent; border: none; color: #8e8e93; 
+            font-size: 13px; cursor: pointer; padding: 4px; text-decoration: underline; 
+        }
+
+        .content-wrapper { display: flex; flex-direction: column; gap: 20px; }
+        .left-panel, .right-panel { width: 100%; }
+
+        h2 { 
+            font-size: 14px; color: #8e8e93; margin-bottom: 12px; 
+            margin-top: 15px; border-bottom: 1px solid #e5e5e5; padding-bottom: 6px; 
+        }
+        .left-panel h2:first-of-type { margin-top: 0; }
+
+        .recent-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-top: 15px; margin-bottom: 12px; border-bottom: 1px solid #e5e5e5; padding-bottom: 6px;
+        }
+        .recent-header h2 { margin: 0; border: none; padding: 0; }
+        .clear-btn { 
+            background-color: transparent; border: none; color: #8e8e93; 
+            font-size: 12px; cursor: pointer; padding: 0 4px; text-decoration: underline; 
+        }
+
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 30px; margin-bottom: 20px; }
         .tag { 
-            display: flex; align-items: center; background: white; 
-            border: 1px solid #e5e5e5; padding: 8px 14px; border-radius: 12px; 
-            font-size: 14px; cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex; align-items: center; background-color: #ffffff; 
+            border: 1px solid #e5e5e5; padding: 8px 14px; border-radius: 20px; 
+            font-size: 14px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
         }
-        .tag:hover { border-color: var(--primary-color); transform: translateY(-1px); }
-        .wish-tag { background: #fffcf0; border-color: #ffcc00; }
-        .remove-btn { margin-left: 6px; color: #ff3b30; font-size: 16px; display: flex; }
+        .tag:active { background-color: #f5f5f7; }
+        .wish-tag { border-color: #ffcc00; background-color: #fffdf0; }
+        .remove-btn { margin-left: 8px; color: #ff3b30; font-weight: bold; font-size: 18px; line-height: 1; }
 
-        /* 결과 그리드 디자인 */
-        .category-group { margin-bottom: 30px; }
+        /* 🔥 타이틀과 버튼을 나란히 두기 위한 헤더 스타일 */
         .category-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px; padding: 0 4px;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 10px; margin-top: 25px;
         }
-        .category-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .category-group:first-child .category-header { margin-top: 0; }
+        .category-title { font-size: 16px; font-weight: 600; color: #1d1d1f; margin: 0; }
         
-        .links-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 12px; 
+        /* 🔥 심플한 텍스트 토글/링크 버튼 스타일 */
+        .toggle-text-btn, .header-text-link {
+            background-color: transparent; border: none; color: #8e8e93;
+            font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;
         }
+
+        .category-group { margin-bottom: 10px; }
+
+        .links-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        /* 🔥 자치구 3열 및 서점 2열 변경 */
+        .district-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .district-grid a { font-size: 13px !important; padding: 10px 4px !important; }
+        .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
 
         .links-grid a { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: white; padding: 20px 10px; text-decoration: none; 
-            color: var(--text-main); font-weight: 500; font-size: 15px; border-radius: 18px; 
-            border: 1px solid #efeff4; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            display: flex; align-items: center; justify-content: center;
+            background-color: white; padding: 14px 10px; text-decoration: none; 
+            color: #007aff; font-weight: 600; font-size: 15px; border-radius: 12px; 
+            text-align: center; border: 1px solid #e5e5e5; box-shadow: 0 2px 5px rgba(0,0,0,0.03); 
+            transition: all 0.2s;
         }
+        .links-grid a:active { background-color: #f5f5f7; transform: scale(0.98); }
 
-        .links-grid a:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
+        .empty-state { text-align: center; color: #8e8e93; margin-top: 40px; font-size: 15px; }
 
-        .header-text-link, .toggle-text-btn {
-            color: var(--text-sub); font-size: 13px; cursor: pointer; text-decoration: none;
-            background: #eee; padding: 4px 10px; border-radius: 8px; border: none;
-        }
-
-        /* 폴드 펼쳤을 때 (넓은 화면) */
         @media (min-width: 700px) {
-            .content-wrapper { display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
-            .links-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-            h1 { font-size: 32px; margin: 60px 0 40px; }
+            .container { max-width: 1000px; }
+            h1 { font-size: 26px; text-align: left; margin-bottom: 30px; }
+            #search-input { padding: 18px; font-size: 18px; }
+            #search-button { padding: 0 35px; font-size: 18px; }
+            .top-search-section { margin-bottom: 35px; }
+            .content-wrapper { flex-direction: row; align-items: flex-start; gap: 40px; }
+            .left-panel { width: 35%; position: sticky; top: 20px; }
+            .right-panel { width: 65%; }
+            .links-grid { grid-template-columns: 1fr 1fr; }
+            .district-grid { grid-template-columns: repeat(5, 1fr); }
+            .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .empty-state { text-align: center; color: var(--text-sub); padding: 60px 0; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1><i data-lucide="book-open-check" style="color:var(--primary-color)"></i> 통합 도서 검색</h1>
+        <h1>통합 도서 검색</h1>
         
         <div class="top-search-section">
             <div id="search-box">
-                <input type="text" id="search-input" placeholder="읽고 싶은 책을 입력하세요" onkeydown="if(event.key === 'Enter') generateLinks();">
-                <button id="search-button" onclick="generateLinks()">
-                    <i data-lucide="search" size="20"></i> 검색
-                </button>
+                <input type="text" id="search-input" placeholder="책 제목을 입력하세요" onkeydown="if(event.key === 'Enter') generateLinks();">
+                <button id="search-button" onclick="generateLinks()">검색</button>
             </div>
-            <div style="text-align: right; margin-top: 8px;">
-                <button onclick="addToWishlist()" style="background:none; border:none; color:var(--text-sub); font-size:13px; cursor:pointer;">
-                    <i data-lucide="star" size="14" style="vertical-align:middle"></i> 즐겨찾기 추가
-                </button>
+            <div class="add-wish-container">
+                <button class="add-wish-text-btn" onclick="addToWishlist()">⭐ 즐겨찾기 추가</button>
             </div>
         </div>
         
         <div class="content-wrapper">
             <div class="left-panel">
-                <h3 style="font-size:14px; color:var(--text-sub); margin-bottom:12px;">⭐ 즐겨찾기</h3>
+                <h2>⭐ 즐겨찾기</h2>
                 <div id="wishlist" class="tag-container"></div>
-                
-                <h3 style="font-size:14px; color:var(--text-sub); margin-bottom:12px; display:flex; justify-content:space-between;">
-                    🕒 최근 검색어 <span onclick="clearRecentSearches(event)" style="cursor:pointer; font-weight:normal;">전체 삭제</span>
-                </h3>
+                <div class="recent-header">
+                    <h2>🕒 최근 검색어</h2>
+                    <button id="clear-recent-btn" class="clear-btn" style="display: none;" onclick="clearRecentSearches(event)">전체 삭제</button>
+                </div>
                 <div id="recent-searches" class="tag-container"></div>
             </div>
-
             <div class="right-panel" id="results">
-                <div class="empty-state">
-                    <i data-lucide="library" size="48" style="margin-bottom:15px; opacity:0.2;"></i>
-                    <p>검색어를 입력하면 도서관 링크가 나타납니다.</p>
-                </div>
+                <div class="empty-state">검색어를 입력하면 이곳에 각 도서관/서점 링크가 나타납니다.</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 페이지 로드 시 아이콘 렌더링
         document.addEventListener("DOMContentLoaded", () => {
-            lucide.createIcons();
             loadRecentSearches();
             loadWishlist();
         });
@@ -182,7 +171,7 @@
             const query = keyword || inputElement.value.trim();
             const resultsDiv = document.getElementById('results');
             
-            if (!query) return;
+            if (!query) { alert("검색어를 입력해주세요!"); return; }
 
             inputElement.blur();
             inputElement.value = query;
@@ -190,29 +179,70 @@
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 데이터 구조 (아이콘 추가)
+            // 🔥 카테고리 데이터
             const categories = [
                 {
-                    id: 'ebook', title: 'E-Book', icon: 'tablet-smartphone',
+                    id: 'ebook_main',
+                    title: 'E-Book',
                     links: [
                         { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}` },
+                        { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}` },
                         { name: '서울 전자도서관', url: `https://elib.seoul.go.kr/contents/search/content?t=EB&k=${encodedQuery}` },
-                        { name: '교보 e-Book', url: `https://ebook.kyobobook.co.kr/search/searchList.ink?schTxt=${encodedQuery}` }
+                        { name: '서울교육청 전자도서관', url: `https://e-lib.sen.go.kr/contents/search?type=&searchOpt=0&searchKeyword=${encodedQuery}` }
                     ]
                 },
                 {
-                    id: 'seoul', title: '서울시 도서관', icon: 'map-pin',
+                    // 🔥 서울시 자치구 (회원/비회원 통합)
+                    id: 'seoul',
+                    title: '서울시 자치구',
                     links: [
-                        { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schTxt=${encodedQuery}` },
-                        { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schTxt=${encodedQuery}` },
-                        { name: '강남구', url: `https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp?strSearch=${encodedQuery}` }
+                        { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
+                        { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
+                        { name: '광진구', url: `https://ebook.gwangjinlib.seoul.kr:446/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '관악구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://e-lib.gwanak.go.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '노원구', url: `https://eb.nowonlib.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '동대문구', url: `https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '성북구', url: `https://elibrary.sblib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '중랑구', url: `https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` }
+                    ],
+                    unjoinedLinks: [
+                        { name: '강남구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '서초구', url: `https://e-book.seocholib.or.kr/search?keyword=${encodedQuery}` },
+                        { name: '동작구', url: `https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '서대문구', url: `https://lib.sdm.or.kr/sdmlib/menu/10003/program/30001/searchResultList.do?searchType=SIMPLE&viewType=LIST&searchKeyword=${encodedQuery}&searchPubFormCode=EB&currentPageNo=1&searchDisplay=20&searchArticle=SCORE&searchOrder=ASC` },
+                        { name: '송파구 C', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.splib.or.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '송파구 S', url: `https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '구로구', url: `https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '영등포구', url: `https://ydplib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '은평구', url: `https://epbook.eplib.or.kr/ebookPlatform/home/search.do?k=${encodedQuery}` },
+                        { name: '종로구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://elib.jongno.go.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '중구', url: `https://ebook.junggulib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '강서구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangseo.seoul.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '강북구', url: `https://ebook.gblib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '강동구 C', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_OWN&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
+                        { name: '강동구 S', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_SUB&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
+                        { name: '양천구', url: `https://lib.yangcheon.or.kr/main/site/search/bookSearch.do?detail=ok&cmd_name=bookandnonbooksearch&search_type=detail&use_facet=N&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=&search_title=${encodedQuery}&search_isbn_issn=&search_author=&media_code=EB&search_publisher=&manage_code=MA%2CMB%2CMC%2CMD%2CME%2CMF%2CMG%2CSG%2CMH%2CSA%2CSB%2CSC%2CSD%2CSF%2CSH%2CSJ%2CSK%2CSM%2CUA%2CUB%2CUD%2CUE%2CFA&search_shelf=&search_shelf=&search_year_start=&search_year_end=&subject_code=&search_keyword=&sh_orderby=&search_bt2=%EA%B2%80%EC%83%89%ED%95%98%EA%B8%B0#detail` },
+                        { name: '금천구', url: `https://elib.geumcheonlib.seoul.kr/FxLibrary/m/product/search/?searchstr=${encodedQuery}` },
+                        { name: '도봉구', url: `https://www.unilib.dobong.kr/site/search/search08.do?cmd_name=nonbooksearch&search_type=detail&manage_code=MA%2CMB%2CMC%2CME%2CMG%2CMJ%2CMF%2CMH%2CSA%2CMD%2CSB%2CSL%2CSM%2CSN%2CSO%2CSP%2CSK%2CSQ%2CSR%2CSS%2CST%2CSU%2CSG%2CSC&search_item_add=&search_txt_add=&use_facet=Y&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=EB&search_item=search_title&sh_orderby=&search_txt=${encodedQuery}` }
                     ]
                 },
                 {
-                    id: 'shop', title: '서점/중고차', icon: 'shopping-cart',
+                    id: 'physical',
+                    title: '현장 대여',
+                    headerLink: { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` },
                     links: [
+                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` }
+                    ]
+                },
+                {
+                    id: 'bookstore',
+                    title: '서점',
+                    headerLink: { name: '중고책 판매하기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
+                    links: [
+                        { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`},
                         { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}` },
-                        { name: '알라딘 중고', url: `https://www.aladin.co.kr/m/msearch.aspx?KeyWord=${encodedQuery}&SearchTarget=Used` }
+                        { name: '알라딘 중고 온라인', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}` },
+                        { name: '알라딘 오프라인 매장', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` }
                     ]
                 }
             ];
@@ -223,29 +253,112 @@
                 const group = document.createElement('div');
                 group.className = 'category-group';
                 
-                group.innerHTML = `
-                    <div class="category-header">
-                        <div class="category-title"><i data-lucide="${cat.icon}" size="18"></i> ${cat.title}</div>
-                    </div>
-                    <div class="links-grid">
-                        ${cat.links.map(link => `
-                            <a href="${link.url}" target="_blank">
-                                <span>${link.name}</span>
-                            </a>
-                        `).join('')}
-                    </div>
-                `;
+                // 타이틀과 버튼을 감싸는 헤더 영역
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                
+                const title = document.createElement('div');
+                title.className = 'category-title';
+                title.textContent = cat.title;
+                header.appendChild(title);
+                
+                // 우측 텍스트 링크가 설정된 경우 (현장 대여, 서점)
+                if (cat.headerLink) {
+                    const hLink = document.createElement('a');
+                    hLink.className = 'header-text-link';
+                    hLink.textContent = cat.headerLink.name;
+                    hLink.href = cat.headerLink.url;
+                    hLink.target = '_blank';
+                    header.appendChild(hLink);
+                }
+
+                let toggleBtn = null;
+                const grid = document.createElement('div');
+                
+                // 그리드 클래스 적용
+                if (cat.id === 'seoul') {
+                    grid.className = 'links-grid district-grid';
+                    
+                    // 서울시 자치구 헤더에 더보기 버튼 추가
+                    toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'toggle-text-btn';
+                    toggleBtn.textContent = '더보기';
+                    header.appendChild(toggleBtn);
+                } else if (cat.id === 'bookstore') {
+                    grid.className = 'links-grid bookstore-grid';
+                } else {
+                    grid.className = 'links-grid';
+                }
+
+                group.appendChild(header);
+
+                // 메인 링크 렌더링 (회원 도서관, 서점 등)
+                cat.links.forEach(lib => {
+                    const link = document.createElement('a');
+                    link.textContent = lib.name;
+                    
+                    if (lib.url.startsWith('javascript:')) {
+                        link.href = "#";
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            eval(lib.url.substring(11));
+                        };
+                    } else {
+                        link.href = lib.url;
+                        link.target = '_blank';
+                    }
+                    grid.appendChild(link);
+                });
+                group.appendChild(grid);
+
+                // 서브 링크 렌더링 (비회원 도서관 등)
+                if (cat.unjoinedLinks) {
+                    const unjoinedGrid = document.createElement('div');
+                    unjoinedGrid.className = 'links-grid district-grid';
+                    unjoinedGrid.style.display = 'none'; // 초기엔 숨김
+                    unjoinedGrid.style.marginTop = '8px'; // 상단 그리드와의 간격
+
+                    cat.unjoinedLinks.forEach(lib => {
+                        const link = document.createElement('a');
+                        link.textContent = lib.name;
+                        
+                        if (lib.url.startsWith('javascript:')) {
+                            link.href = "#";
+                            link.onclick = (e) => {
+                                e.preventDefault();
+                                eval(lib.url.substring(11));
+                            };
+                        } else {
+                            link.href = lib.url;
+                            link.target = '_blank';
+                        }
+                        unjoinedGrid.appendChild(link);
+                    });
+                    group.appendChild(unjoinedGrid);
+
+                    // 더보기 버튼 클릭 이벤트 연결
+                    if (toggleBtn) {
+                        toggleBtn.onclick = () => {
+                            if (unjoinedGrid.style.display === 'none') {
+                                unjoinedGrid.style.display = 'grid'; // .links-grid가 display: grid를 지원하므로
+                                toggleBtn.textContent = '숨기기';
+                            } else {
+                                unjoinedGrid.style.display = 'none';
+                                toggleBtn.textContent = '더보기';
+                            }
+                        };
+                    }
+                }
+
                 resultsDiv.appendChild(group);
             });
-
-            // 동적으로 생성된 아이콘 다시 그리기
-            lucide.createIcons();
         }
 
-        // --- 즐겨찾기 & 최근검색어 로직 (기존 유지 및 최적화) ---
         function addToWishlist() {
-            const query = document.getElementById('search-input').value.trim();
-            if (!query) return;
+            const inputElement = document.getElementById('search-input');
+            const query = inputElement.value.trim();
+            if (!query) { alert("추가할 책 제목을 입력해주세요."); return; }
+            inputElement.blur();
             let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             if (!wishs.includes(query)) {
                 wishs.unshift(query);
@@ -254,47 +367,57 @@
             }
         }
 
-        function loadWishlist() {
-            const wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
-            const container = document.getElementById('wishlist');
-            container.innerHTML = wishs.map(keyword => `
-                <div class="tag wish-tag" onclick="generateLinks('${keyword}')">
-                    <span>${keyword}</span>
-                    <span class="remove-btn" onclick="removeFromWishlist('${keyword}', event)">×</span>
-                </div>
-            `).join('');
-        }
-
         function removeFromWishlist(keyword, event) {
-            event.stopPropagation();
+            event.stopPropagation(); 
             let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             wishs = wishs.filter(item => item !== keyword);
             localStorage.setItem('bookWishlist', JSON.stringify(wishs));
             loadWishlist();
         }
 
+        function loadWishlist() {
+            const wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            const container = document.getElementById('wishlist');
+            container.innerHTML = '';
+            wishs.forEach(keyword => {
+                const tag = document.createElement('div');
+                tag.className = 'tag wish-tag';
+                tag.innerHTML = `<span>${keyword}</span><span class="remove-btn" onclick="removeFromWishlist('${keyword}', event)">×</span>`;
+                tag.onclick = () => generateLinks(keyword);
+                container.appendChild(tag);
+            });
+        }
+
         function saveRecentSearch(query) {
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== query);
             searches.unshift(query);
-            if (searches.length > 6) searches.pop();
+            if (searches.length > 8) searches.pop();
             localStorage.setItem('recentBooks', JSON.stringify(searches));
             loadRecentSearches();
+        }
+
+        function clearRecentSearches(event) {
+            event.stopPropagation(); 
+            if(confirm("기록을 모두 삭제할까요?")) {
+                localStorage.removeItem('recentBooks'); 
+                loadRecentSearches(); 
+            }
         }
 
         function loadRecentSearches() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             const container = document.getElementById('recent-searches');
-            container.innerHTML = searches.map(keyword => `
-                <div class="tag" onclick="generateLinks('${keyword}')">${keyword}</div>
-            `).join('');
-        }
-
-        function clearRecentSearches(event) {
-            if(confirm("기록을 삭제할까요?")) {
-                localStorage.removeItem('recentBooks'); 
-                loadRecentSearches(); 
-            }
+            const clearBtn = document.getElementById('clear-recent-btn');
+            container.innerHTML = '';
+            searches.forEach(keyword => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.textContent = keyword;
+                tag.onclick = () => generateLinks(keyword);
+                container.appendChild(tag);
+            });
+            if (searches.length > 0) { clearBtn.style.display = 'block'; } else { clearBtn.style.display = 'none'; }
         }
     </script>
 </body>
