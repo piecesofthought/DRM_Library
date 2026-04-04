@@ -209,23 +209,23 @@
                     links: [
                         { name: '강남구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '서초구', url: `https://e-book.seocholib.or.kr/search?keyword=${encodedQuery}` },
-                        { name: '구로구', url: `https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '동작구', url: `https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '서대문구', url: `https://lib.sdm.or.kr/sdmlib/menu/10003/program/30001/searchResultList.do?searchType=SIMPLE&viewType=LIST&searchKeyword=${encodedQuery}&searchPubFormCode=EB&currentPageNo=1&searchDisplay=20&searchArticle=SCORE&searchOrder=ASC` },
-                        { name: '송파구 (소장)', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.splib.or.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
-                        { name: '송파구 (구독)', url: `https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '송파구 (1)', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.splib.or.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '송파구 (2)', url: `https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '구로구', url: `https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '영등포구', url: `https://ydplib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '은평구', url: `https://epbook.eplib.or.kr/ebookPlatform/home/search.do?k=${encodedQuery}` },
                         { name: '종로구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://elib.jongno.go.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '중구', url: `https://ebook.junggulib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '강서구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangseo.seoul.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '강북구', url: `https://ebook.gblib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
-                        { name: '양천구', url: `https://lib.yangcheon.or.kr/main/site/search/bookSearch.do?detail=ok&cmd_name=bookandnonbooksearch&search_type=detail&use_facet=N&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=&search_title=${encodedQuery}&search_isbn_issn=&search_author=&media_code=EB&search_publisher=&manage_code=MA%2CMB%2CMC%2CMD%2CME%2CMF%2CMG%2CSG%2CMH%2CSA%2CSB%2CSC%2CSD%2CSF%2CSH%2CSJ%2CSK%2CSM%2CUA%2CUB%2CUD%2CUE%2CFA&search_shelf=&search_shelf=&search_year_start=&search_year_end=&subject_code=&search_keyword=&sh_orderby=&search_bt2=%EA%B2%80%EC%83%89%ED%95%98%EA%B8%B0#detail` },
                         { name: '강동구 (1)', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_OWN&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
                         { name: '강동구 (2)', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_SUB&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
+                        { name: '양천구', url: `https://lib.yangcheon.or.kr/main/site/search/bookSearch.do?detail=ok&cmd_name=bookandnonbooksearch&search_type=detail&use_facet=N&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=&search_title=${encodedQuery}&search_isbn_issn=&search_author=&media_code=EB&search_publisher=&manage_code=MA%2CMB%2CMC%2CMD%2CME%2CMF%2CMG%2CSG%2CMH%2CSA%2CSB%2CSC%2CSD%2CSF%2CSH%2CSJ%2CSK%2CSM%2CUA%2CUB%2CUD%2CUE%2CFA&search_shelf=&search_shelf=&search_year_start=&search_year_end=&subject_code=&search_keyword=&sh_orderby=&search_bt2=%EA%B2%80%EC%83%89%ED%95%98%EA%B8%B0#detail` },
                         { name: '금천구', url: `https://elib.geumcheonlib.seoul.kr/FxLibrary/m/product/search/?searchstr=${encodedQuery}` },
-                        { name: '도봉구', url: `https://www.unilib.dobong.kr/site/search/search08.do?cmd_name=nonbooksearch&search_type=detail&manage_code=MA%2CMB%2CMC%2CME%2CMG%2CMJ%2CMF%2CMH%2CSA%2CMD%2CSB%2CSL%2CSM%2CSN%2CSO%2CSP%2CSK%2CSQ%2CSR%2CSS%2CST%2CSU%2CSG%2CSC&search_item_add=&search_txt_add=&use_facet=Y&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=EB&search_item=search_title&sh_orderby=&search_txt=${encodedQuery}` },
-                        { name: '성동구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.sdlib.or.kr/search/';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="srch_order" value="total"><input type="hidden" name="src_key" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` }
+                        { name: '도봉구', url: `https://www.unilib.dobong.kr/site/search/search08.do?cmd_name=nonbooksearch&search_type=detail&manage_code=MA%2CMB%2CMC%2CME%2CMG%2CMJ%2CMF%2CMH%2CSA%2CMD%2CSB%2CSL%2CSM%2CSN%2CSO%2CSP%2CSK%2CSQ%2CSR%2CSS%2CST%2CSU%2CSG%2CSC&search_item_add=&search_txt_add=&use_facet=Y&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=EB&search_item=search_title&sh_orderby=&search_txt=${encodedQuery}` }
+                        
                     ]
                 },
                 {
@@ -277,7 +277,7 @@
                 if (cat.id === 'seoul_unjoined') {
                     toggleBtn = document.createElement('button');
                     toggleBtn.className = 'toggle-text-btn';
-                    toggleBtn.textContent = '펼쳐보기 ▼';
+                    toggleBtn.textContent = '더보기';
                     header.appendChild(toggleBtn);
                     
                     grid.style.display = 'none'; // 처음에 숨겨둠
@@ -285,10 +285,10 @@
                     toggleBtn.onclick = () => {
                         if (grid.style.display === 'none') {
                             grid.style.display = 'grid';
-                            toggleBtn.textContent = '숨기기 ▲';
+                            toggleBtn.textContent = '숨기기';
                         } else {
                             grid.style.display = 'none';
-                            toggleBtn.textContent = '펼쳐보기 ▼';
+                            toggleBtn.textContent = '더보기';
                         }
                     };
                 }
