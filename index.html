@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,153 +10,166 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href='data:application/manifest+json,{"short_name":"도서 찾기","name":"도서 찾기","display":"standalone"}'>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
+        :root {
+            --primary: #007aff;
+            --bg: #f5f5f7;
+            --card-bg: #ffffff;
+            --text: #1d1d1f;
+            --sec-text: #86868b;
+            --border: #d2d2d7;
+            --tag-bg: #e8e8ed;
+            --wish-bg: #fffdf0;
+            --wish-border: #ffcc00;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #0a84ff;
+                --bg: #000000;
+                --card-bg: #1c1c1e;
+                --text: #f5f5f7;
+                --sec-text: #8e8e93;
+                --border: #3a3a3c;
+                --tag-bg: #2c2c2e;
+                --wish-bg: #2c2500;
+                --wish-border: #ffd60a;
+            }
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; 
-            padding: 20px; 
-            background-color: #f5f5f7; 
-            color: #1d1d1f; 
-            line-height: 1.5; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); 
+            line-height: 1.5; transition: background-color 0.3s;
         }
         
-        .container { 
-            width: 100%; 
-            max-width: 500px; 
-            margin: 0 auto; 
-            transition: max-width 0.3s ease;
-        }
+        .container { width: 100%; max-width: 1000px; margin: 0 auto; }
 
         h1 { 
-            text-align: center; 
-            color: #1d1d1f; 
-            font-size: 22px; 
-            margin-bottom: 25px; 
-            word-break: keep-all;
+            font-size: 24px; font-weight: 700; text-align: center; margin: 10px 0 25px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .top-search-section { width: 100%; margin-bottom: 25px; }
-        #search-box { display: flex; gap: 10px; width: 100%; }
+        /* 검색 섹션 */
+        .search-area { margin-bottom: 25px; }
+        .search-box { 
+            display: flex; gap: 8px; background: var(--card-bg); padding: 6px; 
+            border-radius: 16px; border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
         #search-input { 
-            flex-grow: 1; min-width: 0; padding: 16px; font-size: 16px; 
-            border: 1px solid #d2d2d7; border-radius: 12px; 
-            -webkit-appearance: none; outline-color: #007aff; background-color: white;
+            flex: 1; border: none; background: transparent; padding: 12px; 
+            font-size: 16px; color: var(--text); outline: none;
         }
         #search-button { 
-            padding: 0 25px; font-size: 16px; font-weight: bold; color: white; 
-            background-color: #007aff; border: none; border-radius: 12px; 
-            cursor: pointer; white-space: nowrap; 
+            background: var(--primary); border: none; color: white; padding: 0 18px; 
+            border-radius: 12px; font-weight: 700; cursor: pointer;
         }
 
-        .add-wish-container { text-align: right; margin-top: 6px; }
-        .add-wish-text-btn { 
-            background-color: transparent; border: none; color: #8e8e93; 
-            font-size: 13px; cursor: pointer; padding: 4px; text-decoration: underline; 
+        .add-wish-wrap { text-align: right; margin-top: 8px; }
+        .add-wish-btn { 
+            background: none; border: none; color: var(--sec-text); font-size: 13px; 
+            cursor: pointer; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px;
         }
 
-        .content-wrapper { display: flex; flex-direction: column; gap: 20px; }
-        .left-panel, .right-panel { width: 100%; }
+        /* 레이아웃 구성 (폴드 메인화면 대응) */
+        .content-layout { display: flex; flex-direction: column; gap: 25px; }
 
+        @media (min-width: 750px) {
+            .content-layout { flex-direction: row; align-items: flex-start; }
+            .side-panel { width: 320px; position: sticky; top: 20px; }
+            .main-panel { flex: 1; }
+        }
+
+        /* 사이드바/태그 섹션 */
         h2 { 
-            font-size: 14px; color: #8e8e93; margin-bottom: 12px; 
-            margin-top: 15px; border-bottom: 1px solid #e5e5e5; padding-bottom: 6px; 
+            font-size: 14px; color: var(--sec-text); margin: 20px 0 10px; 
+            display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
         }
-        .left-panel h2:first-of-type { margin-top: 0; }
-
-        .recent-header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-top: 15px; margin-bottom: 12px; border-bottom: 1px solid #e5e5e5; padding-bottom: 6px;
-        }
-        .recent-header h2 { margin: 0; border: none; padding: 0; }
-        .clear-btn { 
-            background-color: transparent; border: none; color: #8e8e93; 
-            font-size: 12px; cursor: pointer; padding: 0 4px; text-decoration: underline; 
-        }
-
-        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 30px; margin-bottom: 20px; }
-        .tag { 
-            display: flex; align-items: center; background-color: #ffffff; 
-            border: 1px solid #e5e5e5; padding: 8px 14px; border-radius: 20px; 
-            font-size: 14px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        }
-        .tag:active { background-color: #f5f5f7; }
-        .wish-tag { border-color: #ffcc00; background-color: #fffdf0; }
-        .remove-btn { margin-left: 8px; color: #ff3b30; font-weight: bold; font-size: 18px; line-height: 1; }
-
-        /* 🔥 타이틀과 버튼을 나란히 두기 위한 헤더 스타일 */
-        .category-header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 10px; margin-top: 25px;
-        }
-        .category-group:first-child .category-header { margin-top: 0; }
-        .category-title { font-size: 16px; font-weight: 600; color: #1d1d1f; margin: 0; }
+        .side-panel h2:first-of-type { margin-top: 0; }
         
-        /* 🔥 심플한 텍스트 토글/링크 버튼 스타일 */
-        .toggle-text-btn, .header-text-link {
-            background-color: transparent; border: none; color: #8e8e93;
-            font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .tag { 
+            background: var(--card-bg); border: 1px solid var(--border); padding: 8px 14px; 
+            border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
+        .tag.wish-tag { background: var(--wish-bg); border-color: var(--wish-border); }
+        .remove-btn { color: #ff3b30; font-size: 18px; line-height: 1; margin-left: 4px; }
 
-        .category-group { margin-bottom: 10px; }
+        /* 결과 그리드 */
+        .category-group { margin-bottom: 25px; }
+        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .cat-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .cat-link { font-size: 12px; color: var(--primary); text-decoration: underline; cursor: pointer; }
 
-        .links-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        /* 🔥 자치구 3열 및 서점 2열 변경 */
-        .district-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .district-grid a { font-size: 13px !important; padding: 10px 4px !important; }
-        .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
+        .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .district-grid { grid-template-columns: repeat(3, 1fr); }
+        
+        @media (min-width: 600px) {
+            .district-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (min-width: 850px) {
+            .district-grid { grid-template-columns: repeat(5, 1fr); }
+        }
 
         .links-grid a { 
-            display: flex; align-items: center; justify-content: center;
-            background-color: white; padding: 14px 10px; text-decoration: none; 
-            color: #007aff; font-weight: 600; font-size: 15px; border-radius: 12px; 
-            text-align: center; border: 1px solid #e5e5e5; box-shadow: 0 2px 5px rgba(0,0,0,0.03); 
-            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            background: var(--card-bg); padding: 14px 8px; text-decoration: none; 
+            color: var(--primary); font-weight: 600; font-size: 14px; border-radius: 12px; 
+            border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.1s, background 0.2s;
         }
-        .links-grid a:active { background-color: #f5f5f7; transform: scale(0.98); }
+        .links-grid a:active { transform: scale(0.96); background: var(--tag-bg); }
 
-        .empty-state { text-align: center; color: #8e8e93; margin-top: 40px; font-size: 15px; }
-
-        @media (min-width: 700px) {
-            .container { max-width: 1000px; }
-            h1 { font-size: 26px; text-align: left; margin-bottom: 30px; }
-            #search-input { padding: 18px; font-size: 18px; }
-            #search-button { padding: 0 35px; font-size: 18px; }
-            .top-search-section { margin-bottom: 35px; }
-            .content-wrapper { flex-direction: row; align-items: flex-start; gap: 40px; }
-            .left-panel { width: 35%; position: sticky; top: 20px; }
-            .right-panel { width: 65%; }
-            .links-grid { grid-template-columns: 1fr 1fr; }
-            .district-grid { grid-template-columns: repeat(5, 1fr); }
-            .bookstore-grid { grid-template-columns: repeat(2, 1fr); }
+        .toggle-btn { 
+            width: 100%; margin-top: 10px; background: none; border: 1px dashed var(--border); 
+            color: var(--sec-text); padding: 10px; border-radius: 10px; font-size: 13px; cursor: pointer;
         }
+
+        .empty-state { text-align: center; padding: 50px 0; color: var(--sec-text); font-size: 15px; }
+        .empty-state i { display: block; margin: 0 auto 10px; opacity: 0.5; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>통합 도서 검색</h1>
+        <h1><i data-lucide="book-open-check"></i> 통합 도서 검색</h1>
         
-        <div class="top-search-section">
-            <div id="search-box">
+        <div class="search-area">
+            <div class="search-box">
                 <input type="text" id="search-input" placeholder="책 제목을 입력하세요" onkeydown="if(event.key === 'Enter') generateLinks();">
                 <button id="search-button" onclick="generateLinks()">검색</button>
             </div>
-            <div class="add-wish-container">
-                <button class="add-wish-text-btn" onclick="addToWishlist()">⭐ 즐겨찾기 추가</button>
+            <div class="add-wish-wrap">
+                <button class="add-wish-btn" onclick="addToWishlist()"><i data-lucide="star" size="14"></i> 즐겨찾기 추가</button>
             </div>
         </div>
         
-        <div class="content-wrapper">
-            <div class="left-panel">
-                <h2>⭐ 즐겨찾기</h2>
+        <div class="content-layout">
+            <!-- 왼쪽/사이드 패널 -->
+            <div class="side-panel">
+                <h2><i data-lucide="star" size="14"></i> 즐겨찾기</h2>
                 <div id="wishlist" class="tag-container"></div>
-                <div class="recent-header">
-                    <h2>🕒 최근 검색어</h2>
-                    <button id="clear-recent-btn" class="clear-btn" style="display: none;" onclick="clearRecentSearches(event)">전체 삭제</button>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2><i data-lucide="clock" size="14"></i> 최근 검색어</h2>
+                    <button id="clear-recent-btn" style="display:none; background:none; border:none; color:var(--sec-text); font-size:11px; cursor:pointer; text-decoration:underline;" onclick="clearRecentSearches(event)">전체 삭제</button>
                 </div>
                 <div id="recent-searches" class="tag-container"></div>
             </div>
-            <div class="right-panel" id="results">
-                <div class="empty-state">검색어를 입력하면 이곳에 각 도서관/서점 링크가 나타납니다.</div>
+
+            <!-- 오른쪽/메인 패널 -->
+            <div class="main-panel" id="results">
+                <div class="empty-state">
+                    <i data-lucide="search" size="40"></i>
+                    검색어를 입력하면 도서관 링크가 나타납니다.
+                </div>
             </div>
         </div>
     </div>
@@ -164,6 +178,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadRecentSearches();
             loadWishlist();
+            lucide.createIcons();
         });
 
         function generateLinks(keyword = null) {
@@ -171,7 +186,7 @@
             const query = keyword || inputElement.value.trim();
             const resultsDiv = document.getElementById('results');
             
-            if (!query) { alert("검색어를 입력해주세요!"); return; }
+            if (!query) { return; }
 
             inputElement.blur();
             inputElement.value = query;
@@ -179,11 +194,12 @@
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 🔥 카테고리 데이터
+            // 🔥 원본 데이터 완벽 보존
             const categories = [
                 {
                     id: 'ebook_main',
                     title: 'E-Book',
+                    icon: 'smartphone',
                     links: [
                         { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}` },
                         { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}` },
@@ -192,9 +208,9 @@
                     ]
                 },
                 {
-                    // 🔥 서울시 자치구 (회원/비회원 통합)
                     id: 'seoul',
                     title: '서울시 자치구',
+                    icon: 'map-pin',
                     links: [
                         { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
                         { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
@@ -229,6 +245,7 @@
                 {
                     id: 'physical',
                     title: '현장 대여',
+                    icon: 'library',
                     headerLink: { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` },
                     links: [
                         { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` }
@@ -237,6 +254,7 @@
                 {
                     id: 'bookstore',
                     title: '서점',
+                    icon: 'shopping-bag',
                     headerLink: { name: '중고책 판매하기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
                     links: [
                         { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`},
@@ -253,112 +271,76 @@
                 const group = document.createElement('div');
                 group.className = 'category-group';
                 
-                // 타이틀과 버튼을 감싸는 헤더 영역
                 const header = document.createElement('div');
-                header.className = 'category-header';
+                header.className = 'cat-header';
                 
                 const title = document.createElement('div');
-                title.className = 'category-title';
-                title.textContent = cat.title;
+                title.className = 'cat-title';
+                title.innerHTML = `<i data-lucide="${cat.icon}" size="18"></i> ${cat.title}`;
                 header.appendChild(title);
                 
-                // 우측 텍스트 링크가 설정된 경우 (현장 대여, 서점)
                 if (cat.headerLink) {
                     const hLink = document.createElement('a');
-                    hLink.className = 'header-text-link';
+                    hLink.className = 'cat-link';
                     hLink.textContent = cat.headerLink.name;
                     hLink.href = cat.headerLink.url;
                     hLink.target = '_blank';
                     header.appendChild(hLink);
                 }
 
-                let toggleBtn = null;
                 const grid = document.createElement('div');
-                
-                // 그리드 클래스 적용
-                if (cat.id === 'seoul') {
-                    grid.className = 'links-grid district-grid';
-                    
-                    // 서울시 자치구 헤더에 더보기 버튼 추가
-                    toggleBtn = document.createElement('button');
-                    toggleBtn.className = 'toggle-text-btn';
-                    toggleBtn.textContent = '더보기';
-                    header.appendChild(toggleBtn);
-                } else if (cat.id === 'bookstore') {
-                    grid.className = 'links-grid bookstore-grid';
-                } else {
-                    grid.className = 'links-grid';
-                }
+                grid.className = cat.id === 'seoul' ? 'links-grid district-grid' : (cat.id === 'bookstore' ? 'links-grid bookstore-grid' : 'links-grid');
 
-                group.appendChild(header);
-
-                // 메인 링크 렌더링 (회원 도서관, 서점 등)
                 cat.links.forEach(lib => {
-                    const link = document.createElement('a');
-                    link.textContent = lib.name;
-                    
-                    if (lib.url.startsWith('javascript:')) {
-                        link.href = "#";
-                        link.onclick = (e) => {
-                            e.preventDefault();
-                            eval(lib.url.substring(11));
-                        };
-                    } else {
-                        link.href = lib.url;
-                        link.target = '_blank';
-                    }
-                    grid.appendChild(link);
+                    grid.appendChild(createLink(lib));
                 });
+                group.appendChild(header);
                 group.appendChild(grid);
 
-                // 서브 링크 렌더링 (비회원 도서관 등)
                 if (cat.unjoinedLinks) {
                     const unjoinedGrid = document.createElement('div');
                     unjoinedGrid.className = 'links-grid district-grid';
-                    unjoinedGrid.style.display = 'none'; // 초기엔 숨김
-                    unjoinedGrid.style.marginTop = '8px'; // 상단 그리드와의 간격
+                    unjoinedGrid.style.display = 'none';
+                    unjoinedGrid.style.marginTop = '10px';
 
                     cat.unjoinedLinks.forEach(lib => {
-                        const link = document.createElement('a');
-                        link.textContent = lib.name;
-                        
-                        if (lib.url.startsWith('javascript:')) {
-                            link.href = "#";
-                            link.onclick = (e) => {
-                                e.preventDefault();
-                                eval(lib.url.substring(11));
-                            };
-                        } else {
-                            link.href = lib.url;
-                            link.target = '_blank';
-                        }
-                        unjoinedGrid.appendChild(link);
+                        unjoinedGrid.appendChild(createLink(lib));
                     });
                     group.appendChild(unjoinedGrid);
 
-                    // 더보기 버튼 클릭 이벤트 연결
-                    if (toggleBtn) {
-                        toggleBtn.onclick = () => {
-                            if (unjoinedGrid.style.display === 'none') {
-                                unjoinedGrid.style.display = 'grid'; // .links-grid가 display: grid를 지원하므로
-                                toggleBtn.textContent = '숨기기';
-                            } else {
-                                unjoinedGrid.style.display = 'none';
-                                toggleBtn.textContent = '더보기';
-                            }
-                        };
-                    }
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'toggle-btn';
+                    toggleBtn.textContent = '자치구 더보기';
+                    toggleBtn.onclick = () => {
+                        const isHidden = unjoinedGrid.style.display === 'none';
+                        unjoinedGrid.style.display = isHidden ? 'grid' : 'none';
+                        toggleBtn.textContent = isHidden ? '숨기기' : '자치구 더보기';
+                    };
+                    group.appendChild(toggleBtn);
                 }
-
                 resultsDiv.appendChild(group);
             });
+            lucide.createIcons();
+        }
+
+        function createLink(lib) {
+            const link = document.createElement('a');
+            link.textContent = lib.name;
+            if (lib.url.startsWith('javascript:')) {
+                link.href = "#";
+                link.onclick = (e) => { e.preventDefault(); eval(lib.url.substring(11)); };
+            } else {
+                link.href = lib.url;
+                link.target = '_blank';
+            }
+            return link;
         }
 
         function addToWishlist() {
-            const inputElement = document.getElementById('search-input');
-            const query = inputElement.value.trim();
-            if (!query) { alert("추가할 책 제목을 입력해주세요."); return; }
-            inputElement.blur();
+            const input = document.getElementById('search-input');
+            const query = input.value.trim();
+            if (!query) { return; }
+            input.blur();
             let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             if (!wishs.includes(query)) {
                 wishs.unshift(query);
@@ -417,8 +399,10 @@
                 tag.onclick = () => generateLinks(keyword);
                 container.appendChild(tag);
             });
-            if (searches.length > 0) { clearBtn.style.display = 'block'; } else { clearBtn.style.display = 'none'; }
+            clearBtn.style.display = searches.length > 0 ? 'block' : 'none';
         }
     </script>
 </body>
 </html>
+
+```
