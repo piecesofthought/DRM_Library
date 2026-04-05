@@ -10,12 +10,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href='data:application/manifest+json,{"short_name":"도서 찾기","name":"도서 찾기","display":"standalone"}'>
     
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons (예쁜 아이콘을 불러오는 기능) -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
+        /* 색상 테마 정의 */
         :root {
             --primary: #007aff;
+            --primary-hover: #005bb5;
             --bg: #f5f5f7;
             --card-bg: #ffffff;
             --text: #1d1d1f;
@@ -24,11 +26,14 @@
             --tag-bg: #e8e8ed;
             --wish-bg: #fffdf0;
             --wish-border: #ffcc00;
+            --shadow: rgba(0,0,0,0.08);
         }
 
+        /* 다크모드 대응 */
         @media (prefers-color-scheme: dark) {
             :root {
                 --primary: #0a84ff;
+                --primary-hover: #409cff;
                 --bg: #000000;
                 --card-bg: #1c1c1e;
                 --text: #f5f5f7;
@@ -37,138 +42,238 @@
                 --tag-bg: #2c2c2e;
                 --wish-bg: #2c2500;
                 --wish-border: #ffd60a;
+                --shadow: rgba(0,0,0,0.3);
             }
         }
 
+        /* 기본 설정 */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); 
+            margin: 0; padding: 20px; padding-bottom: 80px; /* 플로팅 버튼을 위해 아래 여백 추가 */
+            background-color: var(--bg); color: var(--text); 
             line-height: 1.5; transition: background-color 0.3s;
         }
         
-        .container { width: 100%; max-width: 1000px; margin: 0 auto; }
+        .container { width: 100%; max-width: 900px; margin: 0 auto; position: relative; }
 
         h1 { 
-            font-size: 24px; font-weight: 700; text-align: center; margin: 10px 0 25px;
+            font-size: 26px; font-weight: 800; text-align: center; margin: 10px 0 30px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: var(--primary);
         }
 
-        /* 검색 섹션 */
-        .search-area { margin-bottom: 25px; }
+        /* ---------------- 검색 섹션 ---------------- */
+        .search-area { margin-bottom: 30px; position: relative; z-index: 10; }
+        
+        /* 우상단 즐겨찾기 추가 버튼 */
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .add-wish-btn { 
+            background: none; border: none; color: var(--primary); font-size: 14px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 8px; border-radius: 8px; transition: background 0.2s;
+        }
+        .add-wish-btn:hover { background: var(--tag-bg); }
+
         .search-box { 
             display: flex; gap: 8px; background: var(--card-bg); padding: 6px; 
-            border-radius: 16px; border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 18px; border: 2px solid var(--border);
+            box-shadow: 0 4px 15px var(--shadow);
+            position: relative; transition: border-color 0.3s;
         }
+        .search-box:focus-within { border-color: var(--primary); }
+
         #search-input { 
-            flex: 1; border: none; background: transparent; padding: 12px; 
-            font-size: 16px; color: var(--text); outline: none;
+            flex: 1; border: none; background: transparent; padding: 12px 16px; 
+            font-size: 16px; color: var(--text); outline: none; width: 100%;
         }
         #search-button { 
-            background: var(--primary); border: none; color: white; padding: 0 18px; 
-            border-radius: 12px; font-weight: 700; cursor: pointer;
+            background: var(--primary); border: none; color: white; padding: 0 20px; 
+            border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 16px;
+            transition: background 0.2s, transform 0.1s;
         }
+        #search-button:active { transform: scale(0.95); }
 
-        .add-wish-wrap { text-align: right; margin-top: 8px; }
-        .add-wish-btn { 
-            background: none; border: none; color: var(--sec-text); font-size: 13px; 
-            cursor: pointer; text-decoration: underline; display: inline-flex; align-items: center; gap: 4px;
+        /* 구글 스타일 최근 검색어 드롭다운 */
+        .recent-dropdown {
+            display: none; /* 기본은 숨김 */
+            position: absolute;
+            top: 110%; left: 0; right: 0;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            z-index: 100;
         }
-
-        /* 레이아웃 구성 (폴드 메인화면 대응) */
-        .content-layout { display: flex; flex-direction: column; gap: 25px; }
-
-        @media (min-width: 750px) {
-            .content-layout { flex-direction: row; align-items: flex-start; }
-            .side-panel { width: 320px; position: sticky; top: 20px; }
-            .main-panel { flex: 1; }
+        .recent-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-bottom: 1px solid var(--border);
+            font-size: 12px; color: var(--sec-text); font-weight: 600;
         }
-
-        /* 사이드바/태그 섹션 */
-        h2 { 
-            font-size: 14px; color: var(--sec-text); margin: 20px 0 10px; 
-            display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
-        }
-        .side-panel h2:first-of-type { margin-top: 0; }
+        .clear-all-btn { background: none; border: none; color: var(--sec-text); font-size: 12px; cursor: pointer; text-decoration: underline; }
         
-        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
-        .tag { 
-            background: var(--card-bg); border: 1px solid var(--border); padding: 8px 14px; 
+        .recent-list { list-style: none; margin: 0; padding: 0; }
+        .recent-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-bottom: 1px solid var(--tag-bg);
+            cursor: pointer; transition: background 0.2s;
+        }
+        .recent-item:last-child { border-bottom: none; }
+        .recent-item:hover { background: var(--tag-bg); }
+        .recent-text { flex: 1; display: flex; align-items: center; gap: 10px; font-size: 15px; }
+        .recent-delete { 
+            background: none; border: none; color: var(--sec-text); 
+            padding: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+        }
+        .recent-delete:hover { background: var(--border); color: #ff3b30; }
+
+        /* ---------------- 플로팅 즐겨찾기 ---------------- */
+        .floating-wish-btn {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 56px; height: 56px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
+            border: none; cursor: pointer; z-index: 1000;
+            transition: transform 0.2s;
+        }
+        .floating-wish-btn:active { transform: scale(0.9); }
+
+        .wishlist-panel {
+            position: fixed;
+            left: 20px;
+            bottom: 85px;
+            width: 280px;
+            max-height: 50vh;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+            padding: 16px;
+            z-index: 999;
+            overflow-y: auto;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .wishlist-panel.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .wishlist-header { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag.wish-tag { 
+            background: var(--wish-bg); border: 1px solid var(--wish-border); padding: 8px 14px; 
             border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            color: #5c4d00; font-weight: 500; width: fit-content;
         }
-        .tag.wish-tag { background: var(--wish-bg); border-color: var(--wish-border); }
-        .remove-btn { color: #ff3b30; font-size: 18px; line-height: 1; margin-left: 4px; }
+        @media (prefers-color-scheme: dark) { .tag.wish-tag { color: #ffd60a; } }
+        .remove-btn { color: #ff3b30; font-size: 18px; line-height: 1; margin-left: 4px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; }
 
-        /* 결과 그리드 */
-        .category-group { margin-bottom: 25px; }
-        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .cat-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .cat-link { font-size: 12px; color: var(--primary); text-decoration: underline; cursor: pointer; }
-
-        .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .district-grid { grid-template-columns: repeat(3, 1fr); }
-        
-        @media (min-width: 600px) {
-            .district-grid { grid-template-columns: repeat(4, 1fr); }
+        /* ---------------- 결과 그리드 (폴드 대응) ---------------- */
+        .category-group { 
+            margin-bottom: 25px; background: var(--card-bg); padding: 20px; 
+            border-radius: 20px; box-shadow: 0 2px 10px var(--shadow);
         }
-        @media (min-width: 850px) {
-            .district-grid { grid-template-columns: repeat(5, 1fr); }
+        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        .cat-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
+        .cat-link { font-size: 13px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; background: var(--tag-bg); padding: 4px 10px; border-radius: 12px; }
+
+        /* 폴드 화면(접었을때 좁음, 펼쳤을때 넓음)에 맞춰 자동으로 열 개수가 변하는 마법의 코드 */
+        .links-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 12px; 
         }
 
         .links-grid a { 
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            background: var(--card-bg); padding: 14px 8px; text-decoration: none; 
-            color: var(--primary); font-weight: 600; font-size: 14px; border-radius: 12px; 
-            border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.1s, background 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px;
+            background: var(--bg); padding: 16px 10px; text-decoration: none; 
+            color: var(--text); font-weight: 600; font-size: 14px; border-radius: 16px; 
+            border: 1px solid var(--border); transition: transform 0.1s, background 0.2s, border-color 0.2s;
+            word-break: keep-all; /* 단어 단위로 줄바꿈 */
         }
-        .links-grid a:active { transform: scale(0.96); background: var(--tag-bg); }
+        .links-grid a i { color: var(--primary); opacity: 0.8; }
+        .links-grid a:hover { border-color: var(--primary); background: var(--card-bg); }
+        .links-grid a:active { transform: scale(0.95); }
 
         .toggle-btn { 
-            width: 100%; margin-top: 10px; background: none; border: 1px dashed var(--border); 
-            color: var(--sec-text); padding: 10px; border-radius: 10px; font-size: 13px; cursor: pointer;
+            width: 100%; margin-top: 15px; background: var(--tag-bg); border: none; 
+            color: var(--text); padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
         }
+        .toggle-btn:hover { background: var(--border); }
 
-        .empty-state { text-align: center; padding: 50px 0; color: var(--sec-text); font-size: 15px; }
-        .empty-state i { display: block; margin: 0 auto 10px; opacity: 0.5; }
+        .empty-state { text-align: center; padding: 60px 0; color: var(--sec-text); font-size: 16px; }
+        .empty-state i { display: block; margin: 0 auto 15px; color: var(--border); }
+
     </style>
 </head>
 <body>
 
+    <!-- 왼쪽 아래 떠있는 즐겨찾기 버튼 -->
+    <button class="floating-wish-btn" onclick="toggleWishlist()">
+        <i data-lucide="star" fill="currentColor"></i>
+    </button>
+
+    <!-- 플로팅 즐겨찾기 패널 -->
+    <div id="wishlist-panel" class="wishlist-panel">
+        <div class="wishlist-header"><i data-lucide="bookmark" size="18"></i> 내 책갈피 (즐겨찾기)</div>
+        <div id="wishlist" class="tag-container">
+            <!-- 즐겨찾기 항목이 여기에 추가됩니다 -->
+        </div>
+    </div>
+
     <div class="container">
-        <h1><i data-lucide="book-open-check"></i> 통합 도서 검색</h1>
+        <h1><i data-lucide="library" size="32"></i> 통합 도서 검색</h1>
         
         <div class="search-area">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="책 제목을 입력하세요" onkeydown="if(event.key === 'Enter') generateLinks();">
-                <button id="search-button" onclick="generateLinks()">검색</button>
+            <!-- 우상단 즐겨찾기 추가 버튼 -->
+            <div class="header-actions">
+                <button class="add-wish-btn" onclick="addToWishlist()">
+                    <i data-lucide="star" size="16"></i> 검색어 즐겨찾기 추가
+                </button>
             </div>
-            <div class="add-wish-wrap">
-                <button class="add-wish-btn" onclick="addToWishlist()"><i data-lucide="star" size="14"></i> 즐겨찾기 추가</button>
+
+            <!-- 검색 박스 -->
+            <div class="search-box" id="search-container">
+                <i data-lucide="search" size="20" style="margin: 12px 0 0 12px; color: var(--sec-text);"></i>
+                <input type="text" id="search-input" placeholder="찾고 싶은 책 제목을 입력하세요" 
+                       onkeydown="if(event.key === 'Enter') generateLinks();"
+                       onfocus="showDropdown()" onclick="showDropdown()">
+                <button id="search-button" onclick="generateLinks()">검색</button>
+                
+                <!-- 구글 스타일 최근 검색어 드롭다운 -->
+                <div id="recent-dropdown" class="recent-dropdown">
+                    <div class="recent-header">
+                        <span>최근 검색어</span>
+                        <button class="clear-all-btn" onclick="clearRecentSearches(event)">전체 삭제</button>
+                    </div>
+                    <ul id="recent-list" class="recent-list">
+                        <!-- 최근 검색어 항목이 여기에 추가됩니다 -->
+                    </ul>
+                </div>
             </div>
         </div>
         
-        <div class="content-layout">
-            <!-- 왼쪽/사이드 패널 -->
-            <div class="side-panel">
-                <h2><i data-lucide="star" size="14"></i> 즐겨찾기</h2>
-                <div id="wishlist" class="tag-container"></div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2><i data-lucide="clock" size="14"></i> 최근 검색어</h2>
-                    <button id="clear-recent-btn" style="display:none; background:none; border:none; color:var(--sec-text); font-size:11px; cursor:pointer; text-decoration:underline;" onclick="clearRecentSearches(event)">전체 삭제</button>
-                </div>
-                <div id="recent-searches" class="tag-container"></div>
-            </div>
-
-            <!-- 오른쪽/메인 패널 -->
-            <div class="main-panel" id="results">
-                <div class="empty-state">
-                    <i data-lucide="search" size="40"></i>
-                    검색어를 입력하면 도서관 링크가 나타납니다.
-                </div>
+        <!-- 오른쪽/메인 패널 (검색 결과) -->
+        <div id="results">
+            <div class="empty-state">
+                <i data-lucide="book-open" size="48"></i>
+                검색어를 입력하면 다양한 도서관과 서점 링크가 나타납니다.<br>
+                (갤럭시 폴드에서도 보기 편하게 최적화되었습니다)
             </div>
         </div>
     </div>
@@ -178,7 +283,36 @@
             loadRecentSearches();
             loadWishlist();
             lucide.createIcons();
+
+            // 검색창 밖을 클릭하면 최근 검색어 드롭다운 닫기
+            document.addEventListener('click', (e) => {
+                const searchContainer = document.getElementById('search-container');
+                if (!searchContainer.contains(e.target)) {
+                    document.getElementById('recent-dropdown').style.display = 'none';
+                }
+            });
         });
+
+        // 즐겨찾기 패널 열기/닫기
+        function toggleWishlist() {
+            const panel = document.getElementById('wishlist-panel');
+            panel.classList.toggle('show');
+            
+            // 만약 비어있다면 안내문구 띄우기
+            let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            if(wishs.length === 0 && panel.classList.contains('show')) {
+                // 살짝 지연시켜서 보여줌
+                setTimeout(() => alert("우측 상단의 '즐겨찾기 추가' 버튼을 눌러 자주 찾는 책이나 키워드를 저장해보세요!"), 100);
+            }
+        }
+
+        // 최근 검색어 드롭다운 보여주기
+        function showDropdown() {
+            const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
+            if (searches.length > 0) {
+                document.getElementById('recent-dropdown').style.display = 'block';
+            }
+        }
 
         function generateLinks(keyword = null) {
             const inputElement = document.getElementById('search-input');
@@ -187,28 +321,40 @@
             
             if (!query) { return; }
 
-            inputElement.blur();
+            inputElement.blur(); // 키보드 내리기
             inputElement.value = query;
             saveRecentSearch(query);
+            document.getElementById('recent-dropdown').style.display = 'none'; // 드롭다운 닫기
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 🔥 원본 데이터 완벽 보존
+            // 🔥 원본 데이터 및 구형 자바스크립트 완벽 보존
             const categories = [
                 {
                     id: 'ebook_main',
-                    title: 'E-Book',
-                    icon: 'smartphone',
+                    title: 'E-Book (전자책)',
+                    icon: 'tablet-smartphone',
                     links: [
-                        { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}` },
-                        { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}` },
-                        { name: '서울 전자도서관', url: `https://elib.seoul.go.kr/contents/search/content?t=EB&k=${encodedQuery}` },
-                        { name: '서울교육청 전자도서관', url: `https://e-lib.sen.go.kr/contents/search?type=&searchOpt=0&searchKeyword=${encodedQuery}` }
+                        { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}`, icon: 'book-text' },
+                        { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}`, icon: 'graduation-cap' },
+                        { name: '서울 전자도서관', url: `https://elib.seoul.go.kr/contents/search/content?t=EB&k=${encodedQuery}`, icon: 'building' },
+                        { name: '서울교육청 전자도서관', url: `https://e-lib.sen.go.kr/contents/search?type=&searchOpt=0&searchKeyword=${encodedQuery}`, icon: 'school' }
+                    ]
+                },
+                // 새로 추가된 무료 아카이브 영역
+                {
+                    id: 'classic',
+                    title: '무료 아카이브 (고전/원문)',
+                    icon: 'archive',
+                    links: [
+                        { name: '인터넷 아카이브', url: `https://archive.org/search?query=${encodedQuery}&and%5B%5D=mediatype%3A%22texts%22`, icon: 'globe' },
+                        { name: 'Jikji (직지)', url: `http://jikji.duckdns.org/search/stored/?query=${encodedQuery}`, icon: 'scroll-text' },
+                        { name: '구텐베르크 (영문)', url: `https://www.gutenberg.org/ebooks/search/?query=${encodedQuery}`, icon: 'book-open-check' }
                     ]
                 },
                 {
                     id: 'seoul',
-                    title: '서울시 자치구',
+                    title: '서울시 자치구 전자도서관',
                     icon: 'map-pin',
                     links: [
                         { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
@@ -243,23 +389,23 @@
                 },
                 {
                     id: 'physical',
-                    title: '현장 대여',
-                    icon: 'library',
-                    headerLink: { name: '근처 도서관 찾기', url: `https://naver.me/xIFJSb28` },
+                    title: '현장 도서관 대여',
+                    icon: 'library-big',
+                    headerLink: { name: '📍 내 주변 도서관 지도', url: `https://naver.me/xIFJSb28` },
                     links: [
-                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` }
+                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on`, icon: 'map' }
                     ]
                 },
                 {
                     id: 'bookstore',
-                    title: '서점',
+                    title: '온라인/오프라인 서점',
                     icon: 'shopping-bag',
-                    headerLink: { name: '중고책 판매하기', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
+                    headerLink: { name: '💰 알라딘 중고매입가 조회', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
                     links: [
-                        { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`},
-                        { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}` },
-                        { name: '알라딘 중고 온라인', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}` },
-                        { name: '알라딘 오프라인 매장', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` }
+                        { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko`, icon: 'play' },
+                        { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}`, icon: 'book-open' },
+                        { name: '알라딘 중고 (온라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}`, icon: 'package' },
+                        { name: '알라딘 중고 (오프라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore`, icon: 'store' }
                     ]
                 }
             ];
@@ -275,7 +421,7 @@
                 
                 const title = document.createElement('div');
                 title.className = 'cat-title';
-                title.innerHTML = `<i data-lucide="${cat.icon}" size="18"></i> ${cat.title}`;
+                title.innerHTML = `<i data-lucide="${cat.icon}" size="22"></i> ${cat.title}`;
                 header.appendChild(title);
                 
                 if (cat.headerLink) {
@@ -287,44 +433,56 @@
                     header.appendChild(hLink);
                 }
 
+                // 모바일 최적화 그리드 사용
                 const grid = document.createElement('div');
-                grid.className = cat.id === 'seoul' ? 'links-grid district-grid' : (cat.id === 'bookstore' ? 'links-grid bookstore-grid' : 'links-grid');
+                grid.className = 'links-grid';
 
                 cat.links.forEach(lib => {
-                    grid.appendChild(createLink(lib));
+                    grid.appendChild(createLink(lib, cat.id));
                 });
                 group.appendChild(header);
                 group.appendChild(grid);
 
+                // 자치구 더보기 처리
                 if (cat.unjoinedLinks) {
                     const unjoinedGrid = document.createElement('div');
-                    unjoinedGrid.className = 'links-grid district-grid';
+                    unjoinedGrid.className = 'links-grid';
                     unjoinedGrid.style.display = 'none';
-                    unjoinedGrid.style.marginTop = '10px';
+                    unjoinedGrid.style.marginTop = '12px';
 
                     cat.unjoinedLinks.forEach(lib => {
-                        unjoinedGrid.appendChild(createLink(lib));
+                        unjoinedGrid.appendChild(createLink(lib, cat.id));
                     });
                     group.appendChild(unjoinedGrid);
 
                     const toggleBtn = document.createElement('button');
                     toggleBtn.className = 'toggle-btn';
-                    toggleBtn.textContent = '자치구 더보기';
+                    toggleBtn.innerHTML = '나머지 자치구 모두 보기 <i data-lucide="chevron-down" size="16" style="vertical-align:middle"></i>';
                     toggleBtn.onclick = () => {
                         const isHidden = unjoinedGrid.style.display === 'none';
                         unjoinedGrid.style.display = isHidden ? 'grid' : 'none';
-                        toggleBtn.textContent = isHidden ? '숨기기' : '자치구 더보기';
+                        toggleBtn.innerHTML = isHidden 
+                            ? '숨기기 <i data-lucide="chevron-up" size="16" style="vertical-align:middle"></i>' 
+                            : '나머지 자치구 모두 보기 <i data-lucide="chevron-down" size="16" style="vertical-align:middle"></i>';
+                        lucide.createIcons();
                     };
                     group.appendChild(toggleBtn);
                 }
                 resultsDiv.appendChild(group);
             });
-            lucide.createIcons();
+            lucide.createIcons(); // 동적으로 생성된 아이콘 렌더링
         }
 
-        function createLink(lib) {
+        // 버튼 생성 로직 (아이콘 추가)
+        function createLink(lib, categoryId) {
             const link = document.createElement('a');
-            link.textContent = lib.name;
+            
+            // 카테고리별 기본 아이콘 설정 (개별 설정된 아이콘이 없으면 기본값 사용)
+            let iconName = lib.icon || 'external-link'; 
+            if(!lib.icon && categoryId === 'seoul') iconName = 'map-pin';
+            
+            link.innerHTML = `<i data-lucide="${iconName}" size="20"></i><span>${lib.name}</span>`;
+            
             if (lib.url.startsWith('javascript:')) {
                 link.href = "#";
                 link.onclick = (e) => { e.preventDefault(); eval(lib.url.substring(11)); };
@@ -335,16 +493,25 @@
             return link;
         }
 
+        // -------------- 즐겨찾기 로직 --------------
         function addToWishlist() {
             const input = document.getElementById('search-input');
             const query = input.value.trim();
-            if (!query) { return; }
+            if (!query) { 
+                alert("검색창에 저장할 책 제목이나 단어를 먼저 입력해주세요!");
+                return; 
+            }
             input.blur();
             let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             if (!wishs.includes(query)) {
                 wishs.unshift(query);
                 localStorage.setItem('bookWishlist', JSON.stringify(wishs));
                 loadWishlist();
+                
+                // 추가 후 패널을 열어줌
+                document.getElementById('wishlist-panel').classList.add('show');
+            } else {
+                alert("이미 즐겨찾기에 있는 단어입니다.");
             }
         }
 
@@ -360,15 +527,26 @@
             const wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             const container = document.getElementById('wishlist');
             container.innerHTML = '';
+            
+            if(wishs.length === 0) {
+                container.innerHTML = '<span style="color:var(--sec-text); font-size:13px;">아직 저장된 즐겨찾기가 없습니다.</span>';
+                return;
+            }
+
             wishs.forEach(keyword => {
                 const tag = document.createElement('div');
                 tag.className = 'tag wish-tag';
-                tag.innerHTML = `<span>${keyword}</span><span class="remove-btn" onclick="removeFromWishlist('${keyword}', event)">×</span>`;
-                tag.onclick = () => generateLinks(keyword);
+                tag.innerHTML = `<span>${keyword}</span><span class="remove-btn" onclick="removeFromWishlist('${keyword}', event)"><i data-lucide="x" size="14"></i></span>`;
+                tag.onclick = () => {
+                    generateLinks(keyword);
+                    document.getElementById('wishlist-panel').classList.remove('show'); // 클릭시 패널 닫기
+                };
                 container.appendChild(tag);
             });
+            lucide.createIcons();
         }
 
+        // -------------- 최근 검색어 로직 --------------
         function saveRecentSearch(query) {
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== query);
@@ -378,27 +556,52 @@
             loadRecentSearches();
         }
 
+        function deleteRecentSearch(keyword, event) {
+            event.stopPropagation(); // 클릭 이벤트가 부모(검색실행)로 안 넘어가게 막음
+            let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
+            searches = searches.filter(item => item !== keyword);
+            localStorage.setItem('recentBooks', JSON.stringify(searches));
+            loadRecentSearches();
+            
+            // 다 지웠으면 드롭다운 숨기기
+            if(searches.length === 0) {
+                document.getElementById('recent-dropdown').style.display = 'none';
+            }
+        }
+
         function clearRecentSearches(event) {
             event.stopPropagation(); 
-            if(confirm("기록을 모두 삭제할까요?")) {
+            if(confirm("검색 기록을 모두 삭제하시겠습니까?")) {
                 localStorage.removeItem('recentBooks'); 
                 loadRecentSearches(); 
+                document.getElementById('recent-dropdown').style.display = 'none';
             }
         }
 
         function loadRecentSearches() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
-            const container = document.getElementById('recent-searches');
-            const clearBtn = document.getElementById('clear-recent-btn');
+            const container = document.getElementById('recent-list');
             container.innerHTML = '';
+            
             searches.forEach(keyword => {
-                const tag = document.createElement('div');
-                tag.className = 'tag';
-                tag.textContent = keyword;
-                tag.onclick = () => generateLinks(keyword);
-                container.appendChild(tag);
+                const li = document.createElement('li');
+                li.className = 'recent-item';
+                
+                li.innerHTML = `
+                    <div class="recent-text">
+                        <i data-lucide="clock" size="14" style="color: var(--sec-text)"></i>
+                        ${keyword}
+                    </div>
+                    <button class="recent-delete" onclick="deleteRecentSearch('${keyword}', event)">
+                        <i data-lucide="x" size="16"></i>
+                    </button>
+                `;
+                // 텍스트 부분 클릭시 검색 실행
+                li.querySelector('.recent-text').onclick = () => generateLinks(keyword);
+                
+                container.appendChild(li);
             });
-            clearBtn.style.display = searches.length > 0 ? 'block' : 'none';
+            lucide.createIcons();
         }
     </script>
 </body>
