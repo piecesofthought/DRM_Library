@@ -434,7 +434,7 @@
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 🔥 외계어 오류 수정 완료 (관악, 송파C, 종로, 강서 -> UTF-8 표준 변경 / 광진구 -> EUC-KR 적용 유지)
+            // 🔥 외계어 오류 수정 완료 (관악, 송파C, 종로, 강서 -> UTF-8 표준 변경)
             const categories = [
                 {
                     id: 'ebook_main',
@@ -454,7 +454,6 @@
                     links: [
                         { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
                         { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}` },
-                        { name: '광진구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gwangjinlib.seoul.kr:446/elibrary-front/search/searchList.ink';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="schClst" value="all"><input type="hidden" name="schDvsn" value="000"><input type="hidden" name="orderByKey" value=""><input type="hidden" name="schTxt" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
                         { name: '관악구', url: `https://e-lib.gwanak.go.kr/search/?srch_order=total&src_key=${encodedQuery}` },
                         { name: '노원구', url: `https://eb.nowonlib.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
                         { name: '동대문구', url: `https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
