@@ -27,6 +27,7 @@
             --wish-bg: #fffdf0;
             --wish-border: #ffcc00;
             --shadow: rgba(0,0,0,0.08);
+            --nav-bg: rgba(255, 255, 255, 0.9);
         }
 
         /* 다크모드 대응 */
@@ -43,6 +44,7 @@
                 --wish-bg: #2c2500;
                 --wish-border: #ffd60a;
                 --shadow: rgba(0,0,0,0.3);
+                --nav-bg: rgba(28, 28, 30, 0.9);
             }
         }
 
@@ -50,7 +52,8 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 20px; padding-bottom: 80px; /* 플로팅 버튼을 위해 아래 여백 추가 */
+            margin: 0; padding: 20px; 
+            padding-bottom: 110px; /* 하단 네비게이션 바를 위해 여백 크게 추가 */
             background-color: var(--bg); color: var(--text); 
             line-height: 1.5; transition: background-color 0.3s;
         }
@@ -137,7 +140,7 @@
         .floating-wish-btn {
             position: fixed;
             left: 20px;
-            bottom: 20px;
+            bottom: 90px; /* 네비게이션 바 위로 올림 */
             width: 56px; height: 56px;
             background: var(--primary);
             color: white;
@@ -152,7 +155,7 @@
         .wishlist-panel {
             position: fixed;
             left: 20px;
-            bottom: 85px;
+            bottom: 160px;
             width: 280px;
             max-height: 50vh;
             background: var(--card-bg);
@@ -182,16 +185,39 @@
         @media (prefers-color-scheme: dark) { .tag.wish-tag { color: #ffd60a; } }
         .remove-btn { color: #ff3b30; font-size: 18px; line-height: 1; margin-left: 4px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; }
 
+        /* ---------------- 하단 고정 탭 (네비게이션 바) ---------------- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 2000;
+            padding-bottom: env(safe-area-inset-bottom); /* 아이폰 하단 홈바 여백 대응 */
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 4px; color: var(--sec-text); font-size: 11px; font-weight: 600;
+            background: none; border: none; cursor: pointer; width: 100%; height: 100%;
+            transition: color 0.2s;
+        }
+        .nav-item:hover, .nav-item:active { color: var(--primary); }
+        .nav-item i { transition: transform 0.2s; }
+        .nav-item:active i { transform: scale(0.9); }
+
         /* ---------------- 결과 그리드 (폴드 대응) ---------------- */
         .category-group { 
             margin-bottom: 25px; background: var(--card-bg); padding: 20px; 
             border-radius: 20px; box-shadow: 0 2px 10px var(--shadow);
+            scroll-margin-top: 20px; /* 네비게이션 스크롤시 상단 여백 확보 */
         }
         .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
         .cat-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .cat-link { font-size: 13px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; background: var(--tag-bg); padding: 4px 10px; border-radius: 12px; }
 
-        /* 폴드 화면(접었을때 좁음, 펼쳤을때 넓음)에 맞춰 자동으로 열 개수가 변하는 마법의 코드 */
         .links-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
@@ -203,11 +229,37 @@
             background: var(--bg); padding: 16px 10px; text-decoration: none; 
             color: var(--text); font-weight: 600; font-size: 14px; border-radius: 16px; 
             border: 1px solid var(--border); transition: transform 0.1s, background 0.2s, border-color 0.2s;
-            word-break: keep-all; /* 단어 단위로 줄바꿈 */
+            word-break: keep-all; 
+            position: relative;
         }
         .links-grid a i { color: var(--primary); opacity: 0.8; }
         .links-grid a:hover { border-color: var(--primary); background: var(--card-bg); }
         .links-grid a:active { transform: scale(0.95); }
+
+        /* 공식 로고 이미지 전용 스타일 */
+        .custom-logo {
+            width: 24px; height: 24px;
+            object-fit: contain;
+            border-radius: 4px; /* 살짝 둥글게 */
+        }
+
+        /* 강조된 링크 스타일 (지도 버튼 등) */
+        .links-grid a.highlight-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary-hover);
+            grid-column: span 2; /* 2칸을 차지하여 크게 보이게 함 */
+            flex-direction: row; /* 아이콘과 글자를 가로로 배치 */
+            padding: 16px 20px;
+            font-size: 16px;
+        }
+        .links-grid a.highlight-link i { color: white; opacity: 1; }
+        .links-grid a.highlight-link:hover { background: var(--primary-hover); }
+
+        /* 모바일 화면에서만 span 2 강제, 화면이 아주 좁으면 span 1로 복귀 */
+        @media (max-width: 350px) {
+            .links-grid a.highlight-link { grid-column: span 1; flex-direction: column; font-size: 14px; }
+        }
 
         .toggle-btn { 
             width: 100%; margin-top: 15px; background: var(--tag-bg); border: none; 
@@ -236,7 +288,35 @@
         </div>
     </div>
 
-    <div class="container">
+    <!-- 하단 고정 탭 -->
+    <nav class="bottom-nav">
+        <button class="nav-item" onclick="scrollToSection('top')">
+            <i data-lucide="home" size="22"></i>
+            <span>홈</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-ebook_main')">
+            <i data-lucide="tablet-smartphone" size="22"></i>
+            <span>E-book</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-seoul')">
+            <i data-lucide="map-pin" size="22"></i>
+            <span>전자도서관</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-classic')">
+            <i data-lucide="archive" size="22"></i>
+            <span>무료</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-physical')">
+            <i data-lucide="library-big" size="22"></i>
+            <span>내 근처</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-bookstore')">
+            <i data-lucide="shopping-bag" size="22"></i>
+            <span>서점</span>
+        </button>
+    </nav>
+
+    <div class="container" id="top">
         <h1><i data-lucide="library" size="32"></i> 통합 도서 검색</h1>
         
         <div class="search-area">
@@ -293,6 +373,23 @@
             });
         });
 
+        // ---------------- 스크롤 제어 로직 ----------------
+        function scrollToSection(id) {
+            if (id === 'top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // 검색 결과가 없을 때 클릭하면 검색창에 포커스를 줌
+                document.getElementById('search-input').focus();
+                showDropdown();
+            }
+        }
+
         // 즐겨찾기 패널 열기/닫기
         function toggleWishlist() {
             const panel = document.getElementById('wishlist-panel');
@@ -301,7 +398,6 @@
             // 만약 비어있다면 안내문구 띄우기
             let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
             if(wishs.length === 0 && panel.classList.contains('show')) {
-                // 살짝 지연시켜서 보여줌
                 setTimeout(() => alert("우측 상단의 '즐겨찾기 추가' 버튼을 눌러 자주 찾는 책이나 키워드를 저장해보세요!"), 100);
             }
         }
@@ -329,6 +425,7 @@
             const encodedQuery = encodeURIComponent(query);
             
             // 🔥 원본 데이터 및 구형 자바스크립트 완벽 보존
+            // 💡 로고 이미지 적용 방법: logo: '이미지파일명.png' 를 추가하면 아이콘 대신 이미지가 나옵니다!
             const categories = [
                 {
                     id: 'ebook_main',
@@ -339,17 +436,6 @@
                         { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}`, icon: 'graduation-cap' },
                         { name: '서울 전자도서관', url: `https://elib.seoul.go.kr/contents/search/content?t=EB&k=${encodedQuery}`, icon: 'building' },
                         { name: '서울교육청 전자도서관', url: `https://e-lib.sen.go.kr/contents/search?type=&searchOpt=0&searchKeyword=${encodedQuery}`, icon: 'school' }
-                    ]
-                },
-                // 새로 추가된 무료 아카이브 영역
-                {
-                    id: 'classic',
-                    title: '무료 아카이브 (고전/원문)',
-                    icon: 'archive',
-                    links: [
-                        { name: '인터넷 아카이브', url: `https://archive.org/search?query=${encodedQuery}&and%5B%5D=mediatype%3A%22texts%22`, icon: 'globe' },
-                        { name: 'Jikji (직지)', url: `http://jikji.duckdns.org/search/stored/?query=${encodedQuery}`, icon: 'scroll-text' },
-                        { name: '구텐베르크 (영문)', url: `https://www.gutenberg.org/ebooks/search/?query=${encodedQuery}`, icon: 'book-open-check' }
                     ]
                 },
                 {
@@ -388,12 +474,23 @@
                     ]
                 },
                 {
+                    id: 'classic',
+                    title: '무료 아카이브 (고전/원문)',
+                    icon: 'archive',
+                    links: [
+                        { name: '인터넷 아카이브', url: `https://archive.org/search?query=${encodedQuery}&and%5B%5D=mediatype%3A%22texts%22`, icon: 'globe' },
+                        { name: 'Jikji (직지)', url: `http://jikji.duckdns.org/search/stored/?query=${encodedQuery}`, icon: 'scroll-text' },
+                        { name: '구텐베르크 (영문)', url: `https://www.gutenberg.org/ebooks/search/?query=${encodedQuery}`, icon: 'book-open-check' }
+                    ]
+                },
+                {
                     id: 'physical',
                     title: '현장 도서관 대여',
                     icon: 'library-big',
-                    headerLink: { name: '📍 내 주변 도서관 지도', url: `https://naver.me/xIFJSb28` },
                     links: [
-                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on`, icon: 'map' }
+                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on`, icon: 'book' },
+                        // 지도 링크를 옆에 배치하고 크기를 키웠습니다 (isHighlight 옵션 적용)
+                        { name: '📍 내 주변 도서관 지도', url: `https://naver.me/xIFJSb28`, icon: 'map-pin', isHighlight: true }
                     ]
                 },
                 {
@@ -415,6 +512,7 @@
             categories.forEach(cat => {
                 const group = document.createElement('div');
                 group.className = 'category-group';
+                group.id = `cat-${cat.id}`; // 탭 스크롤을 위해 고유 ID 부여
                 
                 const header = document.createElement('div');
                 header.className = 'cat-header';
@@ -473,15 +571,26 @@
             lucide.createIcons(); // 동적으로 생성된 아이콘 렌더링
         }
 
-        // 버튼 생성 로직 (아이콘 추가)
+        // 버튼 생성 로직 (아이콘/로고 및 강조 옵션 추가)
         function createLink(lib, categoryId) {
             const link = document.createElement('a');
             
-            // 카테고리별 기본 아이콘 설정 (개별 설정된 아이콘이 없으면 기본값 사용)
-            let iconName = lib.icon || 'external-link'; 
-            if(!lib.icon && categoryId === 'seoul') iconName = 'map-pin';
+            // 강조 옵션이 있으면 클래스 추가
+            if (lib.isHighlight) {
+                link.classList.add('highlight-link');
+            }
+
+            // logo 이미지가 정의되어 있다면 이미지 태그를, 없다면 lucide 아이콘을 사용
+            let mediaHtml = '';
+            if (lib.logo) {
+                mediaHtml = `<img src="${lib.logo}" alt="${lib.name} 로고" class="custom-logo" onerror="this.outerHTML='<i data-lucide=\\'external-link\\' size=\\'20\\'></i>'">`;
+            } else {
+                let iconName = lib.icon || 'external-link'; 
+                if(!lib.icon && categoryId === 'seoul') iconName = 'map-pin';
+                mediaHtml = `<i data-lucide="${iconName}" size="${lib.isHighlight ? 24 : 20}"></i>`;
+            }
             
-            link.innerHTML = `<i data-lucide="${iconName}" size="20"></i><span>${lib.name}</span>`;
+            link.innerHTML = `${mediaHtml}<span>${lib.name}</span>`;
             
             if (lib.url.startsWith('javascript:')) {
                 link.href = "#";
