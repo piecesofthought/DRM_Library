@@ -7,11 +7,13 @@
     
     <link rel="icon" type="image/svg+xml" href="AllBook_logo.svg">
     <link rel="apple-touch-icon" href="AllBook_logo.svg">
+    
     <link rel="manifest" href='data:application/manifest+json,{"short_name":"ALL BOOK","name":"ALL BOOK","display":"standalone"}'>
     
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
+        /* 색상 테마 정의 */
         :root {
             --primary: #007aff;
             --primary-hover: #005bb5;
@@ -20,309 +22,549 @@
             --text: #1d1d1f;
             --sec-text: #86868b;
             --border: #e5e5ea;
-            --tag-bg: #e5e5ea;
-            --shadow: rgba(0,0,0,0.08);
-            --header-bg: rgba(255, 255, 255, 0.9);
+            --tag-bg: #f2f2f7;
+            --wish-bg: #fffdf0;
+            --wish-border: #ffcc00;
+            --shadow: rgba(0,0,0,0.05);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --nav-bg: rgba(255, 255, 255, 0.9);
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            overflow-x: hidden; 
-            background-color: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-            color: var(--text);
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #0a84ff;
+                --primary-hover: #409cff;
+                --bg: #000000;
+                --card-bg: #1c1c1e;
+                --text: #f5f5f7;
+                --sec-text: #8e8e93;
+                --border: #38383a;
+                --tag-bg: #2c2c2e;
+                --wish-bg: #2c2500;
+                --wish-border: #ffd60a;
+                --shadow: rgba(0,0,0,0.3);
+                --header-bg: rgba(28, 28, 30, 0.85);
+                --nav-bg: rgba(28, 28, 30, 0.9);
+            }
         }
 
-        header {
-            position: sticky;
-            top: 0;
-            background-color: var(--header-bg);
-            backdrop-filter: blur(10px);
-            padding: 16px 20px;
-            box-shadow: 0 1px 3px var(--shadow);
-            z-index: 100;
-            text-align: center;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; padding: 0;
+            padding-bottom: 110px; 
+            background-color: var(--bg); color: var(--text); 
+            line-height: 1.5; transition: background-color 0.3s;
+        }
+        
+        .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 20px; position: relative; }
+
+        /* ---------------- 상단 고정 헤더 ---------------- */
+        .sticky-header {
+            position: sticky; top: 0; z-index: 1500;
+            background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 12px 20px;
+            display: flex; align-items: center; gap: 12px;
         }
 
-        h1 {
-            margin: 0 0 16px 0;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .search-container {
-            display: flex;
-            gap: 8px;
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 14px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-        }
-
-        .search-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 0 20px;
-            font-weight: bold;
-            font-size: 16px;
+        .header-title { 
+            margin: 0; display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+        /* 💡 로고 이미지 크기 조정 (글씨까지 잘 보이도록 비율 맞춤) */
+        .header-logo { height: 44px; width: auto; object-fit: contain; }
+
+        .search-box { 
+            flex: 1; display: flex; align-items: center; background: var(--card-bg); 
+            border-radius: 20px; border: 2px solid var(--primary);
+            box-shadow: 0 2px 10px var(--shadow); position: relative; height: 44px;
+            overflow: visible;
         }
 
-        #recent-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px var(--shadow);
-            margin-top: 8px;
-            padding: 16px;
-            display: none;
-            z-index: 10;
-            text-align: left;
+        #search-input { 
+            flex: 1; border: none; background: transparent; padding: 0 16px; 
+            font-size: 15px; color: var(--text); outline: none; height: 100%;
         }
 
-        .recent-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--sec-text);
-        }
+        .search-actions { display: flex; align-items: center; padding-right: 6px; }
 
-        #recent-tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .icon-btn {
+            background: none; border: none; color: var(--sec-text);
+            display: flex; justify-content: center; align-items: center;
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer; transition: all 0.2s;
         }
+        .icon-btn:hover { background: var(--tag-bg); color: var(--primary); }
+        .icon-btn.search-btn { color: white; background: var(--primary); }
+        .icon-btn.search-btn:hover { background: var(--primary-hover); }
+        .icon-btn.star-btn { color: var(--wish-border); margin-right: 4px; }
+        .icon-btn.star-btn:active { transform: scale(0.85); }
 
+        /* 최근 검색어 드롭다운 */
+        .recent-dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; right: 0;
+            background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 1px solid var(--border); padding: 20px; z-index: 2000;
+        }
+        .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .recent-header-title { font-size: 16px; font-weight: 800; color: var(--text); }
+        .clear-all-btn { background: none; border: none; color: var(--sec-text); font-size: 13px; cursor: pointer; }
+        .recent-tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
         .recent-tag {
-            background-color: var(--tag-bg);
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 25px; font-size: 14px; color: var(--text); transition: background 0.2s, border-color 0.2s;
         }
-
+        .recent-tag:hover { background: var(--bg); border-color: var(--primary); }
         .recent-tag span { cursor: pointer; }
-        .recent-tag-close { cursor: pointer; color: var(--sec-text); }
+        .recent-tag-close { color: var(--sec-text); cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 2px; }
+        .recent-tag-close:hover { color: #ff3b30; }
 
-        main {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* ---------------- 플로팅 즐겨찾기(목록보기) ---------------- */
+        .floating-wish-btn {
+            position: fixed; left: 20px; bottom: 90px; 
+            width: 56px; height: 56px; background: var(--primary); color: white;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4); border: none; cursor: pointer; z-index: 1000;
         }
+        .floating-wish-btn:active { transform: scale(0.9); }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 24px 0 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .wishlist-panel {
+            position: fixed; left: 20px; bottom: 160px; width: 280px; max-height: 50vh;
+            background: var(--card-bg); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid var(--border); padding: 16px; z-index: 999; overflow-y: auto;
+            transform: translateY(20px); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-
-        .bookshelf-scroll {
-            display: flex;
-            overflow-x: auto;
-            gap: 16px;
-            padding-bottom: 16px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
+        .wishlist-panel.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .wishlist-header { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag.wish-tag { 
+            background: var(--wish-bg); border: 1px solid var(--wish-border); padding: 8px 14px; 
+            border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            color: #5c4d00; font-weight: 500;
         }
+        @media (prefers-color-scheme: dark) { .tag.wish-tag { color: #ffd60a; } }
+        .remove-btn { color: #ff3b30; font-size: 18px; line-height: 1; margin-left: 4px; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; }
 
-        .bookshelf-scroll::-webkit-scrollbar { display: none; }
-        .bookshelf-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .book-card {
-            flex: 0 0 auto;
-            width: 140px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 2px 8px var(--shadow);
-            scroll-snap-align: start;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* ---------------- 하단 고정 탭 (네비게이션 바) ---------------- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: var(--nav-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center;
+            z-index: 2000; padding-bottom: env(safe-area-inset-bottom);
         }
-
-        .book-cover {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-            background-color: var(--border);
-            border: 1px solid var(--border);
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 4px; color: var(--sec-text); font-size: 11px; font-weight: 600;
+            background: none; border: none; cursor: pointer; width: 100%; height: 100%; transition: color 0.2s;
         }
+        .nav-item:hover, .nav-item:active { color: var(--primary); }
 
-        .book-title {
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        /* ---------------- 결과 그리드 ---------------- */
+        .category-group { 
+            margin-bottom: 20px; background: var(--card-bg); padding: 24px 20px; 
+            border-radius: 24px; box-shadow: 0 4px 12px var(--shadow);
+            scroll-margin-top: 80px; 
         }
+        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cat-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
+        .cat-link { font-size: 13px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
 
-        .book-author {
-            font-size: 12px;
-            color: var(--sec-text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
+        @media (min-width: 600px) { .links-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 800px) { .links-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .loading-text {
-            color: var(--sec-text);
-            font-size: 14px;
-            text-align: center;
-            width: 100%;
-            padding: 20px 0;
+        .links-grid a { 
+            display: flex; flex-direction: row; align-items: center; justify-content: flex-start; 
+            text-align: left; gap: 12px; padding: 10px; text-decoration: none; 
+            color: var(--text); font-weight: 600; font-size: 15px; border-radius: 16px; 
+            background: transparent; transition: background 0.2s; word-break: keep-all; 
         }
+        .links-grid a:hover, .links-grid a:active { background: var(--tag-bg); }
 
-        /* 외부 링크 버튼 디자인 */
-        .link-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 10px;
+        .custom-logo {
+            width: 26px; height: 26px; object-fit: contain; border-radius: 5px; background: white; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        .links-grid a i { color: var(--primary); opacity: 0.9; }
 
-        .library-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 14px 20px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            box-shadow: 0 2px 5px var(--shadow);
-            transition: all 0.2s;
+        .toggle-btn { 
+            width: 100%; margin-top: 20px; background: var(--tag-bg); border: none; 
+            color: var(--text); padding: 14px; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
         }
+        .toggle-btn:hover { background: var(--border); }
 
-        .library-btn:active {
-            background-color: var(--tag-bg);
-            transform: scale(0.98);
-        }
+        .empty-state { text-align: center; padding: 60px 0; color: var(--sec-text); font-size: 16px; }
+        .empty-state i { display: block; margin: 0 auto 15px; color: var(--border); }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>ALL BOOK</h1>
-        <div class="search-container">
-            <input type="text" id="keyword" class="search-input" placeholder="읽고 싶은 책을 검색해보세요" onclick="showRecentDropdown()">
-            <button class="search-btn" onclick="executeSearch()">
-                <i data-lucide="search" size="20"></i>
-            </button>
+    <header class="sticky-header">
+        <h1 class="header-title" onclick="scrollToSection('top')">
+            <img src="AllBook_logo.svg" alt="ALL BOOK 로고" class="header-logo" onerror="this.outerHTML='<span style=\\'font-size:18px; font-weight:800; color:var(--primary);\\'><i data-lucide=\\'library\\' size=\\'24\\'></i> ALL BOOK</span>'">
+        </h1>
+        
+        <div class="search-box" id="search-container">
+            <input type="text" id="search-input" placeholder="ALL BOOK에서 책 검색..." 
+                   onkeydown="if(event.key === 'Enter') generateLinks();"
+                   onfocus="showDropdown()" onclick="showDropdown()">
             
-            <div id="recent-dropdown">
+            <div class="search-actions">
+                <button class="icon-btn star-btn" onclick="addToWishlist()" title="검색어 즐겨찾기 추가">
+                    <i data-lucide="star" fill="currentColor"></i>
+                </button>
+                <button class="icon-btn search-btn" onclick="generateLinks()" title="검색">
+                    <i data-lucide="search" size="18"></i>
+                </button>
+            </div>
+            
+            <div id="recent-dropdown" class="recent-dropdown">
                 <div class="recent-header">
-                    <span>최근 검색어</span>
-                    <span style="color: var(--primary); cursor: pointer;" onclick="clearRecentSearches(event)">전체 삭제</span>
+                    <span class="recent-header-title">최근 검색어</span>
+                    <button class="clear-all-btn" onclick="clearRecentSearches(event)">전체삭제</button>
                 </div>
-                <div id="recent-tags-container"></div>
+                <div id="recent-tags-container" class="recent-tags-container"></div>
             </div>
         </div>
     </header>
 
-    <main>
-        <!-- 검색 결과 버튼 영역 -->
-        <div id="search-result-area">
-            <!-- 검색을 실행하면 여기에 강남구 등 링크 버튼이 생깁니다 -->
-        </div>
+    <button class="floating-wish-btn" onclick="toggleWishlist()">
+        <i data-lucide="bookmark" fill="currentColor"></i>
+    </button>
 
-        <!-- 도서관 정보나루 API 영역 -->
-        <h2 class="section-title" style="margin-top: 30px;">
-            <i data-lucide="trending-up" color="var(--primary)"></i> 
-            전국 도서관 인기 대출 도서
-        </h2>
-        
-        <div id="api-books-container" class="bookshelf-scroll">
-            <div class="loading-text">인기 도서를 불러오는 중입니다...</div>
+    <div id="wishlist-panel" class="wishlist-panel">
+        <div class="wishlist-header"><i data-lucide="bookmark" size="18"></i> 내 책갈피 (즐겨찾기)</div>
+        <div id="wishlist" class="tag-container"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item" onclick="scrollToSection('top')">
+            <i data-lucide="home" size="22"></i><span>홈</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-ebook_main')">
+            <i data-lucide="tablet-smartphone" size="22"></i><span>E-book</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-seoul')">
+            <i data-lucide="map-pin" size="22"></i><span>전자도서관</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-classic')">
+            <i data-lucide="archive" size="22"></i><span>무료</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-physical')">
+            <i data-lucide="library-big" size="22"></i><span>내 근처</span>
+        </button>
+        <button class="nav-item" onclick="scrollToSection('cat-bookstore')">
+            <i data-lucide="shopping-bag" size="22"></i><span>서점</span>
+        </button>
+    </nav>
+
+    <div class="container" id="top">
+        <div id="results">
+            <div class="empty-state">
+                <i data-lucide="book-open" size="48"></i>
+                검색어를 입력하면 다양한 도서관과 서점 링크가 나타납니다.
+            </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
             loadRecentSearches();
+            loadWishlist();
             lucide.createIcons();
-            
-            document.getElementById('keyword').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    executeSearch();
+
+            document.addEventListener('click', (e) => {
+                const searchContainer = document.getElementById('search-container');
+                if (!searchContainer.contains(e.target)) {
+                    document.getElementById('recent-dropdown').style.display = 'none';
                 }
             });
         });
 
-        document.addEventListener('click', function(event) {
-            const searchContainer = document.querySelector('.search-container');
-            if (!searchContainer.contains(event.target)) {
-                document.getElementById('recent-dropdown').style.display = 'none';
+        function scrollToSection(id) {
+            if (id === 'top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
             }
-        });
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                document.getElementById('search-input').focus();
+                showDropdown();
+            }
+        }
 
-        function showRecentDropdown() {
+        function toggleWishlist() {
+            const panel = document.getElementById('wishlist-panel');
+            panel.classList.toggle('show');
+            let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            if(wishs.length === 0 && panel.classList.contains('show')) {
+                setTimeout(() => alert("상단 검색창의 '☆' 버튼을 눌러 자주 찾는 책을 저장해보세요!"), 100);
+            }
+        }
+
+        function showDropdown() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
-            if(searches.length > 0) {
+            if (searches.length > 0) {
                 document.getElementById('recent-dropdown').style.display = 'block';
             }
         }
 
-        function executeSearch() {
-            const keyword = document.getElementById('keyword').value.trim();
-            if(keyword === "") {
-                alert("검색어를 입력해주세요.");
-                return;
+        function getFaviconUrl(url) {
+            if(url.startsWith('javascript:')) return null;
+            try {
+                const urlObj = new URL(url);
+                return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64`;
+            } catch(e) {
+                return null;
             }
-            saveKeyword(keyword);
-            document.getElementById('recent-dropdown').style.display = 'none';
-            
-            // 기존에 잘 만들어두신 링크 생성 함수 호출!
-            generateLinks(keyword); 
         }
 
-        function saveKeyword(keyword) {
-            let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
-            searches = searches.filter(item => item !== keyword);
-            searches.unshift(keyword);
-            if(searches.length > 10) searches.pop();
+        function generateLinks(keyword = null) {
+            const inputElement = document.getElementById('search-input');
+            const query = keyword || inputElement.value.trim();
+            const resultsDiv = document.getElementById('results');
             
+            if (!query) { return; }
+
+            inputElement.blur(); 
+            inputElement.value = query;
+            saveRecentSearch(query);
+            document.getElementById('recent-dropdown').style.display = 'none'; 
+
+            const encodedQuery = encodeURIComponent(query);
+            
+            const categories = [
+                {
+                    id: 'ebook_main',
+                    title: 'E-Book',
+                    icon: 'tablet-smartphone',
+                    links: [
+                        { name: '밀리의 서재', url: `https://www.millie.co.kr/v3/search/result/${encodedQuery}` },
+                        { name: '이화여대 전자도서관', url: `https://lib.ewha.ac.kr/searchA/ebz?st=KWRD&si=TOTAL&q=${encodedQuery}`, logo: 'Ewha.svg' },
+                        { name: '서울 전자도서관', url: `https://elib.seoul.go.kr/contents/search/content?t=EB&k=${encodedQuery}`, logo: 'SeoulLibrary_logo.svg' },
+                        { name: '서울교육청 도서관', url: `https://e-lib.sen.go.kr/contents/search?type=&searchOpt=0&searchKeyword=${encodedQuery}`, logo: 'SeoulEdu_logo.svg' }
+                    ]
+                },
+                {
+                    id: 'seoul',
+                    title: '서울시 자치구 전자도서관',
+                    icon: 'map-pin',
+                    links: [
+                        { name: '마포구', url: `https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}`, logo: 'mapo_logo.svg' },
+                        { name: '용산구', url: `https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt=${encodedQuery}`, logo: 'yongsan_logo.svg' },
+                        { name: '관악구', url: `https://e-lib.gwanak.go.kr/search/?srch_order=total&src_key=${encodedQuery}` },
+                        { name: '노원구', url: `https://eb.nowonlib.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '동대문구', url: `https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '성북구', url: `https://elibrary.sblib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '중랑구', url: `https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '송파구 C', url: `https://ebook.splib.or.kr/search/?srch_order=total&src_key=${encodedQuery}` }
+                    ],
+                    unjoinedLinks: [
+                        { name: '강남구', url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` },
+                        { name: '서초구', url: `https://e-book.seocholib.or.kr/search?keyword=${encodedQuery}` },
+                        { name: '동작구', url: `https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '서대문구', url: `https://lib.sdm.or.kr/sdmlib/menu/10003/program/30001/searchResultList.do?searchType=SIMPLE&viewType=LIST&searchKeyword=${encodedQuery}&searchPubFormCode=EB&currentPageNo=1&searchDisplay=20&searchArticle=SCORE&searchOrder=ASC` },
+                        { name: '송파구 S', url: `https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '구로구', url: `https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '영등포구', url: `https://ydplib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '은평구', url: `https://epbook.eplib.or.kr/ebookPlatform/home/search.do?k=${encodedQuery}` },
+                        { name: '종로구', url: `https://elib.jongno.go.kr/search/?srch_order=total&src_key=${encodedQuery}` },
+                        { name: '중구', url: `https://ebook.junggulib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '강서구', url: `https://ebook.gangseo.seoul.kr/search/?srch_order=total&src_key=${encodedQuery}` },
+                        { name: '강북구', url: `https://ebook.gblib.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt=${encodedQuery}` },
+                        { name: '강동구 C', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_OWN&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
+                        { name: '강동구 S', url: `https://www.gdlibrary.or.kr/sn/menu/123/book/search/collection?searchType=normal&tabSearch=true&form_code=&media_code=&doc_type=EB_SUB&sortField=score&sortOrder=desc&display=10&searchInput=${encodedQuery}&title=&author=&publisher=&isbn=&keyword=&pub_year_from=&pub_year_to=&manage_code=MH%2CMF%2CMA%2CMB%2CBR%2CMC%2CMD%2CME&smart_manage_code=&small_manage_code=` },
+                        { name: '양천구', url: `https://lib.yangcheon.or.kr/main/site/search/bookSearch.do?detail=ok&cmd_name=bookandnonbooksearch&search_type=detail&use_facet=N&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=&search_title=${encodedQuery}&search_isbn_issn=&search_author=&media_code=EB&search_publisher=&manage_code=MA%2CMB%2CMC%2CMD%2CME%2CMF%2CMG%2CSG%2CMH%2CSA%2CSB%2CSC%2CSD%2CSF%2CSH%2CSJ%2CSK%2CSM%2CUA%2CUB%2CUD%2CUE%2CFA&search_shelf=&search_shelf=&search_year_start=&search_year_end=&subject_code=&search_keyword=&sh_orderby=&search_bt2=%EA%B2%80%EC%83%89%ED%95%98%EA%B8%B0#detail` },
+                        { name: '금천구', url: `https://elib.geumcheonlib.seoul.kr/FxLibrary/m/product/search/?searchstr=${encodedQuery}` },
+                        { name: '도봉구', url: `https://www.unilib.dobong.kr/site/search/search08.do?cmd_name=nonbooksearch&search_type=detail&manage_code=MA%2CMB%2CMC%2CME%2CMG%2CMJ%2CMF%2CMH%2CSA%2CMD%2CSB%2CSL%2CSM%2CSN%2CSO%2CSP%2CSK%2CSQ%2CSR%2CSS%2CST%2CSU%2CSG%2CSC&search_item_add=&search_txt_add=&use_facet=Y&org_detail=&facet_manage_code=&facet_author=&facet_publisher=&facet_pub_year=&facet_subject_code=&facet_media_code=EB&search_item=search_title&sh_orderby=&search_txt=${encodedQuery}` }
+                    ]
+                },
+                {
+                    id: 'classic',
+                    title: '무료 아카이브 (고전/원문)',
+                    icon: 'archive',
+                    links: [
+                        { name: '인터넷 아카이브', url: `https://archive.org/search?query=${encodedQuery}&and%5B%5D=mediatype%3A%22texts%22` },
+                        { name: 'Jikji (직지)', url: `http://jikji.duckdns.org/search/stored/?query=${encodedQuery}` },
+                        { name: '구텐베르크(영문)', url: `https://www.gutenberg.org/ebooks/search/?query=${encodedQuery}` }
+                    ]
+                },
+                {
+                    id: 'physical',
+                    title: '현장 도서관 대여',
+                    icon: 'library-big',
+                    links: [
+                        { name: '서울 전지역 도서관', url: `https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1=${encodedQuery}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on` },
+                        { name: '📍 내 주변 지도', url: `https://naver.me/xIFJSb28` }
+                    ]
+                },
+                {
+                    id: 'bookstore',
+                    title: '온라인/오프라인 서점',
+                    icon: 'shopping-bag',
+                    headerLink: { name: '💰 중고매입가 조회', url: `https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord=${encodedQuery}` },
+                    links: [
+                        { name: '구글 플레이북', url: `https://play.google.com/store/search?q=${encodedQuery}&c=books&hl=ko` },
+                        { name: '교보문고', url: `https://search.kyobobook.co.kr/search?keyword=${encodedQuery}` },
+                        { name: '알라딘 중고 (온라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord=${encodedQuery}` },
+                        { name: '알라딘 중고 (오프라인)', url: `https://www.aladin.co.kr/m/msearch.aspx?SearchWord=${encodedQuery}&SearchTarget=UsedStore` }
+                    ]
+                }
+            ];
+
+            resultsDiv.innerHTML = '';
+            
+            categories.forEach(cat => {
+                const group = document.createElement('div');
+                group.className = 'category-group';
+                group.id = `cat-${cat.id}`; 
+                
+                const header = document.createElement('div');
+                header.className = 'cat-header';
+                
+                const title = document.createElement('div');
+                title.className = 'cat-title';
+                title.innerHTML = `<i data-lucide="${cat.icon}" size="22"></i> ${cat.title}`;
+                header.appendChild(title);
+                
+                if (cat.headerLink) {
+                    const hLink = document.createElement('a');
+                    hLink.className = 'cat-link';
+                    hLink.textContent = cat.headerLink.name;
+                    hLink.href = cat.headerLink.url;
+                    hLink.target = '_blank';
+                    header.appendChild(hLink);
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'links-grid';
+
+                cat.links.forEach(lib => {
+                    grid.appendChild(createLink(lib, cat.id));
+                });
+                group.appendChild(header);
+                group.appendChild(grid);
+
+                if (cat.unjoinedLinks) {
+                    const unjoinedGrid = document.createElement('div');
+                    unjoinedGrid.className = 'links-grid';
+                    unjoinedGrid.style.display = 'none';
+                    unjoinedGrid.style.marginTop = '12px';
+
+                    cat.unjoinedLinks.forEach(lib => {
+                        unjoinedGrid.appendChild(createLink(lib, cat.id));
+                    });
+                    group.appendChild(unjoinedGrid);
+
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'toggle-btn';
+                    toggleBtn.innerHTML = '나머지 자치구 모두 보기 <i data-lucide="chevron-down" size="16" style="vertical-align:middle"></i>';
+                    toggleBtn.onclick = () => {
+                        const isHidden = unjoinedGrid.style.display === 'none';
+                        unjoinedGrid.style.display = isHidden ? 'grid' : 'none';
+                        toggleBtn.innerHTML = isHidden 
+                            ? '숨기기 <i data-lucide="chevron-up" size="16" style="vertical-align:middle"></i>' 
+                            : '나머지 자치구 모두 보기 <i data-lucide="chevron-down" size="16" style="vertical-align:middle"></i>';
+                        lucide.createIcons();
+                    };
+                    group.appendChild(toggleBtn);
+                }
+                resultsDiv.appendChild(group);
+            });
+            lucide.createIcons(); 
+        }
+
+        function createLink(lib, categoryId) {
+            const link = document.createElement('a');
+            
+            let mediaHtml = '';
+            const faviconUrl = getFaviconUrl(lib.url);
+            
+            if (faviconUrl) {
+                let fallbackIcon = categoryId === 'seoul' ? 'map-pin' : 'external-link';
+                mediaHtml = `<img src="${faviconUrl}" alt="" class="custom-logo" onerror="this.outerHTML='<i data-lucide=\\'${fallbackIcon}\\' size=\\'24\\'></i>'">`;
+            } else {
+                let iconName = categoryId === 'seoul' ? 'map-pin' : 'external-link';
+                mediaHtml = `<i data-lucide="${iconName}" size="24"></i>`;
+            }
+            
+            link.innerHTML = `${mediaHtml}<span>${lib.name}</span>`;
+            
+            if (lib.url.startsWith('javascript:')) {
+                link.href = "#";
+                link.onclick = (e) => { e.preventDefault(); eval(lib.url.substring(11)); };
+            } else {
+                link.href = lib.url;
+                link.target = '_blank';
+            }
+            return link;
+        }
+
+        function addToWishlist() {
+            const input = document.getElementById('search-input');
+            const query = input.value.trim();
+            if (!query) { 
+                alert("저장할 단어를 검색창에 입력해주세요!");
+                input.focus();
+                return; 
+            }
+            let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            if (!wishs.includes(query)) {
+                wishs.unshift(query);
+                localStorage.setItem('bookWishlist', JSON.stringify(wishs));
+                loadWishlist();
+                
+                document.getElementById('wishlist-panel').classList.add('show');
+            } else {
+                alert("이미 즐겨찾기에 있는 단어입니다.");
+            }
+        }
+
+        function removeFromWishlist(keyword, event) {
+            event.stopPropagation(); 
+            let wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            wishs = wishs.filter(item => item !== keyword);
+            localStorage.setItem('bookWishlist', JSON.stringify(wishs));
+            loadWishlist();
+        }
+
+        function loadWishlist() {
+            const wishs = JSON.parse(localStorage.getItem('bookWishlist')) || [];
+            const container = document.getElementById('wishlist');
+            container.innerHTML = '';
+            
+            if(wishs.length === 0) {
+                container.innerHTML = '<span style="color:var(--sec-text); font-size:13px;">아직 저장된 즐겨찾기가 없습니다.</span>';
+                return;
+            }
+
+            wishs.forEach(keyword => {
+                const tag = document.createElement('div');
+                tag.className = 'tag wish-tag';
+                tag.innerHTML = `<span>${keyword}</span><span class="remove-btn" onclick="removeFromWishlist('${keyword}', event)"><i data-lucide="x" size="14"></i></span>`;
+                tag.onclick = () => {
+                    generateLinks(keyword);
+                    document.getElementById('wishlist-panel').classList.remove('show'); 
+                };
+                container.appendChild(tag);
+            });
+            lucide.createIcons();
+        }
+
+        function saveRecentSearch(query) {
+            let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
+            searches = searches.filter(item => item !== query);
+            searches.unshift(query);
+            if (searches.length > 8) searches.pop();
             localStorage.setItem('recentBooks', JSON.stringify(searches));
             loadRecentSearches();
         }
 
         function deleteRecentSearch(keyword, event) {
-            event.stopPropagation();
+            event.stopPropagation(); 
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== keyword);
             localStorage.setItem('recentBooks', JSON.stringify(searches));
@@ -351,104 +593,12 @@
                 const tag = document.createElement('div');
                 tag.className = 'recent-tag';
                 tag.innerHTML = `
-                    <span onclick="document.getElementById('keyword').value='${keyword}'; executeSearch();">${keyword}</span>
-                    <i data-lucide="x" size="14" class="recent-tag-close" onclick="deleteRecentSearch('${keyword}', event)"></i>
+                    <span onclick="generateLinks('${keyword}')">${keyword}</span>
+                    <i data-lucide="x" size="16" class="recent-tag-close" onclick="deleteRecentSearch('${keyword}', event)"></i>
                 `;
                 container.appendChild(tag);
             });
             lucide.createIcons();
-        }
-
-        /*========================================================================
-          ★ 사용자님이 작성하셨던 링크 코드를 완벽하게 복원 및 디자인 적용한 부분 ★
-        ========================================================================*/
-        function generateLinks(query) {
-            // 회원님이 올려주신 강남구 코드 (euc-kr 인코딩 문제 우회 로직 포함)
-            const unjoinedLinks = [
-                { 
-                    name: '강남구 전자도서관', 
-                    url: `javascript:(function(){var f=document.createElement('form');f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp';f.method='get';f.target='_blank';f.acceptCharset='euc-kr';f.innerHTML='<input type="hidden" name="search" value="title"><input type="hidden" name="strSearch" value="${query}">';document.body.appendChild(f);f.submit();document.body.removeChild(f);})()` 
-                }
-                // 여기에 서초구, 송파구 등 다른 도서관이 있었다면 이 아래로 추가하시면 됩니다!
-                // { name: '다른도서관', url: '...' }
-            ];
-
-            // 그 외 일반적인 도서관이나 서점 (예시로 알라딘/교보문고 남겨둠)
-            const standardLinks = [
-                { name: '교보문고 검색', url: `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(query)}` },
-                { name: '알라딘 검색', url: `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchWord=${encodeURIComponent(query)}` }
-            ];
-
-            const resultArea = document.getElementById('search-result-area');
-            
-            // 화면에 보여줄 버튼들을 HTML로 만들기
-            let html = `
-                <h2 class="section-title">
-                    <i data-lucide="book-open" color="var(--primary)"></i> 
-                    '${query}' 검색 결과 보기
-                </h2>
-                <div class="link-grid">
-            `;
-
-            // 1. 강남구 같은 특수 링크들 버튼 생성
-            unjoinedLinks.forEach(link => {
-                html += `<a href="${link.url}" class="library-btn">${link.name}</a>`;
-            });
-
-            // 2. 일반 링크들 버튼 생성 (새 창에서 열리도록 target="_blank" 추가)
-            standardLinks.forEach(link => {
-                html += `<a href="${link.url}" target="_blank" class="library-btn">${link.name}</a>`;
-            });
-
-            html += `</div>`;
-            
-            // 화면에 렌더링
-            resultArea.innerHTML = html;
-            
-            // 새로 생성된 아이콘 렌더링
-            lucide.createIcons();
-        }
-
-        // --- 도서관 정보나루 API ---
-        document.addEventListener('DOMContentLoaded', fetchPopularBooks);
-
-        async function fetchPopularBooks() {
-            const container = document.getElementById('api-books-container');
-            const apiKey = "86bbf34832d0f70658c95d21f790afa9b7ee8956deed3ea4a440a101cafbca69";
-            const apiUrl = `https://data4library.kr/api/loanItemSrch?authKey=${apiKey}&format=json`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                
-                container.innerHTML = ''; 
-                const books = data.response.docs.slice(0, 10);
-                
-                books.forEach(item => {
-                    const book = item.doc;
-                    const imageUrl = book.bookImageURL || 'https://via.placeholder.com/150x200?text=No+Image';
-
-                    const bookCard = document.createElement('div');
-                    bookCard.className = 'book-card';
-                    bookCard.onclick = () => {
-                        document.getElementById('keyword').value = book.bookname;
-                        executeSearch(); // 책 클릭시 바로 위에서 만든 검색 버튼들이 나타남
-                    };
-                    bookCard.style.cursor = 'pointer';
-
-                    bookCard.innerHTML = `
-                        <img src="${imageUrl}" alt="표지" class="book-cover" onerror="this.src='https://via.placeholder.com/150x200?text=No+Image'">
-                        <div class="book-title" title="${book.bookname}">${book.bookname}</div>
-                        <div class="book-author">${book.authors}</div>
-                    `;
-                    
-                    container.appendChild(bookCard);
-                });
-
-            } catch (error) {
-                console.error("API 에러:", error);
-                container.innerHTML = `<div class="loading-text">인기 도서를 불러오는데 실패했습니다.</div>`;
-            }
         }
     </script>
 </body>
