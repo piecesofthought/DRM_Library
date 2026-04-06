@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>통합 도서 검색</title>
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href='data:application/manifest+json,{"short_name":"도서 찾기","name":"도서 찾기","display":"standalone"}'>
+    <title>ALL BOOK - 통합 도서 검색</title>
     
-    <!-- Lucide Icons -->
+    <link rel="icon" type="image/svg+xml" href="AllBook_logo.svg">
+    <link rel="apple-touch-icon" href="AllBook_logo.svg">
+    
+    <link rel="manifest" href='data:application/manifest+json,{"short_name":"ALL BOOK","name":"ALL BOOK","display":"standalone"}'>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -52,7 +51,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 0; /* 헤더 고정을 위해 padding 제거, 내부 container에서 조절 */
+            margin: 0; padding: 0;
             padding-bottom: 110px; 
             background-color: var(--bg); color: var(--text); 
             line-height: 1.5; transition: background-color 0.3s;
@@ -62,31 +61,24 @@
 
         /* ---------------- 상단 고정 헤더 ---------------- */
         .sticky-header {
-            position: sticky;
-            top: 0;
-            z-index: 1500;
-            background: var(--header-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            position: sticky; top: 0; z-index: 1500;
+            background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 12px 20px;
+            display: flex; align-items: center; gap: 12px;
         }
 
         .header-title { 
-            font-size: 18px; font-weight: 800; color: var(--text); 
-            white-space: nowrap; margin: 0; display: flex; align-items: center; gap: 4px;
+            margin: 0; display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
         }
+        /* 💡 로고 이미지 크기 조정 (글씨까지 잘 보이도록 비율 맞춤) */
+        .header-logo { height: 44px; width: auto; object-fit: contain; }
 
         .search-box { 
-            flex: 1;
-            display: flex; align-items: center; background: var(--card-bg); 
+            flex: 1; display: flex; align-items: center; background: var(--card-bg); 
             border-radius: 20px; border: 2px solid var(--primary);
-            box-shadow: 0 2px 10px var(--shadow);
-            position: relative; height: 44px;
-            overflow: visible; /* 드롭다운을 위해 visible */
+            box-shadow: 0 2px 10px var(--shadow); position: relative; height: 44px;
+            overflow: visible;
         }
 
         #search-input { 
@@ -94,15 +86,12 @@
             font-size: 15px; color: var(--text); outline: none; height: 100%;
         }
 
-        .search-actions {
-            display: flex; align-items: center; padding-right: 6px;
-        }
+        .search-actions { display: flex; align-items: center; padding-right: 6px; }
 
         .icon-btn {
             background: none; border: none; color: var(--sec-text);
             display: flex; justify-content: center; align-items: center;
-            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
-            transition: all 0.2s;
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer; transition: all 0.2s;
         }
         .icon-btn:hover { background: var(--tag-bg); color: var(--primary); }
         .icon-btn.search-btn { color: white; background: var(--primary); }
@@ -110,17 +99,11 @@
         .icon-btn.star-btn { color: var(--wish-border); margin-right: 4px; }
         .icon-btn.star-btn:active { transform: scale(0.85); }
 
-        /* 구글 스타일 최근 검색어 드롭다운 (태그형) */
+        /* 최근 검색어 드롭다운 */
         .recent-dropdown {
-            display: none; 
-            position: absolute;
-            top: calc(100% + 10px); left: 0; right: 0;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
-            padding: 20px;
-            z-index: 2000;
+            display: none; position: absolute; top: calc(100% + 10px); left: 0; right: 0;
+            background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 1px solid var(--border); padding: 20px; z-index: 2000;
         }
         .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .recent-header-title { font-size: 16px; font-weight: 800; color: var(--text); }
@@ -129,8 +112,7 @@
         .recent-tag {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 25px; font-size: 14px; color: var(--text);
-            transition: background 0.2s, border-color 0.2s;
+            border-radius: 25px; font-size: 14px; color: var(--text); transition: background 0.2s, border-color 0.2s;
         }
         .recent-tag:hover { background: var(--bg); border-color: var(--primary); }
         .recent-tag span { cursor: pointer; }
@@ -177,37 +159,28 @@
         }
         .nav-item:hover, .nav-item:active { color: var(--primary); }
 
-        /* ---------------- 결과 그리드 (사진 스타일 2열 배치) ---------------- */
+        /* ---------------- 결과 그리드 ---------------- */
         .category-group { 
             margin-bottom: 20px; background: var(--card-bg); padding: 24px 20px; 
             border-radius: 24px; box-shadow: 0 4px 12px var(--shadow);
-            scroll-margin-top: 80px; /* 고정 헤더에 가리지 않게 마진 확보 */
+            scroll-margin-top: 80px; 
         }
         .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .cat-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .cat-link { font-size: 13px; color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
 
-        /* 모바일 기본 2열 (폴드 등 더 넓어지면 3~4열로 자동 확장) */
-        .links-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 16px 12px; 
-        }
-        
+        .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
         @media (min-width: 600px) { .links-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 800px) { .links-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        /* 사진처럼 깔끔한 리스트형 버튼 스타일 */
         .links-grid a { 
             display: flex; flex-direction: row; align-items: center; justify-content: flex-start; 
             text-align: left; gap: 12px; padding: 10px; text-decoration: none; 
             color: var(--text); font-weight: 600; font-size: 15px; border-radius: 16px; 
-            background: transparent; transition: background 0.2s;
-            word-break: keep-all; 
+            background: transparent; transition: background 0.2s; word-break: keep-all; 
         }
         .links-grid a:hover, .links-grid a:active { background: var(--tag-bg); }
 
-        /* 구글 자동 파비콘 및 아이콘 스타일 */
         .custom-logo {
             width: 26px; height: 26px; object-fit: contain; border-radius: 5px; background: white; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
@@ -227,53 +200,44 @@
 </head>
 <body>
 
-    <!-- 고정 상단바 -->
     <header class="sticky-header">
-        <h1 class="header-title"><i data-lucide="library" size="24" color="var(--primary)"></i> 통합 도서</h1>
+        <h1 class="header-title" onclick="scrollToSection('top')">
+            <img src="AllBook_logo.svg" alt="ALL BOOK 로고" class="header-logo" onerror="this.outerHTML='<span style=\\'font-size:18px; font-weight:800; color:var(--primary);\\'><i data-lucide=\\'library\\' size=\\'24\\'></i> ALL BOOK</span>'">
+        </h1>
         
         <div class="search-box" id="search-container">
-            <input type="text" id="search-input" placeholder="검색어 입력..." 
+            <input type="text" id="search-input" placeholder="ALL BOOK에서 책 검색..." 
                    onkeydown="if(event.key === 'Enter') generateLinks();"
                    onfocus="showDropdown()" onclick="showDropdown()">
             
             <div class="search-actions">
-                <!-- 즐겨찾기 추가 버튼 (☆) -->
                 <button class="icon-btn star-btn" onclick="addToWishlist()" title="검색어 즐겨찾기 추가">
                     <i data-lucide="star" fill="currentColor"></i>
                 </button>
-                <!-- 검색 실행 버튼 (Q) -->
                 <button class="icon-btn search-btn" onclick="generateLinks()" title="검색">
                     <i data-lucide="search" size="18"></i>
                 </button>
             </div>
             
-            <!-- 최근 검색어 드롭다운 -->
             <div id="recent-dropdown" class="recent-dropdown">
                 <div class="recent-header">
                     <span class="recent-header-title">최근 검색어</span>
                     <button class="clear-all-btn" onclick="clearRecentSearches(event)">전체삭제</button>
                 </div>
-                <div id="recent-tags-container" class="recent-tags-container">
-                    <!-- 최근 검색어 태그 삽입됨 -->
-                </div>
+                <div id="recent-tags-container" class="recent-tags-container"></div>
             </div>
         </div>
     </header>
 
-    <!-- 왼쪽 아래 떠있는 즐겨찾기 목록 보기 버튼 -->
     <button class="floating-wish-btn" onclick="toggleWishlist()">
         <i data-lucide="bookmark" fill="currentColor"></i>
     </button>
 
-    <!-- 플로팅 즐겨찾기 패널 -->
     <div id="wishlist-panel" class="wishlist-panel">
         <div class="wishlist-header"><i data-lucide="bookmark" size="18"></i> 내 책갈피 (즐겨찾기)</div>
-        <div id="wishlist" class="tag-container">
-            <!-- 즐겨찾기 항목이 여기에 추가됩니다 -->
-        </div>
+        <div id="wishlist" class="tag-container"></div>
     </div>
 
-    <!-- 하단 고정 탭 -->
     <nav class="bottom-nav">
         <button class="nav-item" onclick="scrollToSection('top')">
             <i data-lucide="home" size="22"></i><span>홈</span>
@@ -295,7 +259,6 @@
         </button>
     </nav>
 
-    <!-- 메인 콘텐츠 영역 -->
     <div class="container" id="top">
         <div id="results">
             <div class="empty-state">
@@ -349,7 +312,6 @@
             }
         }
 
-        // URL에서 도메인 추출하여 구글 파비콘 가져오기
         function getFaviconUrl(url) {
             if(url.startsWith('javascript:')) return null;
             try {
@@ -374,7 +336,6 @@
 
             const encodedQuery = encodeURIComponent(query);
             
-            // 🔥 광진구 삭제 완료, 나머지 UTF-8 호환 사이트 유지
             const categories = [
                 {
                     id: 'ebook_main',
@@ -516,14 +477,12 @@
             lucide.createIcons(); 
         }
 
-        // 구글 파비콘 적용 로직 포함
         function createLink(lib, categoryId) {
             const link = document.createElement('a');
             
             let mediaHtml = '';
             const faviconUrl = getFaviconUrl(lib.url);
             
-            // 파비콘(로고)이 있으면 이미지 태그, 없거나 오류나면 기본 아이콘 출력
             if (faviconUrl) {
                 let fallbackIcon = categoryId === 'seoul' ? 'map-pin' : 'external-link';
                 mediaHtml = `<img src="${faviconUrl}" alt="" class="custom-logo" onerror="this.outerHTML='<i data-lucide=\\'${fallbackIcon}\\' size=\\'24\\'></i>'">`;
@@ -544,7 +503,6 @@
             return link;
         }
 
-        // -------------- 즐겨찾기 로직 --------------
         function addToWishlist() {
             const input = document.getElementById('search-input');
             const query = input.value.trim();
@@ -596,7 +554,6 @@
             lucide.createIcons();
         }
 
-        // -------------- 최근 검색어 로직 --------------
         function saveRecentSearch(query) {
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== query);
