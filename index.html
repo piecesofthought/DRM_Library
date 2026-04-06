@@ -94,7 +94,7 @@
         }
 
         /* =========================================
-           3. 왼쪽 영역: 검색창 & 핵심 도서 정보 (새로 디자인됨!)
+           3. 왼쪽 영역: 검색창 & 핵심 도서 정보
         ========================================= */
         .left-panel { display: flex; flex-direction: column; gap: 15px; }
 
@@ -121,7 +121,7 @@
             background-color: var(--bg); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; color: var(--sec-text);
         }
 
-        /* ★ 검색된 책의 메인 정보 카드 (표지 + 줄거리) */
+        /* 메인 정보 카드 */
         .main-book-profile {
             display: flex;
             gap: 15px;
@@ -152,29 +152,89 @@
             font-size: 14px;
             line-height: 1.5;
             color: #4b5563;
-            /* 줄거리가 너무 길면 4줄까지만 보이고 말줄임표 처리 */
             display: -webkit-box;
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        /* 서점 링크 버튼들 (책 정보 바로 밑에 위치) */
-        .multi-site-links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* =========================================
+           ★ 새로 추가된 통합 링크 분류 (태그형 버튼)
+        ========================================= */
+        .links-container {
             border-top: 1px dashed var(--border);
             padding-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-group {}
+        .link-group-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        .site-btn {
-            display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 14px 18px; background-color: white; border: 1px solid var(--border); border-radius: 12px; color: var(--text); text-decoration: none; font-weight: 700; font-size: 15px; transition: all 0.2s;
+        .link-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
         }
-        .site-btn:active { background-color: var(--bg); transform: scale(0.98); }
-        .site-btn.kyobo { border-left: 5px solid #5a5a5a; }
-        .site-btn.yes24 { border-left: 5px solid #0080ff; }
-        .site-btn.aladin { border-left: 5px solid #eb328a; }
+
+        .link-pill {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            background-color: var(--bg);
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .link-pill:active {
+            transform: scale(0.95);
+            background-color: var(--border);
+        }
+
+        /* 각 카테고리별 버튼 색상 포인트 */
+        .link-pill.color-lib { border-left: 3px solid #10b981; } /* 도서관: 녹색 */
+        .link-pill.color-free { border-left: 3px solid #8b5cf6; } /* 무료: 보라색 */
+        .link-pill.color-store { border-left: 3px solid #3b82f6; } /* 서점: 파란색 */
+        .link-pill.color-used { border-left: 3px solid #f59e0b; } /* 중고: 주황색 */
+
+        /* 숨겨진 자치구 아코디언 */
+        details.hidden-districts {
+            margin-top: 6px;
+            width: 100%;
+        }
+        details.hidden-districts summary {
+            font-size: 13px;
+            color: var(--sec-text);
+            cursor: pointer;
+            padding: 5px 0;
+            font-weight: 600;
+            outline: none;
+            list-style: none; /* 기본 화살표 제거 */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        details.hidden-districts summary::before {
+            content: "▼";
+            font-size: 10px;
+        }
+        details[open].hidden-districts summary::before {
+            content: "▲";
+        }
 
         /* =========================================
            4. 오른쪽 영역: AI 분석 (해시태그, 추천 등)
@@ -206,11 +266,10 @@
 
     <div class="main-container">
         <!-- ==========================================
-             왼쪽 패널: 검색창 & 핵심 도서 정보 (메인)
+             왼쪽 패널: 검색창 & 도서 정보 & 통합 링크
              ========================================== -->
         <div class="left-panel">
             
-            <!-- 검색창 영역 -->
             <div class="card" id="searchSection">
                 <div class="search-box">
                     <i data-lucide="search" color="var(--sec-text)"></i>
@@ -224,32 +283,109 @@
                 </div>
             </div>
 
-            <!-- ★ 책 정보가 가장 먼저 뜨는 영역 (검색 후 나타남) -->
+            <!-- ★ 책 정보 + 맞춤형 서점/도서관 링크 카드 -->
             <div id="mainBookResultCard" class="card hidden">
                 <div class="section-title"><i data-lucide="info"></i> 도서 정보</div>
                 
                 <div class="main-book-profile">
                     <img id="mainBookCover" src="" class="main-book-cover" onerror="this.src='https://via.placeholder.com/110x160?text=No+Image'">
                     <div class="main-book-info">
-                        <h2 id="mainBookTitle">책 제목이 여기에 표시됩니다</h2>
-                        <p class="author" id="mainBookAuthor">저자명 / 출판사</p>
-                        <!-- 책의 줄거리가 여기에 들어갑니다 -->
-                        <p class="plot" id="mainBookPlot">도서 줄거리를 불러오는 중입니다...</p>
+                        <h2 id="mainBookTitle">책 제목</h2>
+                        <p class="author" id="mainBookAuthor">저자명</p>
+                        <p class="plot" id="mainBookPlot">줄거리</p>
                     </div>
                 </div>
 
-                <!-- 서점 검색 링크들 (도서 정보 바로 아래 배치!) -->
-                <div class="multi-site-links">
-                    <p style="margin:0 0 5px 0; font-size:13px; color:var(--sec-text); font-weight:bold;">이 책 구매 및 바로 찾기</p>
-                    <a href="#" id="linkKyobo" target="_blank" class="site-btn kyobo">
-                        교보문고에서 보기 <i data-lucide="shopping-cart" size="18"></i>
-                    </a>
-                    <a href="#" id="linkYes24" target="_blank" class="site-btn yes24">
-                        YES24에서 보기 <i data-lucide="shopping-cart" size="18"></i>
-                    </a>
-                    <a href="#" id="linkAladin" target="_blank" class="site-btn aladin">
-                        알라딘에서 보기 <i data-lucide="shopping-cart" size="18"></i>
-                    </a>
+                <!-- 통합 링크 섹션 (자바스크립트가 href를 자동으로 채워줍니다) -->
+                <div class="links-container">
+                    
+                    <!-- 1. 자주 사용하는 사이트 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="star" size="16" color="#f59e0b"></i> 1. 사용빈도 높은 사이트</div>
+                        <div class="link-grid">
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.millie.co.kr/v3/search/result/{kw}" target="_blank">밀리의 서재</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://elib.ewha.ac.kr/search/?q={kw}" target="_blank">이화여대 전자도서관</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://elib.seoul.go.kr/search/totalSearch/query?searchKeyword={kw}" target="_blank">서울시 전자도서관</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-lib.sen.go.kr/search/totalSearch.do?query={kw}" target="_blank">서울교육청 전자도서관</a>
+                        </div>
+                    </div>
+
+                    <!-- 2. 서울시 자치구 전자도서관 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="building-2" size="16" color="#10b981"></i> 2. 서울시 자치구 전자도서관</div>
+                        <div class="link-grid">
+                            <!-- 주요 7개 -->
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://mplib.mapo.go.kr/m/search/tot/result?st=KWRD&q={kw}" target="_blank">마포구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.yslibrary.or.kr/search/tot/result?q={kw}" target="_blank">용산구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.gwanak.go.kr/search/tot/result?q={kw}" target="_blank">관악구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.nowonlib.kr/search/tot/result?q={kw}" target="_blank">노원구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.l4d.or.kr/search/tot/result?q={kw}" target="_blank">동대문구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.sblib.seoul.kr/search/tot/result?q={kw}" target="_blank">성북구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.jungnanglib.seoul.kr/search/tot/result?q={kw}" target="_blank">중랑구</a>
+                            
+                            <!-- 숨기기 (나머지 자치구) -->
+                            <details class="hidden-districts">
+                                <summary>나머지 자치구 펼치기 (18곳)</summary>
+                                <div class="link-grid" style="margin-top: 8px;">
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://library.gangnam.go.kr/search/tot/result?q={kw}" target="_blank">강남구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://public.seocholib.or.kr/search/tot/result?q={kw}" target="_blank">서초구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.dongjak.go.kr/search/tot/result?q={kw}" target="_blank">동작구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.sdm.or.kr/search/tot/result?q={kw}" target="_blank">서대문구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.splib.or.kr/search/tot/result?q={kw}" target="_blank">송파구 (C/S형)</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.guro.go.kr/search/tot/result?q={kw}" target="_blank">구로구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.ydplib.or.kr/search/tot/result?q={kw}" target="_blank">영등포구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.ealib.or.kr/search/tot/result?q={kw}" target="_blank">은평구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.jongno.go.kr/search/tot/result?q={kw}" target="_blank">종로구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.e-junggulib.or.kr/search/tot/result?q={kw}" target="_blank">중구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.gangseo.seoul.kr/search/tot/result?q={kw}" target="_blank">강서구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.gangbuklib.seoul.kr/search/tot/result?q={kw}" target="_blank">강북구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.gdlibrary.or.kr/search/tot/result?q={kw}" target="_blank">강동구 (C/S형)</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.yangcheon.go.kr/search/tot/result?q={kw}" target="_blank">양천구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://geumcheonlib.seoul.kr/search/tot/result?q={kw}" target="_blank">금천구</a>
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.unilib.dobong.kr/search/tot/result?q={kw}" target="_blank">도봉구</a>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+
+                    <!-- 3. 무료 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="gift" size="16" color="#8b5cf6"></i> 3. 무료 감상</div>
+                        <div class="link-grid">
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://archive.org/search.php?query={kw}" target="_blank">인터넷 아카이브</a>
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://gongu.copyright.or.kr/gongu/search/search/list.do?searchKeyword={kw}" target="_blank">직지 (공유마당)</a>
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://www.gutenberg.org/ebooks/search/?query={kw}" target="_blank">프로젝트 구텐베르크</a>
+                        </div>
+                    </div>
+
+                    <!-- 4. 현장 도서관 대여 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="map-pin" size="16" color="#10b981"></i> 4. 현장 도서관 (전자책 없을 때)</div>
+                        <div class="link-grid">
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.seoul.go.kr/search/tot/result?q={kw}" target="_blank">서울 전지역 (마포/용산 위주)</a>
+                            <a href="https://map.naver.com/v5/search/도서관 효창공원앞역" class="link-pill color-lib" target="_blank">내 주변 지도 (효창공원앞역)</a>
+                        </div>
+                    </div>
+
+                    <!-- 5. 서점 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="shopping-bag" size="16" color="#3b82f6"></i> 5. 서점 구매 및 검색</div>
+                        <div class="link-grid">
+                            <a href="#" class="link-pill color-store dynamic-link" data-template="https://play.google.com/store/search?q={kw}&c=books" target="_blank">구글 플레이북</a>
+                            <a href="#" class="link-pill color-store dynamic-link" data-template="https://search.kyobobook.co.kr/search?keyword={kw}" target="_blank">교보문고</a>
+                            <a href="#" class="link-pill color-store dynamic-link" data-template="https://www.aladin.co.kr/search/wsearchresult.aspx?SearchWord={kw}&SearchTarget=Used" target="_blank">알라딘 중고 (온라인)</a>
+                            <a href="#" class="link-pill color-store dynamic-link" data-template="https://www.aladin.co.kr/search/wsearchresult.aspx?SearchWord={kw}&SearchTarget=Offline" target="_blank">알라딘 중고 (오프라인)</a>
+                        </div>
+                    </div>
+
+                    <!-- 6. 중고 매입가 조회 -->
+                    <div class="link-group">
+                        <div class="link-group-title"><i data-lucide="coins" size="16" color="#f59e0b"></i> 6. 중고 매입가 조회</div>
+                        <div class="link-grid">
+                            <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/shop/usedshop/wc2b_search.aspx?ActionType=1&SearchWord={kw}" target="_blank">알라딘 중고 매입가 조회</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -316,13 +452,18 @@
             loadRecentSearches();
             analyzeMyTaste(); 
 
-            // 서점 링크 연결
-            document.getElementById('linkKyobo').href = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
-            document.getElementById('linkYes24').href = `https://www.yes24.com/Product/Search?domain=ALL&query=${encodeURIComponent(keyword)}`;
-            document.getElementById('linkAladin').href = `https://www.aladin.co.kr/search/wsearchresult.aspx?SearchWord=${encodeURIComponent(keyword)}`;
+            // ★ HTML에 심어둔 모든 링크(dynamic-link)의 검색어를 일괄 업데이트하는 마법의 코드
+            const encodedKeyword = encodeURIComponent(keyword);
+            document.querySelectorAll('.dynamic-link').forEach(link => {
+                const template = link.getAttribute('data-template');
+                if (template) {
+                    // {kw} 부분을 실제 검색어로 바꿔치기 합니다.
+                    link.href = template.replace('{kw}', encodedKeyword);
+                }
+            });
 
             // UI 변경 (책 정보 카드 띄우기)
-            document.getElementById('recentSearchArea').style.display = 'none'; // 검색 후엔 최근검색어 숨김
+            document.getElementById('recentSearchArea').style.display = 'none'; 
             document.getElementById('welcomeBox').classList.add('hidden');
             
             document.getElementById('mainBookResultCard').classList.remove('hidden');
@@ -342,14 +483,13 @@
         // 도서 통합 검색 API
         async function fetchBookApiData(keyword) {
             try {
-                // API 16: 도서 기본정보 (제목, 저자, 표지, 줄거리, ISBN)
                 const searchUrl = `https://data4library.kr/api/srchBooks?authKey=${apiKey}&title=${encodeURIComponent(keyword)}&pageNo=1&pageSize=1&format=json`;
                 const searchRes = await fetch(searchUrl);
                 const searchData = await searchRes.json();
                 
                 if(!searchData.response.docs || searchData.response.docs.length === 0) {
                     document.getElementById('mainBookTitle').innerText = `'${keyword}'`;
-                    document.getElementById('mainBookPlot').innerText = "정보나루 DB에 상세 정보가 등록되지 않은 도서입니다. 아래의 서점 버튼을 눌러 바로 검색해 보세요!";
+                    document.getElementById('mainBookPlot').innerText = "정보나루 DB에 상세 정보가 등록되지 않은 도서입니다. 아래의 버튼을 눌러 서점이나 도서관에서 직접 검색해 보세요!";
                     document.getElementById('apiHashtags').innerHTML = "<span class='hashtag'>#데이터없음</span>";
                     document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>추천 데이터가 없습니다.</div>";
                     document.getElementById('libraryList').innerHTML = "<li class='library-item'>도서관 정보를 찾을 수 없습니다.</li>";
@@ -359,14 +499,12 @@
                 const book = searchData.response.docs[0].doc;
                 const isbn = book.isbn13; 
 
-                // ★ 왼쪽 패널: 핵심 책 정보 렌더링
+                // 왼쪽 패널: 핵심 책 정보 렌더링
                 document.getElementById('mainBookTitle').innerText = book.bookname;
                 document.getElementById('mainBookAuthor').innerText = `${book.authors} / ${book.publisher}`;
                 document.getElementById('mainBookCover').src = book.bookImageURL;
                 
-                // 줄거리가 제공되면 넣고, 없으면 안내문구
                 if(book.description && book.description.trim() !== '') {
-                    // HTML 태그가 섞여있을 수 있으므로 깔끔하게 처리
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = book.description;
                     document.getElementById('mainBookPlot').innerText = tempDiv.textContent || tempDiv.innerText || "줄거리 정보가 없습니다.";
@@ -374,7 +512,7 @@
                     document.getElementById('mainBookPlot').innerText = "이 도서는 줄거리 요약 정보가 제공되지 않습니다.";
                 }
 
-                // ★ 오른쪽 패널: 분석 데이터 렌더링
+                // 오른쪽 패널: 분석 데이터 렌더링
                 fetchHashtags(isbn);
                 fetchRecommendations(isbn);
                 fetchLibraryStatus(isbn);
