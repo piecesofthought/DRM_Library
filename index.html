@@ -43,16 +43,18 @@
         }
 
         /* =========================================
-           2. 폴드7 화면 분할 레이아웃
+           2. 폴드7 화면 분할 레이아웃 & 상단 헤더
         ========================================= */
-        .header { text-align: center; margin: 20px 0 30px 0; }
-        .header h1 { font-size: 26px; font-weight: 800; margin: 0; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header { text-align: center; margin: 30px 0 25px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .main-logo { width: 140px; height: auto; margin-bottom: 5px; } /* 로고 사이즈 확대 */
+        .header h1 { font-size: 22px; font-weight: 800; margin: 0; color: #2e3192; letter-spacing: -0.5px; } /* 시안과 동일한 색상, 과하지 않은 크기 */
+        .header p { font-size: 13.5px; color: var(--sec-text); margin: 0; word-break: keep-all; font-weight: 500; }
 
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; min-width: 0; }
 
         @media (min-width: 700px) {
             .main-container { grid-template-columns: 1fr 1fr; gap: 30px; padding: 20px; }
-            .header { text-align: left; justify-content: flex-start; max-width: 1200px; margin: 20px auto; padding-left: 20px;}
+            /* 넓은 화면에서도 헤더는 중앙에 예쁘게 위치하도록 유지합니다. */
         }
 
         .card { background-color: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px var(--shadow); border: 1px solid var(--border); width: 100%; overflow: hidden; }
@@ -139,8 +141,9 @@
 <body>
 
     <div class="header">
-        <img src="AllBook_logo.svg" alt="AllBook Logo" style="width: 32px; height: 32px;">
-        <h1>ALL BOOK</h1>
+        <img src="AllBook_logo.svg" alt="AllBook Logo" class="main-logo">
+        <h1>내 손안의 통합 도서 검색</h1>
+        <p>원하는 책을 한 번에 여러 도서관과 서점에서 찾아보세요.</p>
     </div>
 
     <div class="main-container">
@@ -230,14 +233,11 @@
                                 <summary>나머지 자치구 펼치기</summary>
                                 <div class="link-grid" style="margin-top: 8px;">
                                     <a href="#" class="link-pill color-lib" onclick="var kw=document.getElementById('searchInput').value.trim(); var f=document.createElement('form'); f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp'; f.method='get'; f.target='_blank'; f.acceptCharset='euc-kr'; f.innerHTML='<input type=\'hidden\' name=\'search\' value=\'title\'><input type=\'hidden\' name=\'strSearch\' value=\''+kw+'\'>'; document.body.appendChild(f); f.submit(); document.body.removeChild(f); return false;"><img src="gangnam_logo.svg" class="site-logo" alt="logo"> 강남구</a>
-                                    
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-book.seocholib.or.kr/search?keyword={kw}" target="_blank"><img src="seocho_logo.svg" class="site-logo" alt="logo"> 서초구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Dongjak_logo.svg" class="site-logo" alt="logo"> 동작구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.sdm.or.kr/sdmlib/menu/10003/program/30001/searchResultList.do?searchType=SIMPLE&viewType=LIST&searchKeyword={kw}&searchPubFormCode=EB&currentPageNo=1&searchDisplay=20&searchArticle=SCORE&searchOrder=ASC" target="_blank"><img src="seodaemun_logo.svg" class="site-logo" alt="logo"> 서대문구</a>
-                                    
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.splib.or.kr/search/?srch_order=total&src_key={kw}" target="_blank"><img src="Songpa_logo.svg" class="site-logo" alt="logo"> 송파구 C</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Songpa_logo2.svg" class="site-logo" alt="logo"> 송파구 S</a>
-                                    
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="guro_logo.svg" class="site-logo" alt="logo"> 구로구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ydplib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="yeongdeungpo_logo.svg" class="site-logo" alt="logo"> 영등포구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://epbook.eplib.or.kr/ebookPlatform/home/search.do?k={kw}" target="_blank"><img src="Eunpyeong_logo.svg" class="site-logo" alt="logo"> 은평구</a>
@@ -349,7 +349,7 @@
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== keyword);
             searches.unshift(keyword);
-            if (searches.length > 10) searches.pop(); // 검색어 저장 개수 10개로 넉넉히 확장
+            if (searches.length > 10) searches.pop();
             localStorage.setItem('recentBooks', JSON.stringify(searches));
             loadRecentSearches();
             analyzeMyTaste(); 
@@ -541,7 +541,6 @@
             }
         }
 
-        // ★ 마포구(11140), 용산구(11030) 다이렉트 검색 로직
         async function fetchRealTimeLibraryStatus(isbn, bookName) {
             const container = document.getElementById('libraryList');
             
@@ -622,7 +621,6 @@
             }
         }
 
-        // ★ 최근 검색어 업데이트 로직 (UI 변경)
         function loadRecentSearches() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             const container = document.getElementById('recent-tags-container');
@@ -645,7 +643,6 @@
             loadRecentSearches();
         }
 
-        // ★ 전체 삭제 기능 추가
         function deleteAllSearches() {
             if(confirm("최근 검색어를 모두 삭제하시겠습니까?")) {
                 localStorage.removeItem('recentBooks');
