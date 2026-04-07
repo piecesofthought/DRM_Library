@@ -68,8 +68,12 @@
         .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
         .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 
+        /* 최근 검색어 관련 스타일 업데이트 */
+        .recent-tags-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .recent-tags-header .section-title { margin-bottom: 0; font-size: 16px; }
+        .delete-all-btn { background: none; border: none; color: var(--sec-text); font-size: 14px; cursor: pointer; padding: 0; font-family: inherit; }
         .recent-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .recent-tag { background-color: var(--bg); padding: 8px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; color: var(--sec-text); }
+        .recent-tag { background-color: #ffffff; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; color: #333; border: 1px solid #d1d5db; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
         /* 다중 검색 결과 가로 스크롤 */
         .search-results-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-top: 10px; }
@@ -149,8 +153,11 @@
                     <button class="search-btn" onclick="executeSearch()">검색</button>
                 </div>
                 
-                <div id="recentSearchArea" style="margin-top: 20px;">
-                    <div class="section-title" style="font-size:14px; margin-bottom:10px;"><i data-lucide="clock" size="16"></i> 최근 검색어</div>
+                <div id="recentSearchArea" style="margin-top: 25px;">
+                    <div class="recent-tags-header">
+                        <div class="section-title">최근 검색어</div>
+                        <button class="delete-all-btn" onclick="deleteAllSearches()">전체삭제</button>
+                    </div>
                     <div class="recent-tags" id="recent-tags-container"></div>
                 </div>
             </div>
@@ -218,18 +225,19 @@
                             <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank">
                                 <img src="Jungnang_logo.svg" class="site-logo" alt="logo"> 중랑구
                             </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.splib.or.kr/search/?srch_order=total&src_key={kw}" target="_blank">
-                                <img src="Songpa_logo.svg" class="site-logo" alt="logo"> 송파구 C
-                            </a>
                             
                             <details class="hidden-districts">
                                 <summary>나머지 자치구 펼치기</summary>
                                 <div class="link-grid" style="margin-top: 8px;">
-                                    <a href="#" class="link-pill color-lib dynamic-link" data-template='javascript:(function(){var f=document.createElement("form");f.action="https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp";f.method="get";f.target="_blank";f.acceptCharset="euc-kr";f.innerHTML="<input type=&quot;hidden&quot; name=&quot;search&quot; value=&quot;title&quot;><input type=&quot;hidden&quot; name=&quot;strSearch&quot; value=&quot;{kw}&quot;>";document.body.appendChild(f);f.submit();document.body.removeChild(f);})()' target="_blank"><img src="gangnam_logo.svg" class="site-logo" alt="logo"> 강남구</a>
+                                    <a href="#" class="link-pill color-lib" onclick="var kw=document.getElementById('searchInput').value.trim(); var f=document.createElement('form'); f.action='https://ebook.gangnam.go.kr/mobile/mbook/bk_result.asp'; f.method='get'; f.target='_blank'; f.acceptCharset='euc-kr'; f.innerHTML='<input type=\'hidden\' name=\'search\' value=\'title\'><input type=\'hidden\' name=\'strSearch\' value=\''+kw+'\'>'; document.body.appendChild(f); f.submit(); document.body.removeChild(f); return false;"><img src="gangnam_logo.svg" class="site-logo" alt="logo"> 강남구</a>
+                                    
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-book.seocholib.or.kr/search?keyword={kw}" target="_blank"><img src="seocho_logo.svg" class="site-logo" alt="logo"> 서초구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.dongjak.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Dongjak_logo.svg" class="site-logo" alt="logo"> 동작구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://lib.sdm.or.kr/sdmlib/menu/10003/program/30001/searchResultList.do?searchType=SIMPLE&viewType=LIST&searchKeyword={kw}&searchPubFormCode=EB&currentPageNo=1&searchDisplay=20&searchArticle=SCORE&searchOrder=ASC" target="_blank"><img src="seodaemun_logo.svg" class="site-logo" alt="logo"> 서대문구</a>
+                                    
+                                    <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.splib.or.kr/search/?srch_order=total&src_key={kw}" target="_blank"><img src="Songpa_logo.svg" class="site-logo" alt="logo"> 송파구 C</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://splib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Songpa_logo2.svg" class="site-logo" alt="logo"> 송파구 S</a>
+                                    
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.guro.go.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="guro_logo.svg" class="site-logo" alt="logo"> 구로구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ydplib.dkyobobook.co.kr/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="yeongdeungpo_logo.svg" class="site-logo" alt="logo"> 영등포구</a>
                                     <a href="#" class="link-pill color-lib dynamic-link" data-template="https://epbook.eplib.or.kr/ebookPlatform/home/search.do?k={kw}" target="_blank"><img src="Eunpyeong_logo.svg" class="site-logo" alt="logo"> 은평구</a>
@@ -341,7 +349,7 @@
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== keyword);
             searches.unshift(keyword);
-            if (searches.length > 5) searches.pop();
+            if (searches.length > 10) searches.pop(); // 검색어 저장 개수 10개로 넉넉히 확장
             localStorage.setItem('recentBooks', JSON.stringify(searches));
             loadRecentSearches();
             analyzeMyTaste(); 
@@ -533,7 +541,7 @@
             }
         }
 
-        // ★ 마포구(11140), 용산구(11030) 다이렉트 검색 로직으로 수정 완료
+        // ★ 마포구(11140), 용산구(11030) 다이렉트 검색 로직
         async function fetchRealTimeLibraryStatus(isbn, bookName) {
             const container = document.getElementById('libraryList');
             
@@ -614,6 +622,7 @@
             }
         }
 
+        // ★ 최근 검색어 업데이트 로직 (UI 변경)
         function loadRecentSearches() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             const container = document.getElementById('recent-tags-container');
@@ -622,7 +631,7 @@
             searches.forEach(keyword => {
                 const tag = document.createElement('div');
                 tag.className = 'recent-tag';
-                tag.innerHTML = `${keyword} <i data-lucide="x" size="12" style="margin-left:4px;" onclick="event.stopPropagation(); deleteSearch('${keyword}')"></i>`;
+                tag.innerHTML = `${keyword} <i data-lucide="x" size="14" style="color:#9ca3af;" onclick="event.stopPropagation(); deleteSearch('${keyword}')"></i>`;
                 tag.onclick = () => executeSearch(keyword);
                 container.appendChild(tag);
             });
@@ -636,11 +645,21 @@
             loadRecentSearches();
         }
 
+        // ★ 전체 삭제 기능 추가
+        function deleteAllSearches() {
+            if(confirm("최근 검색어를 모두 삭제하시겠습니까?")) {
+                localStorage.removeItem('recentBooks');
+                loadRecentSearches();
+            }
+        }
+
         function analyzeMyTaste() {
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             const msgBox = document.getElementById('myStatsText');
             if(searches.length > 0) {
                 msgBox.innerHTML = `선생님께서 최근 찾아보신 검색어는 <b>'${searches[0]}'</b> 입니다.<br>검색 후 책 표지를 누르면 그 책의 <b style="color:#2563eb">실시간 대출 현황</b>이 업데이트됩니다!`;
+            } else {
+                msgBox.innerHTML = `아직 검색 기록이 없습니다. 책을 검색하시면 취향을 분석해 드립니다!`;
             }
         }
 
