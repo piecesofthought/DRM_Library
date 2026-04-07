@@ -134,94 +134,6 @@
 
         .loading-msg { color: var(--sec-text); font-size: 14px; text-align: center; padding: 20px; width: 100%;}
         .hidden { display: none !important; }
-
-        /* =========================================
-           5. 플로팅 북마크 버튼 및 모달 스타일
-        ========================================= */
-        .fab-container {
-            position: fixed;
-            bottom: 25px;
-            left: 20px;
-            z-index: 1000;
-        }
-        .fab-btn {
-            background-color: #f59e0b;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-        .fab-btn:active { transform: scale(0.9); }
-        .fab-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: #ef4444;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-        }
-        .bookmark-modal {
-            position: absolute;
-            bottom: 75px;
-            left: 0;
-            width: 330px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
-            padding: 18px;
-            display: none;
-            flex-direction: column;
-            max-height: 60vh;
-        }
-        .bookmark-modal.open { display: flex; }
-        .bookmark-modal-content {
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding-top: 5px;
-            margin-top: 10px;
-        }
-        .bookmark-item { text-align: center; cursor: pointer; position: relative; }
-        .bookmark-item img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
-        .bookmark-item p { font-size: 11px; margin: 5px 0 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
-        .bookmark-delete {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
     </style>
 </head>
 <body>
@@ -247,6 +159,13 @@
                         <button class="delete-all-btn" onclick="deleteAllSearches()">전체삭제</button>
                     </div>
                     <div class="recent-tags" id="recent-tags-container"></div>
+                </div>
+            </div>
+
+            <div id="bookmarkCard" class="card hidden">
+                <div class="section-title"><i data-lucide="bookmark" fill="#f59e0b" color="#f59e0b"></i> 내 북마크</div>
+                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">* 저장한 도서를 터치하면 즉시 다시 검색합니다.</p>
+                <div id="bookmarkListScroll" class="search-results-scroll">
                 </div>
             </div>
 
@@ -371,12 +290,10 @@
                     </div>
 
                     <div class="link-group">
-                        <div class="link-group-title"><i data-lucide="shopping-bag" size="16" color="#3b82f6"></i> 5. 서점 구매 및 기타 검색</div>
+                        <div class="link-group-title"><i data-lucide="shopping-bag" size="16" color="#3b82f6"></i> 5. 온라인/오프라인 서점</div>
                         <div class="link-grid">
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://play.google.com/store/search?q={kw}&c=books&hl=ko" target="_blank"><img src="https://www.google.com/s2/favicons?domain=play.google.com&sz=32" class="site-logo" alt="logo"> 구글 플레이북</a>
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://search.kyobobook.co.kr/search?keyword={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=kyobobook.co.kr&sz=32" class="site-logo" alt="logo"> 교보문고</a>
-                            <a href="#" class="link-pill color-store dynamic-link" data-template="https://www.yes24.com/Product/Search?domain=ALL&query={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=yes24.com&sz=32" class="site-logo" alt="logo"> YES24</a>
-                            
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (온라인)</a>
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchWord={kw}&SearchTarget=UsedStore" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (오프라인)</a>
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 💰 중고매입가 조회</a>
@@ -423,29 +340,12 @@
         </div>
     </div>
 
-    <div id="fabContainer" class="fab-container">
-        <button class="fab-btn" onclick="toggleBookmarkModal()">
-            <i data-lucide="bookmark" fill="currentColor"></i>
-            <span id="bookmarkBadge" class="fab-badge">0</span>
-        </button>
-        
-        <div id="bookmarkModal" class="bookmark-modal">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                <h3 style="margin:0; font-size:15px; color:#f59e0b; display:flex; align-items:center; gap:5px;"><i data-lucide="bookmark" fill="#f59e0b" color="#f59e0b" size="16"></i> 내 북마크</h3>
-                <button onclick="toggleBookmarkModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x" size="18" color="var(--sec-text)"></i></button>
-            </div>
-            <p style="font-size:11px; color:var(--sec-text); margin: 8px 0 0 0;">* 저장한 도서를 터치하면 즉시 다시 검색합니다.</p>
-            <div id="bookmarkModalContent" class="bookmark-modal-content">
-                </div>
-        </div>
-    </div>
-
     <script>
         lucide.createIcons();
 
         const apiKey = "86bbf34832d0f70658c95d21f790afa9b7ee8956deed3ea4a440a101cafbca69";
         let currentBooksList = [];
-        let currentSelectedBook = null; 
+        let currentSelectedBook = null; // 현재 선택된 책 저장용
 
         // 검색창을 클릭했을 때만 최근 검색어가 보이도록 설정
         document.getElementById('searchInput').addEventListener('click', function() {
@@ -455,17 +355,11 @@
             }
         });
 
-        // 검색 섹션이나 플로팅 버튼 밖을 클릭하면 팝업들을 숨김
+        // 검색 섹션 밖을 클릭하면 최근 검색어를 숨김
         document.addEventListener('click', function(event) {
             const searchBox = document.getElementById('searchSection');
             if (!searchBox.contains(event.target)) {
                 document.getElementById('recentSearchArea').classList.add('hidden');
-            }
-            
-            const fabContainer = document.getElementById('fabContainer');
-            const modal = document.getElementById('bookmarkModal');
-            if (fabContainer && !fabContainer.contains(event.target)) {
-                modal.classList.remove('open');
             }
         });
 
@@ -517,9 +411,8 @@
                         return fetchBookListApi(spacelessKeyword, true);
                     }
 
-                    // 빈 결과창 멘트 수정 (서점 섹션을 명확히 안내)
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
-                    document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>관련된 도서가 도서관 DB에 없습니다.<br>아래에 생성된 카드의 <b>[5. 서점 구매 및 기타 검색]</b> 버튼을 이용해 보세요!</div>";
+                    document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>관련된 도서가 도서관 DB에 없습니다. 아래 서점 버튼으로 직접 검색해 보세요!</div>";
                     showEmptyBookState(keyword);
                     return;
                 }
@@ -554,9 +447,9 @@
         function showEmptyBookState(keyword) {
             document.getElementById('mainBookResultCard').classList.remove('hidden');
             document.getElementById('mainBookTitle').innerText = `'${keyword}'`;
-            document.getElementById('mainBookAuthor').innerText = "도서관 정보나루에 데이터가 없습니다.";
+            document.getElementById('mainBookAuthor').innerText = "상세 정보 없음";
             document.getElementById('mainBookCover').src = 'https://via.placeholder.com/100x145?text=No+Info';
-            document.getElementById('mainBookPlot').innerText = "도서관 대출 데이터가 제공되지 않는 책입니다. 아래쪽으로 조금만 내려서 [5. 서점 구매 및 기타 검색] 링크를 이용해 바로 검색해보세요!";
+            document.getElementById('mainBookPlot').innerText = "정보나루에 데이터가 없습니다. 서점 링크를 이용해 보세요.";
             
             const encodedKeyword = encodeURIComponent(keyword);
             document.querySelectorAll('.dynamic-link').forEach(link => {
@@ -627,11 +520,6 @@
         }
 
         /* ★ 북마크 관련 함수들 */
-        function toggleBookmarkModal() {
-            const modal = document.getElementById('bookmarkModal');
-            modal.classList.toggle('open');
-        }
-
         function toggleBookmark() {
             if (!currentSelectedBook) return;
             const isbn = currentSelectedBook.isbn13 || currentSelectedBook.isbn;
@@ -651,7 +539,7 @@
                     title: currentSelectedBook.bookname,
                     isbn: isbn,
                     cover: currentSelectedBook.bookImageURL,
-                    keyword: document.getElementById('searchInput').value 
+                    keyword: document.getElementById('searchInput').value // 검색어 기억
                 });
                 updateBookmarkBtnUI(true);
             }
@@ -677,34 +565,30 @@
 
         function loadBookmarks() {
             const bookmarks = JSON.parse(localStorage.getItem('myBookmarks')) || [];
-            const container = document.getElementById('bookmarkModalContent');
-            const badge = document.getElementById('bookmarkBadge');
+            const card = document.getElementById('bookmarkCard');
+            const container = document.getElementById('bookmarkListScroll');
             
-            badge.innerText = bookmarks.length;
-            if (bookmarks.length > 0) {
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
-            
-            container.innerHTML = '';
             if (bookmarks.length === 0) {
-                container.innerHTML = '<p style="color:var(--sec-text); font-size:13px; text-align:center; grid-column: 1 / -1; padding:20px 0;">저장된 북마크가 없습니다.</p>';
+                card.classList.add('hidden');
                 return;
             }
             
+            card.classList.remove('hidden');
+            container.innerHTML = '';
+            
             bookmarks.forEach((book) => {
                 const item = document.createElement('div');
-                item.className = 'bookmark-item';
+                item.className = 'search-result-item active'; // 시각적 불투명도를 위해 active 사용
                 item.innerHTML = `
-                    <img src="${book.cover}" onerror="this.src='https://via.placeholder.com/90x130?text=No+Image'">
-                    <div class="bookmark-delete" onclick="event.stopPropagation(); removeBookmark('${book.isbn}')">✕</div>
+                    <div style="position:relative;">
+                        <img src="${book.cover}" onerror="this.src='https://via.placeholder.com/90x130?text=No+Image'">
+                        <div onclick="event.stopPropagation(); removeBookmark('${book.isbn}')" style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.6); color:white; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:11px;">✕</div>
+                    </div>
                     <p title="${book.title}">${book.title}</p>
                 `;
                 item.onclick = () => {
                     document.getElementById('searchInput').value = book.keyword || book.title;
                     executeSearch();
-                    toggleBookmarkModal(); // 검색 실행 후 모달 닫기
                 };
                 container.appendChild(item);
             });
