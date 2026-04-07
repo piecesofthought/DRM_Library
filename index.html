@@ -303,7 +303,7 @@
                     <i data-lucide="bell-ring" style="margin-top:2px;"></i> 
                     <span id="libBoxTitle" style="line-height: 1.3;">선택한 책의 대출 가능 여부</span>
                 </div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*선택하신 책이 관심 도서관(마포, 용산, 남산 등)에 꽂혀있는지 실시간으로 가져옵니다.</p>
+                <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 대출 데이터를 가져옵니다.</p>
                 <ul id="libraryList" class="library-list">
                     <li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>
                 </ul>
@@ -330,7 +330,6 @@
         lucide.createIcons();
 
         const apiKey = "86bbf34832d0f70658c95d21f790afa9b7ee8956deed3ea4a440a101cafbca69";
-        const myFavoriteLibraries = ["마포", "용산", "남산", "효창", "서강", "꿈을이루는", "늘푸른소나무"];
         let currentBooksList = [];
 
         function executeSearch(clickedKeyword = null) {
@@ -436,7 +435,7 @@
 
         function selectBook(index) {
             const book = currentBooksList[index].doc;
-            const isbn = book.isbn13;
+            const isbn = book.isbn13 || book.isbn; // isbn13 누락 방지 예외처리
             
             // 시각적 선택 효과 변경
             document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('active'));
@@ -453,7 +452,7 @@
             document.getElementById('mainBookCover').src = book.bookImageURL;
             
             // 오해를 막기 위해 도서관 현황 창 제목에 '어떤 책'을 검사하는지 명시
-            document.getElementById('libBoxTitle').innerText = `'${book.bookname}' 대출 가능 여부`;
+            document.getElementById('libBoxTitle').innerText = `'${book.bookname}' 대출 현황 (마포/용산)`;
             
             if(book.description && book.description.trim() !== '') {
                 const tempDiv = document.createElement("div");
@@ -475,11 +474,17 @@
 
             document.getElementById('apiHashtags').innerHTML = "<div class='loading-msg'>키워드 분석 중...</div>";
             document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>추천 도서 불러오는 중...</div>";
-            document.getElementById('libraryList').innerHTML = `<li class='loading-msg'>'${book.bookname}'이(가) 관심 도서관에 있는지 실시간 확인 중입니다...</li>`;
+            document.getElementById('libraryList').innerHTML = `<li class='loading-msg'>마포구 및 용산구 도서관 현황을 확인 중입니다...</li>`;
 
-            fetchHashtags(isbn);
-            fetchRecommendations(isbn);
-            fetchRealTimeLibraryStatus(isbn, book.bookname); 
+            if(isbn) {
+                fetchHashtags(isbn);
+                fetchRecommendations(isbn);
+                fetchRealTimeLibraryStatus(isbn, book.bookname); 
+            } else {
+                document.getElementById('apiHashtags').innerHTML = "<div class='loading-msg'>ISBN 정보가 없어 키워드를 불러올 수 없습니다.</div>";
+                document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>ISBN 정보가 없어 추천 도서를 불러올 수 없습니다.</div>";
+                document.getElementById('libraryList').innerHTML = `<li class="library-item" style="color:#b91c1c; font-weight:bold;">ISBN 코드가 없어 대출 여부를 확인할 수 없습니다.</li>`;
+            }
         }
 
         async function fetchHashtags(isbn) {
@@ -528,92 +533,84 @@
             }
         }
 
+        // ★ 마포구(11140), 용산구(11030) 다이렉트 검색 로직으로 수정 완료
         async function fetchRealTimeLibraryStatus(isbn, bookName) {
             const container = document.getElementById('libraryList');
+            
             try {
-                const searchUrl = `https://data4library.kr/api/libSrchByBook?authKey=${apiKey}&isbn=${isbn}&region=11&format=json`;
-                const res = await fetch(searchUrl);
-                const data = await res.json();
-                const allLibs = data.response.libs || [];
+                const mapoUrl = `https://data4library.kr/api/libSrchByBook?authKey=${apiKey}&isbn=${isbn}&region=11&dtl_region=11140&format=json`;
+                const yongsanUrl = `https://data4library.kr/api/libSrchByBook?authKey=${apiKey}&isbn=${isbn}&region=11&dtl_region=11030&format=json`;
+                
+                // 마포구와 용산구를 동시에 조회
+                const [mapoRes, yongsanRes] = await Promise.all([
+                    fetch(mapoUrl).catch(() => null),
+                    fetch(yongsanUrl).catch(() => null)
+                ]);
 
-                if(allLibs.length === 0) {
-                    container.innerHTML = `<li class="library-item" style="color:#b91c1c; font-weight:bold;">현재 이 책('${bookName}')은 서울 전 지역 도서관에 데이터가 없습니다. 😭</li>`;
+                let targetLibs = [];
+
+                if (mapoRes && mapoRes.ok) {
+                    const mapoData = await mapoRes.json();
+                    if(mapoData.response && mapoData.response.libs) {
+                        targetLibs = targetLibs.concat(mapoData.response.libs);
+                    }
+                }
+                
+                if (yongsanRes && yongsanRes.ok) {
+                    const yongsanData = await yongsanRes.json();
+                    if(yongsanData.response && yongsanData.response.libs) {
+                        targetLibs = targetLibs.concat(yongsanData.response.libs);
+                    }
+                }
+
+                // 두 곳 모두 책을 소장하고 있지 않을 때
+                if(targetLibs.length === 0) {
+                    container.innerHTML = `<li class="library-item" style="color:#b91c1c; font-weight:bold; line-height: 1.4;">현재 마포구 및 용산구 도서관에는 이 책('${bookName}')이 등록되어 있지 않습니다. 😭</li>`;
                     return;
                 }
 
-                const myFavLibs = allLibs.filter(item => {
-                    return myFavoriteLibraries.some(favKw => item.lib.libName.includes(favKw));
+                // 소장 중인 도서관들의 실시간 대출 여부 확인
+                const promises = targetLibs.map(async (item) => {
+                    const libCode = item.lib.libCode;
+                    const existUrl = `https://data4library.kr/api/bookExist?authKey=${apiKey}&libCode=${libCode}&isbn13=${isbn}&format=json`;
+                    try {
+                        const existRes = await fetch(existUrl);
+                        const existData = await existRes.json();
+                        return {
+                            name: item.lib.libName,
+                            loanAvailable: existData.response.result.loanAvailable 
+                        };
+                    } catch(e) {
+                        return { name: item.lib.libName, loanAvailable: 'E' }; 
+                    }
                 });
 
-                if(myFavLibs.length > 0) {
-                    const promises = myFavLibs.map(async (item) => {
-                        const libCode = item.lib.libCode;
-                        const existUrl = `https://data4library.kr/api/bookExist?authKey=${apiKey}&libCode=${libCode}&isbn13=${isbn}&format=json`;
-                        try {
-                            const existRes = await fetch(existUrl);
-                            const existData = await existRes.json();
-                            return {
-                                name: item.lib.libName,
-                                loanAvailable: existData.response.result.loanAvailable 
-                            };
-                        } catch(e) {
-                            return { name: item.lib.libName, loanAvailable: 'E' }; 
-                        }
-                    });
+                const results = await Promise.all(promises);
 
-                    const results = await Promise.all(promises);
-
-                    let html = '';
-                    results.forEach(lib => {
-                        let badgeHtml = '';
-                        if(lib.loanAvailable === 'Y') {
-                            badgeHtml = '<span class="status-available">대출 가능 🏃‍♂️</span>';
-                        } else if(lib.loanAvailable === 'N') {
-                            badgeHtml = '<span class="status-unavailable">대출 중 ⏳</span>';
-                        } else {
-                            badgeHtml = '<span class="status-normal">확인 불가</span>';
-                        }
-
-                        html += `
-                            <li class="library-item fav-item">
-                                <span class="fav-lib-text"><i data-lucide="star" size="14"></i> ${lib.name}</span>
-                                ${badgeHtml}
-                            </li>
-                        `;
-                    });
-
-                    let otherLibs = allLibs.filter(item => !myFavLibs.includes(item)).slice(0, 3);
-                    if(otherLibs.length > 0) {
-                        html += `<li class="library-item" style="justify-content:center; color:var(--sec-text); font-size:12px; background:transparent; border:none; padding:10px 0 5px 0;">--- 아래는 타 지역 일반 소장 도서관 ---</li>`;
-                        otherLibs.forEach(item => {
-                            html += `
-                                <li class="library-item">
-                                    <span>${item.lib.libName}</span>
-                                    <span class="status-normal">소장함</span>
-                                </li>
-                            `;
-                        });
+                let html = '';
+                results.forEach(lib => {
+                    let badgeHtml = '';
+                    if(lib.loanAvailable === 'Y') {
+                        badgeHtml = '<span class="status-available">대출 가능 🏃‍♂️</span>';
+                    } else if(lib.loanAvailable === 'N') {
+                        badgeHtml = '<span class="status-unavailable">대출 중 ⏳</span>';
+                    } else {
+                        badgeHtml = '<span class="status-normal">확인 불가</span>';
                     }
-                    container.innerHTML = html;
-                    lucide.createIcons(); 
 
-                } else {
-                    container.innerHTML = `
-                        <li class="library-item" style="color:#b91c1c; font-weight:bold;">관심 도서관(마포/용산 지역)에는 이 책('${bookName}')이 없습니다.</li>
-                        <li class="library-item" style="justify-content:center; color:var(--sec-text); font-size:12px; background:transparent; border:none;">--- 대신 다른 구 도서관에는 소장 중입니다 ---</li>
+                    html += `
+                        <li class="library-item fav-item">
+                            <span class="fav-lib-text"><i data-lucide="map-pin" size="14"></i> ${lib.name}</span>
+                            ${badgeHtml}
+                        </li>
                     `;
-                    allLibs.slice(0, 5).forEach(item => {
-                        container.innerHTML += `
-                            <li class="library-item">
-                                <span>${item.lib.libName}</span>
-                                <span class="status-normal">소장함</span>
-                            </li>
-                        `;
-                    });
-                }
+                });
+
+                container.innerHTML = html;
+                lucide.createIcons(); 
 
             } catch(e) {
-                container.innerHTML = '<li class="library-item">도서관 정보를 실시간으로 불러오지 못했습니다.</li>';
+                container.innerHTML = '<li class="library-item">도서관 정보를 실시간으로 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</li>';
             }
         }
 
