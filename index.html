@@ -64,11 +64,15 @@
         ========================================= */
         .left-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
 
+        /* 최근 검색어 오버레이를 위한 position 설정 */
+        #searchSection { position: relative; overflow: visible; }
+        
         .search-box { display: flex; background-color: var(--bg); border-radius: 12px; padding: 5px 15px; align-items: center; border: 1px solid var(--border); min-width: 0; cursor: text; }
         .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
         .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 
-        /* 최근 검색어 관련 스타일 */
+        /* 최근 검색어 오버레이(팝업) 스타일 */
+        #recentSearchArea { position: absolute; top: 75px; left: 0; width: 100%; background: var(--card-bg); z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 15px; padding: 20px; border: 1px solid var(--border); margin-top: 0; }
         .recent-tags-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .recent-tags-header .section-title { margin-bottom: 0; font-size: 16px; }
         .delete-all-btn { background: none; border: none; color: var(--sec-text); font-size: 14px; cursor: pointer; padding: 0; font-family: inherit; }
@@ -85,15 +89,19 @@
         .search-result-item p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
 
         /* 메인 정보 카드 */
-        .main-book-profile { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+        .main-book-profile { display: flex; gap: 15px; align-items: flex-start; }
         .main-book-cover { width: 100px; height: 145px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border); flex-shrink: 0; }
         .main-book-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
         .main-book-info h2 { margin: 0; font-size: 18px; line-height: 1.3; color: var(--text); word-break: break-word; }
         .main-book-info .author { margin: 0; font-size: 13px; color: var(--sec-text); }
         .main-book-info .plot { margin: 5px 0 0 0; font-size: 13px; line-height: 1.5; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 
+        /* 해시태그 (키워드) 스타일 */
+        .hashtag-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .hashtag { background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+
         /* 통합 링크 분류 (태그형 버튼) */
-        .links-container { border-top: 1px dashed var(--border); padding-top: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .links-container { display: flex; flex-direction: column; gap: 15px; }
         .link-group-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .link-grid { display: flex; flex-wrap: wrap; gap: 6px; }
         .link-pill { padding: 8px 12px; font-size: 13px; font-weight: 600; border-radius: 8px; background-color: var(--bg); color: var(--text); text-decoration: none; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; }
@@ -110,12 +118,9 @@
         details[open].hidden-districts summary::before { content: "▲"; }
 
         /* =========================================
-           4. 오른쪽 영역: AI 분석 & 실시간 대출 정보
+           4. 오른쪽 영역: 실시간 대출 정보 & 추천 도서 & 링크모음
         ========================================= */
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-
-        .hashtag-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .hashtag { background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; }
 
         .recommend-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
         .recommend-card { min-width: 90px; text-align: center; cursor: pointer; }
@@ -124,9 +129,10 @@
 
         /* 도서관 리스트 스타일 */
         .library-list { list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
-        .library-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; justify-content: space-between; align-items: center;}
-        .fav-item { background-color: #f8fafc; border: 1px solid #bae6fd; border-radius: 8px; margin-bottom: 8px; }
-        .fav-lib-text { font-weight: 800; color: #0369a1; display:flex; align-items:center; gap:5px; line-height: 1.2; word-break: keep-all; padding-right: 10px;} 
+        .library-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s;}
+        .library-item:active { background-color: #e2e8f0; }
+        .fav-item { background-color: #f8fafc; border: 1px solid #bae6fd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+        .fav-lib-text { font-weight: 800; color: #0369a1; display:flex; align-items:center; gap:5px; line-height: 1.2; word-break: keep-all; padding-right: 10px; cursor: pointer;} 
 
         .status-available { background-color: #d1fae5; color: #047857; padding: 5px 10px; border-radius: 20px; font-weight: 800; font-size: 12px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);} 
         .status-unavailable { background-color: #fee2e2; color: #b91c1c; padding: 5px 10px; border-radius: 20px; font-weight: 800; font-size: 12px; flex-shrink: 0; } 
@@ -241,7 +247,7 @@
                     <button class="search-btn" onclick="executeSearch()">검색</button>
                 </div>
                 
-                <div id="recentSearchArea" class="hidden" style="margin-top: 25px;">
+                <div id="recentSearchArea" class="hidden">
                     <div class="recent-tags-header">
                         <div class="section-title">최근 검색어</div>
                         <button class="delete-all-btn" onclick="deleteAllSearches()">전체삭제</button>
@@ -252,14 +258,14 @@
 
             <div id="searchResultsCard" class="card hidden">
                 <div class="section-title"><i data-lucide="list"></i> <span id="searchResultCountText">검색 결과</span></div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*좌우로 밀어서 원하시는 책 표지를 <b style="color:var(--primary)">터치</b> 하시면, 그 책의 정보와 대출 현황이 나타납니다.</p>
+                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*좌우로 밀어서 원하시는 책 표지를 <b style="color:var(--primary)">터치</b> 하시면 상세 정보가 나타납니다.</p>
                 <div id="searchResultsList" class="search-results-scroll">
                 </div>
             </div>
 
             <div id="mainBookResultCard" class="card hidden">
                 <div class="section-title" style="justify-content: space-between;">
-                    <span style="display:flex; align-items:center; gap:8px;"><i data-lucide="info"></i> 선택 도서 상세 정보</span>
+                    <span style="display:flex; align-items:center; gap:8px;"><i data-lucide="info"></i> 선택 도서 정보</span>
                     <button id="bookmarkBtn" onclick="toggleBookmark()" style="background:transparent; border:1px solid var(--border); padding:6px 12px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:bold; transition:all 0.2s; white-space: nowrap;">☆ 북마크 저장</button>
                 </div>
                 
@@ -271,11 +277,54 @@
                         <p class="plot" id="mainBookPlot">줄거리</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="links-container">
+            <div id="apiHashtagBox" class="card hidden">
+                <div class="section-title"><i data-lucide="hash"></i> 독자들이 꼽은 핵심 키워드</div>
+                <div id="apiHashtags" class="hashtag-container">
+                    <div class="loading-msg">키워드 분석 중...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="right-panel">
+            
+            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);">
+                <div class="section-title" style="color: #1d4ed8; align-items: flex-start; justify-content: space-between;">
+                    <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;">
+                        <i data-lucide="bell-ring" style="margin-top:2px;"></i> 
+                        <span id="libBoxTitle">대출 가능 여부</span>
+                    </span>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; margin-top: 5px;">
+                    <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
+                        <img src="home_logo.svg" class="site-logo" alt="logo"> 서울 도서관 자료 통합검색
+                    </a>
+                    <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank" style="padding: 8px; justify-content: center;">
+                        <img src="map_marker.svg" class="site-logo" alt="logo">
+                    </a>
+                </div>
+
+                <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. <b>(클릭 시 해당 도서관 네이버 검색)</b></p>
+                <ul id="libraryList" class="library-list">
+                    <li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>
+                </ul>
+            </div>
+
+            <div id="apiRecommendBox" class="card hidden">
+                <div class="section-title"><i data-lucide="sparkles"></i> 관련 추천 도서</div>
+                <div id="recommendScroll" class="recommend-scroll">
+                    <div class="loading-msg">추천 도서를 불러오는 중입니다...</div>
+                </div>
+            </div>
+
+            <div id="linksCard" class="card hidden">
+                <div class="links-container" style="border-top: none; padding-top: 0;">
                     
                     <div class="link-group">
-                        <div class="link-group-title"><i data-lucide="smartphone" size="16" color="#f59e0b"></i> 1. E-Book (사용빈도 높은 사이트)</div>
+                        <div class="link-group-title"><i data-lucide="smartphone" size="16" color="#f59e0b"></i> 1. 즐겨찾는 도서관 </div>
                         <div class="link-grid">
                             <a href="#" class="link-pill color-lib dynamic-link" data-template="https://www.millie.co.kr/v3/search/result/{kw}" target="_blank">
                                 <img src="https://www.google.com/s2/favicons?domain=millie.co.kr&sz=32" class="site-logo" alt="logo"> 밀리의 서재
@@ -344,13 +393,13 @@
                     </div>
 
                     <div class="link-group">
-                        <div class="link-group-title"><i data-lucide="archive" size="16" color="#8b5cf6"></i> 3. 무료 아카이브 (고전/원문)</div>
+                        <div class="link-group-title"><i data-lucide="archive" size="16" color="#8b5cf6"></i> 3. 무료 아카이브</div>
                         <div class="link-grid">
                             <a href="#" class="link-pill color-free dynamic-link" data-template="https://archive.org/search?query={kw}&and%5B%5D=mediatype%3A%22texts%22" target="_blank">
-                                <img src="internetarchive_logo.svg" class="site-logo" alt="logo"> 인터넷 아카이브
+                                <img src="internetarchive_logo.svg" class="site-logo" alt="logo"> 인터넷 아카이브(원문)
                             </a>
                             <a href="#" class="link-pill color-free dynamic-link" data-template="http://jikji.duckdns.org/search/stored/?query={kw}" target="_blank">
-                                <img src="jikji_logo.svg" class="site-logo" alt="logo"> 직지 (고전)
+                                <img src="jikji_logo.svg" class="site-logo" alt="logo"> 직지 (고전 번역)
                             </a>
                             <a href="#" class="link-pill color-free dynamic-link" data-template="https://www.gutenberg.org/ebooks/search/?query={kw}" target="_blank">
                                 <img src="pg_logo.svg" class="site-logo" alt="logo"> 구텐베르크 (영문)
@@ -359,19 +408,7 @@
                     </div>
 
                     <div class="link-group">
-                        <div class="link-group-title"><i data-lucide="library" size="16" color="#0ea5e9"></i> 4. 현장 도서관 대여</div>
-                        <div class="link-grid">
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
-                                <img src="home_logo.svg" class="site-logo" alt="logo"> 서울 전지역 도서관
-                            </a>
-                            <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank">
-                                <img src="map_marker.svg" class="site-logo" alt="logo"> 내 주변 지도
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="link-group">
-                        <div class="link-group-title"><i data-lucide="shopping-bag" size="16" color="#3b82f6"></i> 5. 서점 구매 및 기타 검색</div>
+                        <div class="link-group-title"><i data-lucide="shopping-bag" size="16" color="#3b82f6"></i> 4. 온/오프라인 서점</div>
                         <div class="link-grid">
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://play.google.com/store/search?q={kw}&c=books&hl=ko" target="_blank"><img src="https://www.google.com/s2/favicons?domain=play.google.com&sz=32" class="site-logo" alt="logo"> 구글 플레이북</a>
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://search.kyobobook.co.kr/search?keyword={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=kyobobook.co.kr&sz=32" class="site-logo" alt="logo"> 교보문고</a>
@@ -379,47 +416,12 @@
                             
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (온라인)</a>
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchWord={kw}&SearchTarget=UsedStore" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (오프라인)</a>
-                            <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 💰 중고매입가 조회</a>
+                            <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 중고매입가 조회</a>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </div>
-
-        <div class="right-panel">
-            
-            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);">
-                <div class="section-title" style="color: #1d4ed8; align-items: flex-start;">
-                    <i data-lucide="bell-ring" style="margin-top:2px;"></i> 
-                    <span id="libBoxTitle" style="line-height: 1.3;">선택한 책의 대출 가능 여부</span>
-                </div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 대출 데이터를 가져옵니다.</p>
-                <ul id="libraryList" class="library-list">
-                    <li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>
-                </ul>
-            </div>
-
-            <div id="apiHashtagBox" class="card hidden">
-                <div class="section-title"><i data-lucide="hash"></i> 독자들이 꼽은 핵심 키워드</div>
-                <div id="apiHashtags" class="hashtag-container">
-                    <div class="loading-msg">키워드 분석 중...</div>
-                </div>
-            </div>
-
-            <div id="apiRecommendBox" class="card hidden">
-                <div class="section-title"><i data-lucide="sparkles"></i> 관련 추천 도서</div>
-                <div id="recommendScroll" class="recommend-scroll">
-                    <div class="loading-msg">추천 도서를 불러오는 중입니다...</div>
-                </div>
-            </div>
-
-            <div id="welcomeBox" class="card hidden">
-                <div class="section-title"><i data-lucide="bar-chart-2"></i> 나의 독서 취향</div>
-                <p id="myStatsText" style="color:var(--sec-text); font-size:14px; line-height:1.6; margin:0;">
-                </p>
-            </div>
-
         </div>
     </div>
 
@@ -436,7 +438,7 @@
             </div>
             <p style="font-size:11px; color:var(--sec-text); margin: 8px 0 0 0;">* 저장한 도서를 터치하면 즉시 다시 검색합니다.</p>
             <div id="bookmarkModalContent" class="bookmark-modal-content">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -447,8 +449,9 @@
         let currentBooksList = [];
         let currentSelectedBook = null; 
 
-        // 검색창을 클릭했을 때만 최근 검색어가 보이도록 설정
-        document.getElementById('searchInput').addEventListener('click', function() {
+        // 검색창을 클릭했을 때만 최근 검색어가 보이도록 설정 (첫 클릭 시에도 작동)
+        document.getElementById('searchInput').addEventListener('click', function(event) {
+            event.stopPropagation(); // 문서 전체 클릭 이벤트와 충돌 방지
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             if(searches.length > 0) {
                 document.getElementById('recentSearchArea').classList.remove('hidden');
@@ -473,6 +476,9 @@
             const keyword = clickedKeyword || document.getElementById('searchInput').value.trim();
             if (!keyword) { alert("검색어를 입력해주세요."); return; }
 
+            // 검색어 자동 복사 (모바일 클립보드)
+            navigator.clipboard.writeText(keyword).catch(() => {});
+
             document.getElementById('searchInput').value = keyword;
 
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
@@ -481,19 +487,16 @@
             if (searches.length > 10) searches.pop();
             localStorage.setItem('recentBooks', JSON.stringify(searches));
             loadRecentSearches();
-            analyzeMyTaste(); 
 
             // UI 상태 변경
             document.getElementById('recentSearchArea').classList.add('hidden'); 
             
             document.getElementById('searchResultsCard').classList.remove('hidden');
             document.getElementById('mainBookResultCard').classList.add('hidden'); 
+            document.getElementById('linksCard').classList.add('hidden'); 
             document.getElementById('apiHashtagBox').classList.add('hidden');
             document.getElementById('apiRecommendBox').classList.add('hidden');
             document.getElementById('apiLibraryBox').classList.add('hidden');
-            
-            // 검색 버튼을 누르면 그제서야 나의 독서 취향 카드가 보이게 변경
-            document.getElementById('welcomeBox').classList.remove('hidden');
 
             document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 가져오는 중...`;
             document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>도서 정보를 찾고 있습니다...</div>";
@@ -517,9 +520,9 @@
                         return fetchBookListApi(spacelessKeyword, true);
                     }
 
-                    // 빈 결과창 멘트 수정 (서점 섹션을 명확히 안내)
+                    // 빈 결과창 멘트
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
-                    document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>관련된 도서가 도서관 DB에 없습니다.<br>아래에 생성된 카드의 <b>[5. 서점 구매 및 기타 검색]</b> 버튼을 이용해 보세요!</div>";
+                    document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>관련된 도서가 도서관 DB에 없습니다.<br>아래에 생성된 <b>[온/오프라인 서점]</b> 버튼을 이용해 보세요!</div>";
                     showEmptyBookState(keyword);
                     return;
                 }
@@ -553,10 +556,11 @@
         // 도서관에 없는 책일 경우 서점 링크라도 쓸 수 있게 해주는 함수
         function showEmptyBookState(keyword) {
             document.getElementById('mainBookResultCard').classList.remove('hidden');
+            document.getElementById('linksCard').classList.remove('hidden');
             document.getElementById('mainBookTitle').innerText = `'${keyword}'`;
             document.getElementById('mainBookAuthor').innerText = "도서관 정보나루에 데이터가 없습니다.";
             document.getElementById('mainBookCover').src = 'https://via.placeholder.com/100x145?text=No+Info';
-            document.getElementById('mainBookPlot').innerText = "도서관 대출 데이터가 제공되지 않는 책입니다. 아래쪽으로 조금만 내려서 [5. 서점 구매 및 기타 검색] 링크를 이용해 바로 검색해보세요!";
+            document.getElementById('mainBookPlot').innerText = "도서관 대출 데이터가 제공되지 않는 책입니다. 우측(또는 하단)의 [서점 구매 및 기타 검색] 링크를 이용해 바로 검색해보세요!";
             
             const encodedKeyword = encodeURIComponent(keyword);
             document.querySelectorAll('.dynamic-link').forEach(link => {
@@ -579,6 +583,7 @@
 
             // 상세 화면 열기
             document.getElementById('mainBookResultCard').classList.remove('hidden');
+            document.getElementById('linksCard').classList.remove('hidden');
             document.getElementById('apiHashtagBox').classList.remove('hidden');
             document.getElementById('apiRecommendBox').classList.remove('hidden');
             document.getElementById('apiLibraryBox').classList.remove('hidden');
@@ -587,7 +592,7 @@
             document.getElementById('mainBookAuthor').innerText = `${book.authors} / ${book.publisher}`;
             document.getElementById('mainBookCover').src = book.bookImageURL;
             
-            document.getElementById('libBoxTitle').innerText = `'${book.bookname}' 대출 현황 (마포/용산)`;
+            document.getElementById('libBoxTitle').innerText = `'${book.bookname}' 대출 현황`;
             
             if(book.description && book.description.trim() !== '') {
                 const tempDiv = document.createElement("div");
@@ -828,8 +833,9 @@
                         badgeHtml = '<span class="status-normal">확인 불가</span>';
                     }
 
+                    // 도서관 클릭 시 네이버에 해당 도서관 자동 검색 (홈페이지/지도 확인용)
                     html += `
-                        <li class="library-item fav-item">
+                        <li class="library-item fav-item" onclick="window.open('https://search.naver.com/search.naver?query=' + encodeURIComponent('${lib.name}'), '_blank')">
                             <span class="fav-lib-text"><i data-lucide="map-pin" size="14"></i> ${lib.name}</span>
                             ${badgeHtml}
                         </li>
@@ -873,20 +879,9 @@
             }
         }
 
-        function analyzeMyTaste() {
-            const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
-            const msgBox = document.getElementById('myStatsText');
-            if(searches.length > 0) {
-                msgBox.innerHTML = `선생님께서 최근 찾아보신 검색어는 <b>'${searches[0]}'</b> 입니다.<br>도서 표지를 누르면 그 책의 <b style="color:#2563eb">실시간 대출 현황</b>이 업데이트됩니다!`;
-            } else {
-                msgBox.innerHTML = `아직 검색 기록이 없습니다. 책을 검색하시면 취향을 분석해 드립니다!`;
-            }
-        }
-
         window.onload = function() {
             loadRecentSearches();
-            loadBookmarks(); // 로딩 시 저장해둔 북마크도 불러옵니다
-            analyzeMyTaste();
+            loadBookmarks(); 
         }
     </script>
 </body>
