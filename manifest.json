@@ -5,13 +5,19 @@
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f3f4f6",
-  "theme_color": "#2563eb",
+  "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "icon2.png",
-      "sizes": "192x192 512x512 any", 
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "AllBook_logo3(512white).svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "AllBook_logo3(512transp).svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
