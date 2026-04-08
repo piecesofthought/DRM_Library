@@ -409,13 +409,23 @@
                     </span>
                 </div>
                 
-                <div style="display: flex; gap: 8px; margin-bottom: 12px; margin-top: 5px;">
-                    <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
-                        <img src="home_logo.svg" class="site-logo" alt="logo"> 서울 도서관 자료 통합검색
-                    </a>
-                    <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank" style="padding: 8px; justify-content: center;">
-                        <img src="map_marker.svg" class="site-logo" alt="logo">
-                    </a>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; margin-top: 5px;">
+                    <div style="display: flex; gap: 8px;">
+                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchOperator1=&searchOperator2=&searchOperator3=&searchOperator4=&searchOperator5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchEbookCategory=&searchSort=SIMILAR&searchOrder=DESC&searchRecordCount=10&currentPageNo=1&viewStatus=IMAGE&preSearchKey=TITLE&preSearchKeyword={kw}&reSearchYn=N&nopsSearchKey=TITLE&nopsSearchSort=CREATEDATE&nopsSearchOrder=DESC&recKey=&bookKey=&publishFormCode=" target="_blank">
+                            <img src="mapo_logo.svg" class="site-logo" alt="logo"> 마포 전체
+                        </a>
+                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchSort=KEY&searchOrder=DESC&currentPageNo=1&viewStatus=IMAGE&preSearchKey=ALL&preSearchKeyword={kw}&reSearchYn=N&recKey=&bookKey=&publishFormCode=" target="_blank">
+                            <img src="yongsan_logo.svg" class="site-logo" alt="logo"> 용산 전체
+                        </a>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
+                            <img src="home_logo.svg" class="site-logo" alt="logo"> 서울 전체
+                        </a>
+                        <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank" style="padding: 8px; justify-content: center;">
+                            <img src="map_marker.svg" class="site-logo" alt="logo">
+                        </a>
+                    </div>
                 </div>
 
                 <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. <b>(클릭 시 해당 도서관 네이버 검색)</b></p>
@@ -577,7 +587,8 @@
             const encodedKeyword = encodeURIComponent(keyword);
             document.querySelectorAll('.dynamic-link').forEach(link => {
                 const template = link.getAttribute('data-template');
-                if (template) link.href = template.replace('{kw}', encodedKeyword);
+                // 정규식을 사용하여 모든 {kw} 치환 처리
+                if (template) link.href = template.replace(/\{kw\}/g, encodedKeyword);
             });
             
             currentSelectedBook = null;
@@ -620,7 +631,8 @@
             document.querySelectorAll('.dynamic-link').forEach(link => {
                 const template = link.getAttribute('data-template');
                 if (template) {
-                    link.href = template.replace('{kw}', encodedKeyword);
+                    // 정규식을 사용하여 모든 {kw} 치환 처리 (마포, 용산 링크에 중복 사용됨)
+                    link.href = template.replace(/\{kw\}/g, encodedKeyword);
                 }
             });
 
