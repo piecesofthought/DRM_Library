@@ -587,7 +587,7 @@
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
                     document.getElementById('searchResultsList').innerHTML = `
                         <div class='loading-msg' style='display:flex; flex-direction:column; align-items:center; gap:15px; width: 100%;'>
-                            <span>관련된 도서가 도서관 DB에 없습니다.<br>우측(또는 하단)의 <b>[온/오프라인 서점]</b> 버튼을 이용해 보세요!</span>
+                            <span>관련된 도서가 도서관 DB에 없습니다.</span>
                             <a href="${kyoboUrl}" target="_blank" style="background-color:#3b82f6; color:white; padding:12px 20px; border-radius:10px; font-weight:bold; text-decoration:none; font-size:14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); display: flex; align-items: center; gap: 8px;">
                                 <i data-lucide="book-open" size="18"></i> 교보문고에서 바로 검색하기
                             </a>
