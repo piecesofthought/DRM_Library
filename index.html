@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192x192.png">
+<meta name="theme-color" content="#2563eb">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ALL BOOK - 프리미엄 통합 도서 검색</title>
@@ -984,6 +987,18 @@
             // 페이지 로딩 시 최근 검색어는 굳이 안 그려도 됨 (클릭할 때 그림)
             loadBookmarks(); 
         }
+        // 서비스 워커 등록
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          console.log('ServiceWorker 등록 성공: ', registration.scope);
+        })
+        .catch(err => {
+          console.log('ServiceWorker 등록 실패: ', err);
+        });
+    });
+  }
     </script>
 </body>
 </html>
