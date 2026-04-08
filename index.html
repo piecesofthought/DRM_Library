@@ -67,17 +67,31 @@
         /* 최근 검색어 오버레이를 위한 position 설정 */
         #searchSection { position: relative; overflow: visible; }
         
-        .search-box { display: flex; background-color: var(--bg); border-radius: 12px; padding: 5px 15px; align-items: center; border: 1px solid var(--border); min-width: 0; cursor: text; }
+        .search-box { display: flex; background-color: var(--bg); border-radius: 12px; padding: 5px 15px; align-items: center; border: 1px solid var(--border); min-width: 0; cursor: text; z-index: 101; position: relative;}
         .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
         .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 
-        /* 최근 검색어 오버레이(팝업) 스타일 */
-        #recentSearchArea { position: absolute; top: 75px; left: 0; width: 100%; background: var(--card-bg); z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 15px; padding: 20px; border: 1px solid var(--border); margin-top: 0; }
-        .recent-tags-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .recent-tags-header .section-title { margin-bottom: 0; font-size: 16px; }
-        .delete-all-btn { background: none; border: none; color: var(--sec-text); font-size: 14px; cursor: pointer; padding: 0; font-family: inherit; }
+        /* 최근 검색어 오버레이(팝업) 스타일 전면 개편 */
+        #recentSearchArea { 
+            position: absolute; top: 65px; left: 0; right: 0; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
+            border-radius: 16px; padding: 20px; border: 1px solid var(--border); 
+        }
+        .recent-tags-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #d1d5db; }
+        .recent-tags-header .section-title { margin-bottom: 0; font-size: 15px; color: var(--text); }
+        .delete-all-btn { background: #f3f4f6; border: none; color: var(--sec-text); font-size: 12px; font-weight: 700; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background 0.2s; }
+        .delete-all-btn:active { background: #e5e7eb; }
         .recent-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .recent-tag { background-color: #ffffff; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; color: #333; border: 1px solid #d1d5db; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .recent-tag { 
+            background-color: var(--tag-bg); color: var(--tag-text); 
+            padding: 8px 14px; border-radius: 20px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .recent-tag:active { transform: scale(0.95); background-color: #dbeafe; }
+        .recent-tag i { color: #93c5fd !important; }
 
         /* 다중 검색 결과 가로 스크롤 */
         .search-results-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-top: 10px; }
@@ -206,14 +220,18 @@
             margin-top: 10px;
         }
         .bookmark-item { text-align: center; cursor: pointer; position: relative; }
+        
+        /* 북마크 이미지 규격 강제 통일 개선 (2:3 비율) */
         .bookmark-item img {
             width: 100%;
-            height: 120px;
+            aspect-ratio: 2 / 3; 
             object-fit: cover;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
+            background-color: #f9fafb;
         }
+        
         .bookmark-item p { font-size: 11px; margin: 5px 0 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
         .bookmark-delete {
             position: absolute;
@@ -250,7 +268,7 @@
                 
                 <div id="recentSearchArea" class="hidden">
                     <div class="recent-tags-header">
-                        <div class="section-title">최근 검색어</div>
+                        <div class="section-title"><i data-lucide="clock" size="18" color="var(--primary)"></i> 최근 검색어</div>
                         <button class="delete-all-btn" onclick="deleteAllSearches()">전체삭제</button>
                     </div>
                     <div class="recent-tags" id="recent-tags-container"></div>
@@ -631,7 +649,7 @@
             document.querySelectorAll('.dynamic-link').forEach(link => {
                 const template = link.getAttribute('data-template');
                 if (template) {
-                    // 정규식을 사용하여 모든 {kw} 치환 처리 (마포, 용산 링크에 중복 사용됨)
+                    // 정규식을 사용하여 모든 {kw} 치환 처리
                     link.href = template.replace(/\{kw\}/g, encodedKeyword);
                 }
             });
@@ -730,9 +748,12 @@
                     <div class="bookmark-delete" onclick="event.stopPropagation(); removeBookmark('${book.isbn}')">✕</div>
                     <p title="${book.title}">${book.title}</p>
                 `;
+                
+                // 검색 시 원래 키워드 대신 실제 '책 제목'으로 검색하도록 수정 (부제목 제거)
                 item.onclick = () => {
-                    document.getElementById('searchInput').value = book.keyword || book.title;
-                    executeSearch();
+                    let cleanTitle = book.title.split(' =')[0].split(':')[0].trim();
+                    document.getElementById('searchInput').value = cleanTitle;
+                    executeSearch(cleanTitle);
                     toggleBookmarkModal(); // 검색 실행 후 모달 닫기
                 };
                 container.appendChild(item);
@@ -882,11 +903,12 @@
             searches.forEach(keyword => {
                 const tag = document.createElement('div');
                 tag.className = 'recent-tag';
-                tag.innerHTML = `${keyword} <i data-lucide="x" size="14" style="color:#9ca3af;" onclick="event.stopPropagation(); deleteSearch('${keyword}')"></i>`;
+                // 태그 디자인 개선
+                tag.innerHTML = `${keyword} <i data-lucide="x" size="14" onclick="event.stopPropagation(); deleteSearch('${keyword}')"></i>`;
                 tag.onclick = () => executeSearch(keyword);
                 container.appendChild(tag);
             });
-            lucide.createIcons();
+            lucide.createIcons(); // 동적으로 추가된 X 아이콘 렌더링
         }
 
         function deleteSearch(keyword) {
