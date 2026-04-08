@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ALL BOOK - 프리미엄 통합 도서 검색</title>
     
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="icon2.png"> <link rel="apple-touch-icon" href="icon2.png">
-<meta name="theme-color" content="#2563eb">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="AllBook_logo3(512white).svg">
+    <link rel="apple-touch-icon" href="AllBook_logo3(512white).svg">
+    <meta name="theme-color" content="#4f46e5"> 
+
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* =========================================
-           0. 사용자 지정 폰트 적용 (이화여대 폰트)
-        ========================================= */
         @font-face {
             font-family: 'EwhaFont';
             src: url('ewha_font.ttf') format('truetype');
@@ -21,19 +20,17 @@
             font-style: normal;
         }
 
-        /* =========================================
-           1. 색상 및 기본 폰트 설정
-        ========================================= */
         :root {
-            --primary: #2563eb;       
-            --primary-hover: #1d4ed8;
+            /* 사진의 톤에 맞춰 기본 컬러를 약간 보라빛 도는 파란색(Indigo)으로 변경 */
+            --primary: #4f46e5;       
+            --primary-hover: #4338ca;
             --bg: #f3f4f6;           
             --card-bg: #ffffff;
             --text: #1f2937;
             --sec-text: #6b7280;
             --border: #e5e7eb;
-            --tag-bg: #eff6ff;
-            --tag-text: #2563eb;
+            --tag-bg: #e0e7ff; /* 태그 배경도 톤 맞춤 */
+            --tag-text: #4f46e5;
             --shadow: rgba(0, 0, 0, 0.08);
         }
 
@@ -46,11 +43,12 @@
         }
 
         /* =========================================
-           2. 폴드7 화면 분할 레이아웃 & 상단 헤더
+           새롭게 디자인된 헤더 영역
         ========================================= */
-        .header { text-align: center; margin: 30px 0 25px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .main-logo { width: 140px; height: auto; margin-bottom: 5px; } 
-        .header p { font-size: 13.5px; color: var(--sec-text); margin: 0; word-break: keep-all; font-weight: 500; }
+        .header { text-align: center; margin: 30px 0 25px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .main-logo { width: 100px; height: auto; margin-bottom: 5px; } 
+        .main-headline { font-size: 32px; font-weight: 800; color: #3730a3; margin: 10px 0 5px 0; word-break: keep-all; letter-spacing: -0.5px; }
+        .header p { font-size: 15px; color: var(--sec-text); margin: 0; word-break: keep-all; font-weight: 500; }
 
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; min-width: 0; }
 
@@ -62,21 +60,52 @@
 
         .section-title { font-size: 17px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--text); }
 
-        /* =========================================
-           3. 왼쪽 영역
-        ========================================= */
         .left-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
 
-        /* 최근 검색어 오버레이를 위한 position 설정 */
-        #searchSection { position: relative; overflow: visible; }
-        
-        .search-box { display: flex; background-color: var(--bg); border-radius: 12px; padding: 5px 15px; align-items: center; border: 1px solid var(--border); min-width: 0; cursor: text; z-index: 101; position: relative;}
-        .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
-        .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
+        /* =========================================
+           새롭게 디자인된 검색창 영역
+        ========================================= */
+        #searchSection { position: relative; overflow: visible; padding: 20px; }
+        .search-box { display: flex; gap: 10px; align-items: stretch; position: relative; z-index: 101; }
+        .search-box input { 
+            flex: 1; 
+            border: 2px solid #6366f1; /* 보라색 테두리 */
+            border-radius: 16px; 
+            padding: 16px 20px; 
+            font-size: 18px; 
+            font-weight: 600;
+            outline: none; 
+            background: #ffffff; 
+            min-width: 0; 
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-box input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        .search-box input::placeholder {
+            font-weight: 400;
+            font-size: 15px;
+            color: #9ca3af;
+        }
+        .search-btn { 
+            background-color: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 16px; 
+            width: 65px; /* 정사각형에 가까운 버튼 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; 
+            flex-shrink: 0; 
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .search-btn:active { transform: scale(0.95); background-color: var(--primary-hover); }
 
-        /* 최근 검색어 오버레이(팝업) */
         #recentSearchArea { 
-            position: absolute; top: 85px; left: 0; right: 0; 
+            position: absolute; top: 95px; left: 0; right: 0; 
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
@@ -93,19 +122,17 @@
             cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
             transition: transform 0.1s, background-color 0.2s;
         }
-        .recent-tag:active { transform: scale(0.95); background-color: #dbeafe; }
-        .recent-tag i { color: #93c5fd !important; }
+        .recent-tag:active { transform: scale(0.95); background-color: #c7d2fe; }
+        .recent-tag i { color: #818cf8 !important; }
 
-        /* 다중 검색 결과 가로 스크롤 */
         .search-results-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-top: 10px; }
         .search-result-item { min-width: 90px; width: 90px; text-align: center; cursor: pointer; transition: all 0.2s; opacity: 0.5; position: relative;}
         .search-result-item:active { transform: scale(0.95); }
         .search-result-item.active { opacity: 1; transform: translateY(-3px); } 
-        .search-result-item.active img { border: 3px solid var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }
+        .search-result-item.active img { border: 3px solid var(--primary); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); }
         .search-result-item img { width: 90px; height: 130px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 6px var(--shadow); border: 1px solid var(--border); margin-bottom: 6px; }
         .search-result-item p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
 
-        /* 메인 정보 카드 */
         .main-book-profile { display: flex; gap: 15px; align-items: flex-start; }
         .main-book-cover { width: 100px; height: 145px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border); flex-shrink: 0; }
         .main-book-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
@@ -113,22 +140,16 @@
         .main-book-info .author { margin: 0; font-size: 13px; color: var(--sec-text); }
         .main-book-info .plot { margin: 5px 0 0 0; font-size: 13px; line-height: 1.5; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* 해시태그 (키워드) 스타일 */
         .hashtag-container { display: flex; flex-wrap: wrap; gap: 8px; }
         .hashtag { background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; }
 
-        /* 추천 도서 스타일 */
         .recommend-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
         .recommend-card { min-width: 90px; text-align: center; cursor: pointer; }
         .recommend-card img { width: 90px; height: 130px; border-radius: 8px; box-shadow: 0 2px 8px var(--shadow); border: 1px solid var(--border); margin-bottom: 6px; object-fit: cover;}
         .recommend-card p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;}
 
-        /* =========================================
-           4. 오른쪽 영역: 링크 모음 & 실시간 대출 정보
-        ========================================= */
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
-        /* 통합 링크 분류 (태그형 버튼) */
         .links-container { display: flex; flex-direction: column; gap: 15px; }
         .link-group-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .link-grid { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -145,7 +166,6 @@
         details.hidden-districts summary::before { content: "▼"; font-size: 10px; }
         details[open].hidden-districts summary::before { content: "▲"; }
 
-        /* 도서관 리스트 스타일 */
         .library-list { list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
         .library-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s;}
         .library-item:active { background-color: #e2e8f0; }
@@ -159,144 +179,28 @@
         .loading-msg { color: var(--sec-text); font-size: 14px; text-align: center; padding: 20px; width: 100%;}
         .hidden { display: none !important; }
 
-        /* =========================================
-           5. 플로팅 북마크 버튼 및 모달 스타일
-        ========================================= */
-        .fab-container {
-            position: fixed;
-            bottom: 25px;
-            left: 20px;
-            z-index: 1000;
-        }
-        .fab-btn {
-            background-color: #f59e0b;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
+        .fab-container { position: fixed; bottom: 25px; left: 20px; z-index: 1000; }
+        .fab-btn { background-color: #f59e0b; color: white; border: none; border-radius: 50%; width: 56px; height: 56px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
         .fab-btn:active { transform: scale(0.9); }
-        .fab-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: #ef4444;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-        }
-        .bookmark-modal {
-            position: absolute;
-            bottom: 75px;
-            left: 0;
-            width: 330px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
-            padding: 18px;
-            display: none;
-            flex-direction: column;
-            max-height: 60vh;
-        }
+        .fab-badge { position: absolute; top: -2px; right: -2px; background-color: #ef4444; color: white; font-size: 11px; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid white; }
+        
+        .bookmark-modal { position: absolute; bottom: 75px; left: 0; width: 330px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 18px; display: none; flex-direction: column; max-height: 60vh; }
         .bookmark-modal.open { display: flex; }
-        
-        .bookmark-modal-content {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-top: 10px;
-        }
-        .bookmark-item { 
-            min-width: 75px; 
-            width: 75px; 
-            text-align: center; 
-            cursor: pointer; 
-            position: relative; 
-            flex-shrink: 0; 
-        }
-        
-        .bookmark-item img {
-            width: 100%;
-            aspect-ratio: 2 / 3; 
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            border: 1px solid var(--border);
-            background-color: #f9fafb;
-        }
-        
+        .bookmark-modal-content { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-top: 10px; }
+        .bookmark-item { min-width: 75px; width: 75px; text-align: center; cursor: pointer; position: relative; flex-shrink: 0; }
+        .bookmark-item img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 1px solid var(--border); background-color: #f9fafb; }
         .bookmark-item p { font-size: 11px; margin: 5px 0 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
-        .bookmark-delete {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
+        .bookmark-delete { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
 
-/* =========================================
-   6. 대출 현황 전용 액션 버튼 (미니멀 디자인)
-========================================= */
-.lib-minimal-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px; /* 아이콘과 텍스트 간격 좁힘 */
-    padding: 6px 10px; /* 크기 축소 */
-    font-size: 12px; /* 폰트 크기 축소 */
-    font-weight: 600;
-    color: var(--sec-text); /* 튀지 않는 회색 텍스트 */
-    background-color: #f9fafb; /* 아주 연한 회색 배경 */
-    border: 1px solid var(--border); /* 얇고 연한 테두리 */
-    border-radius: 8px; /* 살짝 둥근 모서리 */
-    text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
-    white-space: nowrap;
-}
-
-.lib-minimal-btn:active {
-    background-color: #e5e7eb; /* 누를 때 살짝 진해짐 */
-    color: var(--text);
-}
-
-        .lib-action-btn.map-btn {
-            background: linear-gradient(135deg, #34d399, #10b981);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-            flex-shrink: 0; 
-        }
-
-        .lib-action-btn.map-btn:active {
-            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.5);
-        }
+        .lib-minimal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--sec-text); background-color: #f9fafb; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: background-color 0.2s, color 0.2s; white-space: nowrap; }
+        .lib-minimal-btn:active { background-color: #e5e7eb; color: var(--text); }
     </style>
 </head>
 <body>
 
     <div class="header">
         <img src="AllBook_logo.svg" alt="AllBook Logo" class="main-logo">
+        <h1 class="main-headline">내 손안의 통합 도서 검색</h1>
         <p>원하는 책을 한 번에 여러 도서관과 서점에서 찾아보세요.</p>
     </div>
 
@@ -305,9 +209,8 @@
             
             <div class="card" id="searchSection">
                 <div class="search-box">
-                    <i data-lucide="search" color="var(--sec-text)"></i>
-                    <input type="text" id="searchInput" placeholder="도서명을 입력하세요." onkeypress="if(event.key==='Enter') executeSearch()">
-                    <button class="search-btn" onclick="executeSearch()">검색</button>
+                    <input type="text" id="searchInput" placeholder="띄어쓰기 없이 입력해도 찾아드려요! (예: 해리포터)" onkeypress="if(event.key==='Enter') executeSearch()">
+                    <button class="search-btn" onclick="executeSearch()"><i data-lucide="search" size="24"></i></button>
                 </div>
                 
                 <div id="recentSearchArea" class="hidden">
@@ -384,28 +287,13 @@
                     <div class="link-group">
                         <div class="link-group-title"><i data-lucide="map-pin" size="16" color="#10b981"></i> 2. 서울시 자치구 전자도서관</div>
                         <div class="link-grid">
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt={kw}" target="_blank">
-                                <img src="mapo_logo.svg" class="site-logo" alt="logo"> 마포구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt={kw}" target="_blank">
-                                <img src="yongsan_logo.svg" class="site-logo" alt="logo"> 용산구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-lib.gwanak.go.kr/search/?srch_order=total&src_key={kw}" target="_blank">
-                                <img src="Gwanak_logo.svg" class="site-logo" alt="logo"> 관악구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://eb.nowonlib.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank">
-                                <img src="Nowon_logo.svg" class="site-logo" alt="logo"> 노원구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank">
-                                <img src="dongdaemun_logo.svg" class="site-logo" alt="logo"> 동대문구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://elibrary.sblib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank">
-                                <img src="Seongbuk_logo.svg" class="site-logo" alt="logo"> 성북구
-                            </a>
-                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank">
-                                <img src="Jungnang_logo.svg" class="site-logo" alt="logo"> 중랑구
-                            </a>
-                            
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.mapo.go.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt={kw}" target="_blank"><img src="mapo_logo.svg" class="site-logo" alt="logo"> 마포구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.yslibrary.or.kr/elibrary-front/search/searchList.ink?schDvsn=000&orderByKey=&schClst=all&schTxt={kw}" target="_blank"><img src="yongsan_logo.svg" class="site-logo" alt="logo"> 용산구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-lib.gwanak.go.kr/search/?srch_order=total&src_key={kw}" target="_blank"><img src="Gwanak_logo.svg" class="site-logo" alt="logo"> 관악구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://eb.nowonlib.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Nowon_logo.svg" class="site-logo" alt="logo"> 노원구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://e-book.l4d.or.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="dongdaemun_logo.svg" class="site-logo" alt="logo"> 동대문구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://elibrary.sblib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Seongbuk_logo.svg" class="site-logo" alt="logo"> 성북구</a>
+                            <a href="#" class="link-pill color-lib dynamic-link" data-template="https://ebook.jungnanglib.seoul.kr/elibrary-front/search/searchList.ink?schClst=all&schDvsn=000&orderByKey=&schTxt={kw}" target="_blank"><img src="Jungnang_logo.svg" class="site-logo" alt="logo"> 중랑구</a>
                             <details class="hidden-districts">
                                 <summary>나머지 자치구 펼치기</summary>
                                 <div class="link-grid" style="margin-top: 8px;">
@@ -435,15 +323,9 @@
                     <div class="link-group">
                         <div class="link-group-title"><i data-lucide="archive" size="16" color="#8b5cf6"></i> 3. 무료 아카이브</div>
                         <div class="link-grid">
-                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://archive.org/search?query={kw}&and%5B%5D=mediatype%3A%22texts%22" target="_blank">
-                                <img src="internetarchive_logo.svg" class="site-logo" alt="logo"> 인터넷 아카이브(원문)
-                            </a>
-                            <a href="#" class="link-pill color-free dynamic-link" data-template="http://jikji.duckdns.org/search/stored/?query={kw}" target="_blank">
-                                <img src="jikji_logo.svg" class="site-logo" alt="logo"> 직지 (고전 번역)
-                            </a>
-                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://www.gutenberg.org/ebooks/search/?query={kw}" target="_blank">
-                                <img src="pg_logo.svg" class="site-logo" alt="logo"> 구텐베르크 (영문)
-                            </a>
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://archive.org/search?query={kw}&and%5B%5D=mediatype%3A%22texts%22" target="_blank"><img src="internetarchive_logo.svg" class="site-logo" alt="logo"> 인터넷 아카이브(원문)</a>
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="http://jikji.duckdns.org/search/stored/?query={kw}" target="_blank"><img src="jikji_logo.svg" class="site-logo" alt="logo"> 직지 (고전 번역)</a>
+                            <a href="#" class="link-pill color-free dynamic-link" data-template="https://www.gutenberg.org/ebooks/search/?query={kw}" target="_blank"><img src="pg_logo.svg" class="site-logo" alt="logo"> 구텐베르크 (영문)</a>
                         </div>
                     </div>
 
@@ -452,8 +334,6 @@
                         <div class="link-grid">
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://play.google.com/store/search?q={kw}&c=books&hl=ko" target="_blank"><img src="https://www.google.com/s2/favicons?domain=play.google.com&sz=32" class="site-logo" alt="logo"> 구글 플레이북</a>
                             <a href="#" class="link-pill color-store dynamic-link" data-template="https://search.kyobobook.co.kr/search?keyword={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=kyobobook.co.kr&sz=32" class="site-logo" alt="logo"> 교보문고</a>
-                            
-                            
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchTarget=Used&KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (온라인)</a>
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/msearch.aspx?SearchWord={kw}&SearchTarget=UsedStore" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 알라딘 중고 (오프라인)</a>
                             <a href="#" class="link-pill color-used dynamic-link" data-template="https://www.aladin.co.kr/m/c2b/c2b_search.aspx?KeyWord={kw}" target="_blank"><img src="https://www.google.com/s2/favicons?domain=aladin.co.kr&sz=32" class="site-logo" alt="logo"> 중고매입가 조회</a>
@@ -463,60 +343,39 @@
                 </div>
             </div>
 
-            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid #3b82f6; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);">
-                <div class="section-title" style="color: #1d4ed8; align-items: flex-start; justify-content: space-between;">
-                    <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;">
-                        <i data-lucide="bell-ring" style="margin-top:2px;"></i> 
-                        <span id="libBoxTitle">대출 가능 여부</span>
-                    </span>
+            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid var(--primary); box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);">
+                <div class="section-title" style="color: var(--primary); align-items: flex-start; justify-content: space-between;">
+                    <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;"><i data-lucide="bell-ring" style="margin-top:2px;"></i> <span id="libBoxTitle">대출 가능 여부</span></span>
                 </div>
                 
                 <div style="display: flex; gap: 6px; margin-bottom: 10px; margin-top: 5px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px;">
-    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchOperator1=&searchOperator2=&searchOperator3=&searchOperator4=&searchOperator5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchEbookCategory=&searchSort=SIMILAR&searchOrder=DESC&searchRecordCount=10&currentPageNo=1&viewStatus=IMAGE&preSearchKey=TITLE&preSearchKeyword={kw}&reSearchYn=N&nopsSearchKey=TITLE&nopsSearchSort=CREATEDATE&nopsSearchOrder=DESC&recKey=&bookKey=&publishFormCode=" target="_blank">
-        <i data-lucide="building-2" size="14"></i> 마포
-    </a>
-    
-    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchSort=KEY&searchOrder=DESC&currentPageNo=1&viewStatus=IMAGE&preSearchKey=ALL&preSearchKeyword={kw}&reSearchYn=N&recKey=&bookKey=&publishFormCode=" target="_blank">
-        <i data-lucide="landmark" size="14"></i> 용산
-    </a>
-    
-    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
-        <i data-lucide="library" size="14"></i> 서울
-    </a>
-    
-    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" target="_blank">
-        <i data-lucide="map" size="14"></i> 지도
-    </a>
-</div>
+                    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울</a>
+                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" target="_blank"><i data-lucide="map" size="14"></i> 지도</a>
+                </div>
+
                 <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. </p>
-                <ul id="libraryList" class="library-list">
-                    <li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>
-                </ul>
+                <ul id="libraryList" class="library-list"><li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li></ul>
             </div>
 
         </div>
     </div>
 
     <div id="fabContainer" class="fab-container">
-        <button class="fab-btn" onclick="toggleBookmarkModal()">
-            <i data-lucide="bookmark" fill="currentColor"></i>
-            <span id="bookmarkBadge" class="fab-badge">0</span>
-        </button>
-        
+        <button class="fab-btn" onclick="toggleBookmarkModal()"><i data-lucide="bookmark" fill="currentColor"></i><span id="bookmarkBadge" class="fab-badge">0</span></button>
         <div id="bookmarkModal" class="bookmark-modal">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px;">
                 <h3 style="margin:0; font-size:15px; color:#f59e0b; display:flex; align-items:center; gap:5px;"><i data-lucide="bookmark" fill="#f59e0b" color="#f59e0b" size="16"></i> 내 북마크</h3>
                 <button onclick="toggleBookmarkModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x" size="18" color="var(--sec-text)"></i></button>
             </div>
             <p style="font-size:11px; color:var(--sec-text); margin: 8px 0 0 0;">* 저장한 도서를 터치하면 즉시 다시 검색합니다.</p>
-            <div id="bookmarkModalContent" class="bookmark-modal-content">
-            </div>
+            <div id="bookmarkModalContent" class="bookmark-modal-content"></div>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-
         const apiKey = "86bbf34832d0f70658c95d21f790afa9b7ee8956deed3ea4a440a101cafbca69";
         let currentBooksList = [];
         let currentSelectedBook = null; 
@@ -545,7 +404,6 @@
             if (!keyword) { alert("검색어를 입력해주세요."); return; }
 
             navigator.clipboard.writeText(keyword).catch(() => {});
-
             document.getElementById('searchInput').value = keyword;
 
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
@@ -583,12 +441,11 @@
                     }
 
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
-                    
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
                     document.getElementById('searchResultsList').innerHTML = `
                         <div class='loading-msg' style='display:flex; flex-direction:column; align-items:center; gap:15px; width: 100%;'>
-                            <span>관련된 도서가 도서관 DB에 없습니다.</span>
-                            <a href="${kyoboUrl}" target="_blank" style="background-color:#3b82f6; color:white; padding:12px 20px; border-radius:10px; font-weight:bold; text-decoration:none; font-size:14px; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); display: flex; align-items: center; gap: 8px;">
+                            <span>관련된 도서가 도서관 DB에 없습니다.<br>우측(또는 하단)의 <b>[온/오프라인 서점]</b> 버튼을 이용해 보세요!</span>
+                            <a href="${kyoboUrl}" target="_blank" style="background-color:var(--primary); color:white; padding:12px 20px; border-radius:10px; font-weight:bold; text-decoration:none; font-size:14px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); display: flex; align-items: center; gap: 8px;">
                                 <i data-lucide="book-open" size="18"></i> 교보문고에서 바로 검색하기
                             </a>
                         </div>
@@ -877,27 +734,19 @@
                     try {
                         const existRes = await fetch(existUrl);
                         const existData = await existRes.json();
-                        return {
-                            name: item.lib.libName,
-                            loanAvailable: existData.response.result.loanAvailable 
-                        };
+                        return { name: item.lib.libName, loanAvailable: existData.response.result.loanAvailable };
                     } catch(e) {
                         return { name: item.lib.libName, loanAvailable: 'E' }; 
                     }
                 });
 
                 const results = await Promise.all(promises);
-
                 let html = '';
                 results.forEach(lib => {
                     let badgeHtml = '';
-                    if(lib.loanAvailable === 'Y') {
-                        badgeHtml = '<span class="status-available">대출 가능 🏃‍♂️</span>';
-                    } else if(lib.loanAvailable === 'N') {
-                        badgeHtml = '<span class="status-unavailable">대출 중 ⏳</span>';
-                    } else {
-                        badgeHtml = '<span class="status-normal">확인 불가</span>';
-                    }
+                    if(lib.loanAvailable === 'Y') badgeHtml = '<span class="status-available">대출 가능 🏃‍♂️</span>';
+                    else if(lib.loanAvailable === 'N') badgeHtml = '<span class="status-unavailable">대출 중 ⏳</span>';
+                    else badgeHtml = '<span class="status-normal">확인 불가</span>';
 
                     html += `
                         <li class="library-item fav-item" onclick="window.open('https://search.naver.com/search.naver?query=' + encodeURIComponent('${lib.name}'), '_blank')">
@@ -909,7 +758,6 @@
 
                 container.innerHTML = html;
                 lucide.createIcons(); 
-
             } catch(e) {
                 container.innerHTML = '<li class="library-item">도서관 정보를 실시간으로 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</li>';
             }
@@ -953,24 +801,13 @@
             loadBookmarks(); 
         }
 
-        // =========================================
-        // PWA 추가 부분 시작 (서비스 워커 등록)
-        // =========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker 등록 성공: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker 등록 실패: ', err);
-                    });
+                    .then(registration => console.log('ServiceWorker 등록 성공: ', registration.scope))
+                    .catch(err => console.log('ServiceWorker 등록 실패: ', err));
             });
         }
-        // =========================================
-        // PWA 추가 부분 끝
-        // =========================================
-
     </script>
 </body>
 </html>
