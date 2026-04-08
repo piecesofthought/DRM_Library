@@ -71,9 +71,9 @@
         .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
         .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 
-        /* 최근 검색어 오버레이(팝업) 스타일 전면 개편 */
+        /* 최근 검색어 오버레이(팝업) - 겹침 방지를 위해 top 값을 늘림 */
         #recentSearchArea { 
-            position: absolute; top: 65px; left: 0; right: 0; 
+            position: absolute; top: 85px; left: 0; right: 0; 
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
@@ -211,15 +211,24 @@
             max-height: 60vh;
         }
         .bookmark-modal.open { display: flex; }
+        
+        /* 북마크 목록을 가로 스크롤 방식으로 완전 개편 */
         .bookmark-modal-content {
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex; /* grid에서 flex로 변경 */
             gap: 12px;
-            padding-top: 5px;
+            overflow-x: auto; /* 좌우 스크롤 가능하게 */
+            padding-bottom: 10px;
             margin-top: 10px;
         }
-        .bookmark-item { text-align: center; cursor: pointer; position: relative; }
+        /* 개별 아이템 크기를 줄이고 압축되지 않게 설정 */
+        .bookmark-item { 
+            min-width: 75px; 
+            width: 75px; 
+            text-align: center; 
+            cursor: pointer; 
+            position: relative; 
+            flex-shrink: 0; 
+        }
         
         /* 북마크 이미지 규격 강제 통일 개선 (2:3 비율) */
         .bookmark-item img {
@@ -427,23 +436,19 @@
                     </span>
                 </div>
                 
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; margin-top: 5px;">
-                    <div style="display: flex; gap: 8px;">
-                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchOperator1=&searchOperator2=&searchOperator3=&searchOperator4=&searchOperator5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchEbookCategory=&searchSort=SIMILAR&searchOrder=DESC&searchRecordCount=10&currentPageNo=1&viewStatus=IMAGE&preSearchKey=TITLE&preSearchKeyword={kw}&reSearchYn=N&nopsSearchKey=TITLE&nopsSearchSort=CREATEDATE&nopsSearchOrder=DESC&recKey=&bookKey=&publishFormCode=" target="_blank">
-                            <img src="mapo_logo.svg" class="site-logo" alt="logo"> 마포 전체
-                        </a>
-                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchSort=KEY&searchOrder=DESC&currentPageNo=1&viewStatus=IMAGE&preSearchKey=ALL&preSearchKeyword={kw}&reSearchYn=N&recKey=&bookKey=&publishFormCode=" target="_blank">
-                            <img src="yongsan_logo.svg" class="site-logo" alt="logo"> 용산 전체
-                        </a>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; justify-content: center;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
-                            <img src="home_logo.svg" class="site-logo" alt="logo"> 서울 전체
-                        </a>
-                        <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank" style="padding: 8px; justify-content: center;">
-                            <img src="map_marker.svg" class="site-logo" alt="logo">
-                        </a>
-                    </div>
+                <div style="display: flex; gap: 6px; margin-bottom: 12px; margin-top: 5px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px;">
+                    <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; padding: 6px 8px; justify-content: center; font-size: 12px; min-width: max-content;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchOperator1=&searchOperator2=&searchOperator3=&searchOperator4=&searchOperator5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchEbookCategory=&searchSort=SIMILAR&searchOrder=DESC&searchRecordCount=10&currentPageNo=1&viewStatus=IMAGE&preSearchKey=TITLE&preSearchKeyword={kw}&reSearchYn=N&nopsSearchKey=TITLE&nopsSearchSort=CREATEDATE&nopsSearchOrder=DESC&recKey=&bookKey=&publishFormCode=" target="_blank">
+                        <i data-lucide="building-2" size="14"></i> 마포
+                    </a>
+                    <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; padding: 6px 8px; justify-content: center; font-size: 12px; min-width: max-content;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKey1=&searchKey2=&searchKey3=&searchKey4=&searchKey5=&searchKeyword={kw}&searchKeyword1=&searchKeyword2=&searchKeyword3=&searchKeyword4=&searchKeyword5=&searchPublishStartYear=&searchPublishEndYear=&searchLibrary=ALL&searchRoom=&searchKdc=&searchSort=KEY&searchOrder=DESC&currentPageNo=1&viewStatus=IMAGE&preSearchKey=ALL&preSearchKeyword={kw}&reSearchYn=N&recKey=&bookKey=&publishFormCode=" target="_blank">
+                        <i data-lucide="landmark" size="14"></i> 용산
+                    </a>
+                    <a href="#" class="link-pill color-lib dynamic-link" style="flex: 1; padding: 6px 8px; justify-content: center; font-size: 12px; min-width: max-content;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?id=177528299650854&category1=0&category2=0&category3=0&text1={kw}&text2=&text3=&op=0&op2=0&year1=&year2=&dbnum=44911%2044891%2045011%2043891%2043871%2045351%2088421%2045051%2043861%202201%202191%20103291%20103301%2045111%2043901%2088341%2045221&display=30&recstart=1&sort=rel#/?recstart=1&display=20&dbnum=&key=&type=allResult&reload=on" target="_blank">
+                        <i data-lucide="library" size="14"></i> 서울
+                    </a>
+                    <a href="https://naver.me/xIFJSb28" class="link-pill color-lib" target="_blank" style="padding: 6px 10px; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="map" size="16"></i>
+                    </a>
                 </div>
 
                 <p style="font-size:12px; color:var(--sec-text); margin: 5px 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. <b>(클릭 시 해당 도서관 네이버 검색)</b></p>
@@ -479,13 +484,10 @@
         let currentBooksList = [];
         let currentSelectedBook = null; 
 
-        // 검색창을 클릭했을 때만 최근 검색어가 보이도록 설정 (첫 클릭 시에도 작동)
+        // 검색창을 클릭했을 때 최근 검색어가 무조건 보이도록 설정
         document.getElementById('searchInput').addEventListener('click', function(event) {
             event.stopPropagation(); // 문서 전체 클릭 이벤트와 충돌 방지
-            const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
-            if(searches.length > 0) {
-                document.getElementById('recentSearchArea').classList.remove('hidden');
-            }
+            document.getElementById('recentSearchArea').classList.remove('hidden');
         });
 
         // 검색 섹션이나 플로팅 버튼 밖을 클릭하면 팝업들을 숨김
@@ -542,7 +544,7 @@
                 const searchRes = await fetch(searchUrl);
                 const searchData = await searchRes.json();
                 
-                // 검색 결과가 없을 경우 (여기에 교보문고 버튼 추가 완료)
+                // 검색 결과가 없을 경우
                 if(!searchData.response.docs || searchData.response.docs.length === 0) {
                     const spacelessKeyword = keyword.replace(/\s+/g, '');
                     if (!isRetry && keyword !== spacelessKeyword) {
@@ -736,7 +738,7 @@
             
             container.innerHTML = '';
             if (bookmarks.length === 0) {
-                container.innerHTML = '<p style="color:var(--sec-text); font-size:13px; text-align:center; grid-column: 1 / -1; padding:20px 0;">저장된 북마크가 없습니다.</p>';
+                container.innerHTML = '<p style="color:var(--sec-text); font-size:13px; text-align:center; padding:20px 0; width:100%;">저장된 북마크가 없습니다.</p>';
                 return;
             }
             
@@ -899,6 +901,12 @@
             const searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             const container = document.getElementById('recent-tags-container');
             container.innerHTML = '';
+            
+            // 최초 접속(기록 없음) 시 안내 메시지 띄우기
+            if (searches.length === 0) {
+                container.innerHTML = '<p style="color:var(--sec-text); font-size:13px; margin:0;">최근 검색 기록이 없습니다. 새로운 책을 찾아보세요!</p>';
+                return;
+            }
             
             searches.forEach(keyword => {
                 const tag = document.createElement('div');
