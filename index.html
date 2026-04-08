@@ -71,7 +71,7 @@
         .search-box input { flex: 1; border: none; padding: 12px 10px; font-size: 16px; outline: none; background: transparent; min-width: 0; }
         .search-btn { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 
-        /* 최근 검색어 오버레이(팝업) - 겹침 방지를 위해 top 값을 늘림 */
+        /* 최근 검색어 오버레이(팝업) */
         #recentSearchArea { 
             position: absolute; top: 85px; left: 0; right: 0; 
             background: rgba(255, 255, 255, 0.95); 
@@ -212,15 +212,14 @@
         }
         .bookmark-modal.open { display: flex; }
         
-        /* 북마크 목록을 가로 스크롤 방식으로 완전 개편 */
+        /* 북마크 목록을 가로 스크롤 방식으로 */
         .bookmark-modal-content {
-            display: flex; /* grid에서 flex로 변경 */
+            display: flex;
             gap: 12px;
-            overflow-x: auto; /* 좌우 스크롤 가능하게 */
+            overflow-x: auto;
             padding-bottom: 10px;
             margin-top: 10px;
         }
-        /* 개별 아이템 크기를 줄이고 압축되지 않게 설정 */
         .bookmark-item { 
             min-width: 75px; 
             width: 75px; 
@@ -230,7 +229,6 @@
             flex-shrink: 0; 
         }
         
-        /* 북마크 이미지 규격 강제 통일 개선 (2:3 비율) */
         .bookmark-item img {
             width: 100%;
             aspect-ratio: 2 / 3; 
@@ -484,9 +482,13 @@
         let currentBooksList = [];
         let currentSelectedBook = null; 
 
-        // 검색창을 클릭했을 때 최근 검색어가 무조건 보이도록 설정
+        // 검색창을 클릭했을 때 최근 검색어가 무조건 보이도록 설정 (재접속 버그 수정)
         document.getElementById('searchInput').addEventListener('click', function(event) {
             event.stopPropagation(); // 문서 전체 클릭 이벤트와 충돌 방지
+            
+            // 클릭할 때마다 로컬 스토리지에서 최신 데이터를 불러와서 화면에 다시 그림
+            loadRecentSearches(); 
+            
             document.getElementById('recentSearchArea').classList.remove('hidden');
         });
 
@@ -518,7 +520,7 @@
             searches.unshift(keyword);
             if (searches.length > 10) searches.pop();
             localStorage.setItem('recentBooks', JSON.stringify(searches));
-            loadRecentSearches();
+            // loadRecentSearches(); // 여기서 굳이 화면을 다시 그릴 필요 없음 (어차피 팝업 닫힘)
 
             // UI 상태 변경
             document.getElementById('recentSearchArea').classList.add('hidden'); 
@@ -923,18 +925,22 @@
             let searches = JSON.parse(localStorage.getItem('recentBooks')) || [];
             searches = searches.filter(item => item !== keyword);
             localStorage.setItem('recentBooks', JSON.stringify(searches));
+            
+            // 삭제 후 화면 다시 그리기
             loadRecentSearches();
         }
 
         function deleteAllSearches() {
             if(confirm("최근 검색어를 모두 삭제하시겠습니까?")) {
                 localStorage.removeItem('recentBooks');
+                
+                // 삭제 후 화면 다시 그리기
                 loadRecentSearches();
             }
         }
 
         window.onload = function() {
-            loadRecentSearches();
+            // 페이지 로딩 시 최근 검색어는 굳이 안 그려도 됨 (클릭할 때 그림)
             loadBookmarks(); 
         }
     </script>
