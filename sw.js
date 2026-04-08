@@ -4,6 +4,7 @@ const urlsToCache = [
   './manifest.json',
   './AllBook_logo.svg',
   './ewha_font.ttf'
+  './icon (2).png',
   // 추가로 사용하는 로고 svg나 폰트 파일이 있다면 여기에 등록하세요.
 ];
 
