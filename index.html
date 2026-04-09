@@ -103,6 +103,15 @@
         .search-result-item img { width: 90px; height: 130px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 6px var(--shadow); border: 1px solid var(--border); margin-bottom: 6px; }
         .search-result-item p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
 
+        /* 하단 교보문고 바로가기 미니 버튼용 CSS */
+        .kyobo-mini-btn {
+            background-color: var(--primary); color: white; padding: 8px 16px; border-radius: 10px;
+            font-weight: 700; text-decoration: none; font-size: 13px;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .kyobo-mini-btn:active { transform: scale(0.95); background-color: var(--primary-hover); }
+
         .main-book-profile { display: flex; gap: 15px; align-items: flex-start; }
         .main-book-cover { width: 100px; height: 145px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border); flex-shrink: 0; }
         .main-book-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
@@ -196,6 +205,12 @@
                 <div class="section-title"><i data-lucide="list"></i> <span id="searchResultCountText">검색 결과</span></div>
                 <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*좌우로 밀어서 원하시는 책 표지를 <b style="color:var(--primary)">터치</b> 하시면 상세 정보가 나타납니다.</p>
                 <div id="searchResultsList" class="search-results-scroll"></div>
+                
+                <div id="kyoboDirectBtnContainer" style="margin-top: 15px; display: none; justify-content: center;">
+                    <a id="kyoboDirectBtn" href="#" target="_blank" class="kyobo-mini-btn">
+                        <i data-lucide="book-open" size="14"></i> 입력한 검색어로 교보문고 찾아보기
+                    </a>
+                </div>
             </div>
 
             <div id="mainBookResultCard" class="card hidden">
@@ -304,13 +319,13 @@
                 </div>
             </div>
 
-            <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe;">
-                <div class="section-title" style="color: #3730a3; margin-bottom: 10px;"><i data-lucide="external-link"></i> 실시간 대출 도서관 바로가기</div>
-                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포구 통합</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산구 통합</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울시 통합</a>
-                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" target="_blank"><i data-lucide="map" size="14"></i> 도서관 지도</a>
+            <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe; padding: 15px;">
+                <div class="section-title" style="color: #3730a3; margin-bottom: 10px; font-size: 14px;"><i data-lucide="external-link" size="16"></i> 실시간 대출 도서관 바로가기</div>
+                <div style="display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px;">
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="12"></i> 마포 전체</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="12"></i> 용산 전체</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="12"></i> 서울 전체</a>
+                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" target="_blank"><i data-lucide="map" size="12"></i> 지도</a>
                 </div>
             </div>
 
@@ -378,6 +393,8 @@
             document.getElementById('recentSearchArea').classList.add('hidden'); 
             
             document.getElementById('searchResultsCard').classList.remove('hidden');
+            document.getElementById('kyoboDirectBtnContainer').style.display = 'none'; // 로딩 중 버튼 숨김
+            
             document.getElementById('mainBookResultCard').classList.add('hidden'); 
             document.getElementById('linksCard').classList.add('hidden'); 
             document.getElementById('apiHashtagBox').classList.add('hidden');
@@ -391,9 +408,6 @@
             fetchBookListApi(keyword);
         }
 
-        /* ========================================================
-           검색 로직 초강력 개선 (교차 검증 필터링 도입)
-        ======================================================== */
         async function fetchBookListApi(keyword) {
             try {
                 const originalKw = keyword.trim();
@@ -401,33 +415,27 @@
                 const words = originalKw.split(/\s+/);
 
                 const reqs = [];
-                // API 호출 공통 함수 (에러나면 빈 배열 반환해서 앱 안 뻗게 방어)
                 const createUrl = (query, size=15) => `https://data4library.kr/api/srchBooks?authKey=${apiKey}&${query}&pageNo=1&pageSize=${size}&format=json`;
                 const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => ({response: {docs: []}}));
 
-                // 1. 원본 그대로 검색
                 reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(originalKw)}`)));
                 reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(originalKw)}`)));
                 reqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
 
-                // 2. 띄어쓰기 무시 검색 (해리 포터 -> 해리포터)
                 if (originalKw !== spacelessKw) {
                     reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(spacelessKw)}`)));
                     reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(spacelessKw)}`)));
                 }
 
-                // 3. (핵심) 외국인 이름 [성씨, 이름] 도치 저장 대비 필터링 검색
                 let fallbackPromise = null;
                 if (words.length > 1) {
-                    const lastWord = words[words.length - 1]; // "레인"
-                    const firstWord = words[0]; // "닉"
+                    const lastWord = words[words.length - 1]; 
+                    const firstWord = words[0]; 
                     if (lastWord.length >= 1 && firstWord.length >= 1) {
-                        // 마지막 단어(레인)로 일단 엄청 많이(50개) 다 가져오라고 시켜둡니다.
                         fallbackPromise = safeFetch(createUrl(`author=${encodeURIComponent(lastWord)}`, 50));
                     }
                 }
 
-                // 모든 기본 검색을 동시에 발사!
                 const results = await Promise.all(reqs);
                 
                 let combinedDocs = [];
@@ -447,19 +455,17 @@
 
                 results.forEach(addDocs);
 
-                // 4. (핵심) 대량으로 가져온 데이터 중 진짜만 골라내는 필터 작업
                 if (fallbackPromise) {
                     const fallbackRes = await fallbackPromise;
                     if (fallbackRes && fallbackRes.response && fallbackRes.response.docs) {
-                        const firstWord = words[0]; // "닉"
+                        const firstWord = words[0]; 
                         fallbackRes.response.docs.forEach(item => {
                             const authorStr = item.doc.authors || "";
-                            // 저자명에 "닉"이라는 글자가 들어있는지 자바스크립트로 직접 한 번 더 확인!
                             if (authorStr.includes(firstWord)) {
                                 const isbn = item.doc.isbn13 || item.doc.isbn;
                                 if (isbn && !seenIsbns.has(isbn)) {
                                     seenIsbns.add(isbn);
-                                    combinedDocs.push(item); // 통과한 진짜 책만 추가
+                                    combinedDocs.push(item); 
                                 }
                             }
                         });
@@ -467,6 +473,7 @@
                 }
 
                 if(combinedDocs.length === 0) {
+                    document.getElementById('kyoboDirectBtnContainer').style.display = 'none'; // 다이렉트 버튼 숨김
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
                     document.getElementById('searchResultsList').innerHTML = `
@@ -498,6 +505,11 @@
                 });
                 
                 document.getElementById('searchResultsList').innerHTML = listHtml;
+                
+                // 검색 성공 시 교보문고 다이렉트 미니 버튼 보이기
+                document.getElementById('kyoboDirectBtnContainer').style.display = 'flex';
+                document.getElementById('kyoboDirectBtn').href = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(originalKw)}`;
+                
                 selectBook(0);
 
             } catch(e) {
