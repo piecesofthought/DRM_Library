@@ -307,10 +307,10 @@
             <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe;">
                 <div class="section-title" style="color: #3730a3; margin-bottom: 10px;"><i data-lucide="external-link"></i> 실시간 대출 도서관 바로가기</div>
                 <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포 전체</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산 전체</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울 전체</a>
-                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" target="_blank"><i data-lucide="map" size="14"></i> 근처</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포구 통합</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산구 통합</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울시 통합</a>
+                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" target="_blank"><i data-lucide="map" size="14"></i> 도서관 지도</a>
                 </div>
             </div>
 
@@ -392,48 +392,48 @@
         }
 
         /* ========================================================
-           검색 로직 초강력 개선: 
-           공공 API의 고지식한 검색 한계를 극복하기 위한 다중 퍼지(Fuzzy) 검색
+           검색 로직 초강력 개선 (교차 검증 필터링 도입)
         ======================================================== */
         async function fetchBookListApi(keyword) {
             try {
                 const originalKw = keyword.trim();
                 const spacelessKw = originalKw.replace(/\s+/g, '');
-                // 띄어쓰기 기준으로 단어 쪼개기 (마지막 단어 추출용)
                 const words = originalKw.split(/\s+/);
-                const lastWord = words.length > 1 ? words[words.length - 1] : '';
 
                 const reqs = [];
-                const createUrl = (query) => `https://data4library.kr/api/srchBooks?authKey=${apiKey}&${query}&pageNo=1&pageSize=15&format=json`;
-                // 에러가 나도 앱이 뻗지 않고 빈 배열을 반환하도록 처리
+                // API 호출 공통 함수 (에러나면 빈 배열 반환해서 앱 안 뻗게 방어)
+                const createUrl = (query, size=15) => `https://data4library.kr/api/srchBooks?authKey=${apiKey}&${query}&pageNo=1&pageSize=${size}&format=json`;
                 const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => ({response: {docs: []}}));
 
-                // 1. 기본 검색 (원본 띄어쓰기 그대로 책제목, 저자명, 출판사명 찌르기)
+                // 1. 원본 그대로 검색
                 reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(originalKw)}`)));
                 reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(originalKw)}`)));
-                
-                // 2. 띄어쓰기 무시 검색 (예: 해리 포터 -> 해리포터)
+                reqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
+
+                // 2. 띄어쓰기 무시 검색 (해리 포터 -> 해리포터)
                 if (originalKw !== spacelessKw) {
                     reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(spacelessKw)}`)));
                     reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(spacelessKw)}`)));
                 }
 
-                // 3. 외국인 저자명 대비 마지막 단어 검색 (예: 앤드루 클레먼츠 -> 클레먼츠)
-                if (lastWord && lastWord.length > 1) {
-                    reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(lastWord)}`)));
+                // 3. (핵심) 외국인 이름 [성씨, 이름] 도치 저장 대비 필터링 검색
+                let fallbackPromise = null;
+                if (words.length > 1) {
+                    const lastWord = words[words.length - 1]; // "레인"
+                    const firstWord = words[0]; // "닉"
+                    if (lastWord.length >= 1 && firstWord.length >= 1) {
+                        // 마지막 단어(레인)로 일단 엄청 많이(50개) 다 가져오라고 시켜둡니다.
+                        fallbackPromise = safeFetch(createUrl(`author=${encodeURIComponent(lastWord)}`, 50));
+                    }
                 }
 
-                // 4. 출판사 검색 (원본)
-                reqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
-
-                // 준비된 여러 개의 검색 요청을 동시에(병렬로) 발사!
+                // 모든 기본 검색을 동시에 발사!
                 const results = await Promise.all(reqs);
                 
                 let combinedDocs = [];
                 const seenIsbns = new Set();
 
-                // 돌아온 결과들을 하나로 합치면서 중복된 책(ISBN 동일)은 제거
-                results.forEach(res => {
+                const addDocs = (res) => {
                     if (res && res.response && res.response.docs) {
                         res.response.docs.forEach(item => {
                             const isbn = item.doc.isbn13 || item.doc.isbn;
@@ -443,9 +443,29 @@
                             }
                         });
                     }
-                });
+                };
 
-                // 만약 이 모든 우회 검색을 거쳤는데도 책이 없다면?
+                results.forEach(addDocs);
+
+                // 4. (핵심) 대량으로 가져온 데이터 중 진짜만 골라내는 필터 작업
+                if (fallbackPromise) {
+                    const fallbackRes = await fallbackPromise;
+                    if (fallbackRes && fallbackRes.response && fallbackRes.response.docs) {
+                        const firstWord = words[0]; // "닉"
+                        fallbackRes.response.docs.forEach(item => {
+                            const authorStr = item.doc.authors || "";
+                            // 저자명에 "닉"이라는 글자가 들어있는지 자바스크립트로 직접 한 번 더 확인!
+                            if (authorStr.includes(firstWord)) {
+                                const isbn = item.doc.isbn13 || item.doc.isbn;
+                                if (isbn && !seenIsbns.has(isbn)) {
+                                    seenIsbns.add(isbn);
+                                    combinedDocs.push(item); // 통과한 진짜 책만 추가
+                                }
+                            }
+                        });
+                    }
+                }
+
                 if(combinedDocs.length === 0) {
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
@@ -462,7 +482,6 @@
                     return;
                 }
 
-                // 검색 결과를 최대 15건까지만 잘라서 보여줌
                 currentBooksList = combinedDocs.slice(0, 15); 
                 document.getElementById('searchResultCountText').innerText = `'${keyword}' 통합 검색 결과 (${currentBooksList.length}건)`;
                 
@@ -524,7 +543,6 @@
 
             document.getElementById('mainBookTitle').innerText = book.bookname;
             
-            // 출간 연도가 있으면 뒤에 (2023년) 형식으로 붙여줍니다.
             const pubYear = book.publication_year ? ` (${book.publication_year}년)` : '';
             document.getElementById('mainBookAuthor').innerText = `${book.authors} / ${book.publisher}${pubYear}`;
             
