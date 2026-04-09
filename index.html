@@ -103,12 +103,11 @@
         .search-result-item img { width: 90px; height: 130px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 6px var(--shadow); border: 1px solid var(--border); margin-bottom: 6px; }
         .search-result-item p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
 
-        /* 하단 교보문고 바로가기 미니 버튼용 CSS */
         .kyobo-mini-btn {
             background-color: var(--primary); color: white; padding: 8px 16px; border-radius: 10px;
             font-weight: 700; text-decoration: none; font-size: 13px;
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            transition: transform 0.1s, background-color 0.2s;
+            transition: transform 0.1s, background-color 0.2s; border: none; cursor: pointer;
         }
         .kyobo-mini-btn:active { transform: scale(0.95); background-color: var(--primary-hover); }
 
@@ -208,7 +207,7 @@
                 
                 <div id="kyoboDirectBtnContainer" style="margin-top: 15px; display: none; justify-content: center;">
                     <a id="kyoboDirectBtn" href="#" target="_blank" class="kyobo-mini-btn">
-                        <i data-lucide="book-open" size="14"></i> 교보문고에서 찾아보기
+                        <i data-lucide="book-open" size="14"></i> 입력한 검색어로 교보문고 찾아보기
                     </a>
                 </div>
             </div>
@@ -322,9 +321,9 @@
             <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe; padding: 15px;">
                 <div class="section-title" style="color: #3730a3; margin-bottom: 10px; font-size: 14px;"><i data-lucide="external-link" size="16"></i> 실시간 대출 도서관 바로가기</div>
                 <div style="display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px;">
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="12"></i> 마포</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="12"></i> 용산</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="12"></i> 서울</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="12"></i> 마포 전체</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="12"></i> 용산 전체</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="12"></i> 서울 전체</a>
                     <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" target="_blank"><i data-lucide="map" size="12"></i> 지도</a>
                 </div>
             </div>
@@ -333,8 +332,9 @@
                 <div class="section-title" style="color: var(--primary); align-items: flex-start; justify-content: space-between;">
                     <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;"><i data-lucide="bell-ring" style="margin-top:2px;"></i> <span id="libBoxTitle">대출 가능 여부</span></span>
                 </div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. (기타 지역은 상단 버튼 이용)</p>
-                <ul id="libraryList" class="library-list"><li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li></ul>
+                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 확인합니다. (기타 지역은 상단 버튼 이용)</p>
+                <div id="libraryList" class="library-list">
+                    </div>
             </div>
 
         </div>
@@ -395,6 +395,7 @@
             document.getElementById('searchResultsCard').classList.remove('hidden');
             document.getElementById('kyoboDirectBtnContainer').style.display = 'none'; 
             
+            // 새 검색 시, 결과 패널들은 일단 숨겨둡니다 (자동 로딩 방지)
             document.getElementById('mainBookResultCard').classList.add('hidden'); 
             document.getElementById('linksCard').classList.add('hidden'); 
             document.getElementById('apiHashtagBox').classList.add('hidden');
@@ -403,40 +404,28 @@
             document.getElementById('apiLibraryBox').classList.add('hidden');
 
             document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 가져오는 중...`;
-            document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>도서 정보를 통합 검색 중입니다... (최대 3초 소요)</div>";
+            document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>도서 정보를 스마트 검색 중입니다...</div>";
 
             fetchBookListApi(keyword);
         }
 
+        /* 1. 스마트 순차 검색 도입 (가장 시급한 API 절약) */
         async function fetchBookListApi(keyword) {
             try {
                 const originalKw = keyword.trim();
                 const spacelessKw = originalKw.replace(/\s+/g, '');
                 const words = originalKw.split(/\s+/);
 
-                const reqs = [];
                 const createUrl = (query, size=15) => `https://data4library.kr/api/srchBooks?authKey=${apiKey}&${query}&pageNo=1&pageSize=${size}&format=json`;
                 const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => ({response: {docs: []}}));
 
-                reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(originalKw)}`)));
-                reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(originalKw)}`)));
-                reqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
-
-                if (originalKw !== spacelessKw) {
-                    reqs.push(safeFetch(createUrl(`title=${encodeURIComponent(spacelessKw)}`)));
-                    reqs.push(safeFetch(createUrl(`author=${encodeURIComponent(spacelessKw)}`)));
-                }
-
-                let fallbackPromise = null;
-                if (words.length > 1) {
-                    const lastWord = words[words.length - 1]; 
-                    const firstWord = words[0]; 
-                    if (lastWord.length >= 1 && firstWord.length >= 1) {
-                        fallbackPromise = safeFetch(createUrl(`author=${encodeURIComponent(lastWord)}`, 50));
-                    }
-                }
-
-                const results = await Promise.all(reqs);
+                // [1단계] 기본 검색 딱 2번만 먼저 찔러봅니다 (가장 가벼운 API 호출)
+                const baseReqs = [
+                    safeFetch(createUrl(`title=${encodeURIComponent(originalKw)}`)),
+                    safeFetch(createUrl(`author=${encodeURIComponent(originalKw)}`))
+                ];
+                
+                const baseResults = await Promise.all(baseReqs);
                 
                 let combinedDocs = [];
                 const seenIsbns = new Set();
@@ -453,36 +442,63 @@
                     }
                 };
 
-                results.forEach(addDocs);
+                baseResults.forEach(addDocs);
 
-                if (fallbackPromise) {
-                    const fallbackRes = await fallbackPromise;
-                    if (fallbackRes && fallbackRes.response && fallbackRes.response.docs) {
+                // [2단계] 기본 검색에서 결과가 0개일 때만! 추가 정밀 검색(Fallback)을 돌립니다.
+                if (combinedDocs.length === 0) {
+                    const fallbackReqs = [];
+                    // 출판사 검색 추가
+                    fallbackReqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
+                    
+                    // 띄어쓰기 무시 검색 추가
+                    if (originalKw !== spacelessKw) {
+                        fallbackReqs.push(safeFetch(createUrl(`title=${encodeURIComponent(spacelessKw)}`)));
+                        fallbackReqs.push(safeFetch(createUrl(`author=${encodeURIComponent(spacelessKw)}`)));
+                    }
+
+                    // 외국인 필터링용 데이터 뭉치 호출 추가
+                    let authorFilterPromise = null;
+                    if (words.length > 1) {
+                        const lastWord = words[words.length - 1]; 
                         const firstWord = words[0]; 
-                        fallbackRes.response.docs.forEach(item => {
-                            const authorStr = item.doc.authors || "";
-                            if (authorStr.includes(firstWord)) {
-                                const isbn = item.doc.isbn13 || item.doc.isbn;
-                                if (isbn && !seenIsbns.has(isbn)) {
-                                    seenIsbns.add(isbn);
-                                    combinedDocs.push(item); 
+                        if (lastWord.length >= 1 && firstWord.length >= 1) {
+                            authorFilterPromise = safeFetch(createUrl(`author=${encodeURIComponent(lastWord)}`, 50));
+                        }
+                    }
+
+                    const fallbackResults = await Promise.all(fallbackReqs);
+                    fallbackResults.forEach(addDocs);
+
+                    // 필터링 적용
+                    if (authorFilterPromise) {
+                        const fallbackRes = await authorFilterPromise;
+                        if (fallbackRes && fallbackRes.response && fallbackRes.response.docs) {
+                            const firstWord = words[0]; 
+                            fallbackRes.response.docs.forEach(item => {
+                                const authorStr = item.doc.authors || "";
+                                if (authorStr.includes(firstWord)) {
+                                    const isbn = item.doc.isbn13 || item.doc.isbn;
+                                    if (isbn && !seenIsbns.has(isbn)) {
+                                        seenIsbns.add(isbn);
+                                        combinedDocs.push(item); 
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
 
+                // 1, 2단계를 모두 거쳤는데도 책이 없다면 빈 결과 출력
                 if(combinedDocs.length === 0) {
                     document.getElementById('kyoboDirectBtnContainer').style.display = 'none'; 
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
                     
-                    // 결과 없을 때 뜨는 버튼도 미니 버튼 클래스로 교체했습니다.
                     document.getElementById('searchResultsList').innerHTML = `
                         <div class='loading-msg' style='display:flex; flex-direction:column; align-items:center; gap:15px; width: 100%;'>
                             <span>도서관 DB에 등록되지 않은 도서/작가입니다.</span>
                             <a href="${kyoboUrl}" target="_blank" class="kyobo-mini-btn">
-                                <i data-lucide="book-open" size="14"></i> 교보문고에서 찾아보기
+                                <i data-lucide="book-open" size="14"></i> 입력한 검색어로 교보문고 찾아보기
                             </a>
                         </div>
                     `;
@@ -491,27 +507,33 @@
                     return;
                 }
 
+                // 결과 렌더링
                 currentBooksList = combinedDocs.slice(0, 15); 
                 document.getElementById('searchResultCountText').innerText = `'${keyword}' 통합 검색 결과 (${currentBooksList.length}건)`;
                 
                 let listHtml = '';
                 currentBooksList.forEach((item, index) => {
                     const book = item.doc;
-                    const activeClass = index === 0 ? 'active' : '';
                     listHtml += `
-                        <div class="search-result-item ${activeClass}" id="book-item-${index}" onclick="selectBook(${index})">
+                        <div class="search-result-item" id="book-item-${index}" onclick="selectBook(${index})">
                             <img src="${book.bookImageURL}" onerror="this.src='https://via.placeholder.com/90x130?text=No+Image'">
                             <p title="${book.bookname}">${book.bookname}</p>
                         </div>
                     `;
                 });
                 
-                document.getElementById('searchResultsList').innerHTML = listHtml;
+                // 2. 자동 로딩 금지: 결과를 리스트에 뿌리기만 하고, 사용자에게 책을 클릭해달라는 안내문을 추가합니다.
+                listHtml += `
+                    <div style="display:flex; align-items:center; justify-content:center; min-width:120px; padding:0 10px;">
+                        <span style="font-size:12px; color:var(--primary); font-weight:bold; word-break:keep-all;">👈 도서를<br>선택해주세요!</span>
+                    </div>
+                `;
                 
+                document.getElementById('searchResultsList').innerHTML = listHtml;
                 document.getElementById('kyoboDirectBtnContainer').style.display = 'flex';
                 document.getElementById('kyoboDirectBtn').href = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(originalKw)}`;
                 
-                selectBook(0);
+                // 삭제됨: selectBook(0); <- 자동 선택을 해제하여 쓸데없는 API 호출 방지
 
             } catch(e) {
                 console.error(e);
@@ -547,6 +569,7 @@
             document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`book-item-${index}`).classList.add('active');
 
+            // 사용자가 책을 클릭했을 때 비로소 하단 패널들을 보여줍니다.
             document.getElementById('mainBookResultCard').classList.remove('hidden');
             document.getElementById('linksCard').classList.remove('hidden');
             document.getElementById('apiHashtagBox').classList.remove('hidden');
@@ -583,14 +606,27 @@
             const isBookmarked = (JSON.parse(localStorage.getItem('myBookmarks')) || []).some(b => b.isbn === isbn);
             updateBookmarkBtnUI(isBookmarked);
 
+            // 데이터 패널 초기화
             document.getElementById('apiHashtags').innerHTML = "<div class='loading-msg'>키워드 분석 중...</div>";
             document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>추천 도서 불러오는 중...</div>";
-            document.getElementById('libraryList').innerHTML = `<li class='loading-msg'>마포구 및 용산구 도서관 현황을 확인 중입니다...</li>`;
-
+            
+            // 3. 실시간 대출 상태 수동화: 클릭 즉시 조회하지 않고 조회 버튼을 띄워줍니다.
             if(isbn) {
                 fetchHashtags(isbn);
                 fetchRecommendations(isbn);
-                fetchRealTimeLibraryStatus(isbn, book.bookname); 
+                
+                // 대출 상태 조회 수동 버튼 세팅 (안전한 문자열 처리를 위해 따옴표 변환)
+                const safeBookName = book.bookname.replace(/'/g, "\\'");
+                document.getElementById('libraryList').innerHTML = `
+                    <div style="text-align:center; padding: 15px 0;">
+                        <button onclick="fetchRealTimeLibraryStatus('${isbn}', '${safeBookName}')" class="kyobo-mini-btn" style="padding: 12px 20px; font-size: 14px;">
+                            <i data-lucide="search" size="16"></i> 대출 상태 실시간 조회하기
+                        </button>
+                        <p style="font-size:11px; color:var(--sec-text); margin-top:10px; line-height:1.4;">*버튼 클릭 시 해당 도서를 보유한 마포구 및 용산구 도서관의 현재 대출 가능 여부를 확인합니다.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+
             } else {
                 document.getElementById('apiHashtags').innerHTML = "<div class='loading-msg'>ISBN 정보가 없어 키워드를 불러올 수 없습니다.</div>";
                 document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>ISBN 정보가 없어 추천 도서를 불러올 수 없습니다.</div>";
@@ -740,8 +776,10 @@
             }
         }
 
+        // 수동으로 호출되는 실시간 대출 상태 조회 함수
         async function fetchRealTimeLibraryStatus(isbn, bookName) {
             const container = document.getElementById('libraryList');
+            container.innerHTML = `<li class='loading-msg'>관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>`;
             
             try {
                 const mapoUrl = `https://data4library.kr/api/libSrchByBook?authKey=${apiKey}&isbn=${isbn}&region=11&dtl_region=11140&format=json`;
