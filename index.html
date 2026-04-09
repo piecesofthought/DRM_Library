@@ -21,7 +21,7 @@
         }
 
         :root {
-            var(--primary): #4f46e5;       
+            --primary: #4f46e5;       
             --primary-hover: #4338ca;
             --bg: #f3f4f6;           
             --card-bg: #ffffff;
@@ -41,13 +41,11 @@
             margin: 0; padding: 15px; overflow-x: hidden; max-width: 100vw; 
         }
 
-        /* 헤더 영역 */
         .header { text-align: center; margin: 30px 0 25px 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .main-logo { width: 100px; height: auto; margin-bottom: 5px; } 
         .main-headline { font-size: 32px; font-weight: 800; color: #3730a3; margin: 10px 0 5px 0; word-break: keep-all; letter-spacing: -0.5px; }
         .header p { font-size: 15px; color: var(--sec-text); margin: 0; word-break: keep-all; font-weight: 500; }
 
-        /* 넓어진 검색창 컨테이너 */
         .search-container { max-width: 1200px; margin: 0 auto 20px auto; min-width: 0; position: relative;}
         
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; min-width: 0; }
@@ -61,53 +59,28 @@
         .section-title { font-size: 17px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--text); }
 
         .left-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
+        .right-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
 
-        /* 검색창 영역 */
         #searchSection { position: relative; overflow: visible; padding: 20px; }
         .search-box { display: flex; gap: 10px; align-items: stretch; position: relative; z-index: 101; }
         .search-box input { 
-            flex: 1; 
-            border: 2px solid #6366f1; 
-            border-radius: 16px; 
-            padding: 16px 20px; 
-            font-size: 18px; 
-            font-weight: 600;
-            outline: none; 
-            background: #ffffff; 
-            min-width: 0; 
-            color: var(--text);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            flex: 1; border: 2px solid #6366f1; border-radius: 16px; padding: 16px 20px; 
+            font-size: 18px; font-weight: 600; outline: none; background: #ffffff; 
+            min-width: 0; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .search-box input:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-        .search-box input::placeholder {
-            font-weight: 400;
-            font-size: 15px;
-            color: #9ca3af;
-        }
+        .search-box input:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        .search-box input::placeholder { font-weight: 400; font-size: 15px; color: #9ca3af; }
         .search-btn { 
-            background-color: #4f46e5; 
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            width: 65px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer; 
-            flex-shrink: 0; 
-            transition: background-color 0.2s, transform 0.1s;
+            background-color: #4f46e5; color: white; border: none; border-radius: 16px; 
+            width: 65px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0; transition: background-color 0.2s, transform 0.1s;
         }
         .search-btn:active { transform: scale(0.95); background-color: var(--primary-hover); }
 
         #recentSearchArea { 
-            position: absolute; top: 95px; left: 0; right: 0; 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
-            border-radius: 16px; padding: 20px; border: 1px solid var(--border); 
+            position: absolute; top: 95px; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 100; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); border-radius: 16px; padding: 20px; border: 1px solid var(--border); 
         }
         .recent-tags-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #d1d5db; }
         .recent-tags-header .section-title { margin-bottom: 0; font-size: 15px; color: var(--text); }
@@ -115,10 +88,9 @@
         .delete-all-btn:active { background: #e5e7eb; }
         .recent-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .recent-tag { 
-            background-color: var(--tag-bg); color: var(--tag-text); 
-            padding: 8px 14px; border-radius: 20px; font-size: 14px; font-weight: 600;
-            cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
-            transition: transform 0.1s, background-color 0.2s;
+            background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 14px; border-radius: 20px; 
+            font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; 
+            align-items: center; justify-content: center; gap: 6px; transition: transform 0.1s, background-color 0.2s;
         }
         .recent-tag:active { transform: scale(0.95); background-color: #c7d2fe; }
         .recent-tag i { color: #818cf8 !important; }
@@ -146,8 +118,6 @@
         .recommend-card img { width: 90px; height: 130px; border-radius: 8px; box-shadow: 0 2px 8px var(--shadow); border: 1px solid var(--border); margin-bottom: 6px; object-fit: cover;}
         .recommend-card p { font-size: 12px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;}
 
-        .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-
         .links-container { display: flex; flex-direction: column; gap: 15px; }
         .link-group-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
         .link-grid { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -158,10 +128,6 @@
         .link-pill.color-free { border-left: 3px solid #8b5cf6; } 
         .link-pill.color-store { border-left: 3px solid #3b82f6; } 
         .link-pill.color-used { border-left: 3px solid #f59e0b; } 
-        .link-pill.color-highlight { border-left: 3px solid #4f46e5; background-color: #ffffff; } 
-
-        /* 강조된 빠른 링크 박스 */
-        .quick-link-box { background-color: #e0e7ff; padding: 15px; border-radius: 12px; border: 1px solid #c7d2fe; margin-bottom: 5px; }
 
         details.hidden-districts { margin-top: 6px; width: 100%; }
         details.hidden-districts summary { font-size: 13px; color: var(--sec-text); cursor: pointer; padding: 5px 0; font-weight: 600; outline: none; list-style: none; display: flex; align-items: center; gap: 5px; }
@@ -193,6 +159,9 @@
         .bookmark-item img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 1px solid var(--border); background-color: #f9fafb; }
         .bookmark-item p { font-size: 11px; margin: 5px 0 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: var(--text); }
         .bookmark-delete { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+
+        .lib-minimal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--sec-text); background-color: #f9fafb; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: background-color 0.2s, color 0.2s; white-space: nowrap; }
+        .lib-minimal-btn:active { background-color: #e5e7eb; color: var(--text); }
     </style>
 </head>
 <body>
@@ -212,7 +181,7 @@
             
             <div id="recentSearchArea" class="hidden">
                 <div class="recent-tags-header">
-                    <div class="section-title"><i data-lucide="clock" size="18" color="#4f46e5"></i> 최근 검색어</div>
+                    <div class="section-title"><i data-lucide="clock" size="18" color="var(--primary)"></i> 최근 검색어</div>
                     <button class="delete-all-btn" onclick="deleteAllSearches()">전체삭제</button>
                 </div>
                 <div class="recent-tags" id="recent-tags-container"></div>
@@ -225,7 +194,7 @@
             
             <div id="searchResultsCard" class="card hidden">
                 <div class="section-title"><i data-lucide="list"></i> <span id="searchResultCountText">검색 결과</span></div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*좌우로 밀어서 원하시는 책 표지를 <b style="color:#4f46e5">터치</b> 하시면 상세 정보가 나타납니다.</p>
+                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*좌우로 밀어서 원하시는 책 표지를 <b style="color:var(--primary)">터치</b> 하시면 상세 정보가 나타납니다.</p>
                 <div id="searchResultsList" class="search-results-scroll">
                 </div>
             </div>
@@ -246,37 +215,9 @@
                 </div>
             </div>
 
-            <div id="apiHashtagBox" class="card hidden">
-                <div class="section-title"><i data-lucide="hash"></i> 독자들이 꼽은 핵심 키워드</div>
-                <div id="apiHashtags" class="hashtag-container">
-                    <div class="loading-msg">키워드 분석 중...</div>
-                </div>
-            </div>
-
-            <div id="apiRecommendBox" class="card hidden">
-                <div class="section-title"><i data-lucide="sparkles"></i> 관련 추천 도서</div>
-                <div id="recommendScroll" class="recommend-scroll">
-                    <div class="loading-msg">추천 도서를 불러오는 중입니다...</div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="right-panel">
-            
             <div id="linksCard" class="card hidden">
                 <div class="links-container" style="border-top: none; padding-top: 0;">
                     
-                    <div class="link-group quick-link-box">
-                        <div class="link-group-title" style="color: #3730a3;"><i data-lucide="external-link" size="16"></i> 실시간 대출 도서관 바로가기 </div>
-                        <div class="link-grid">
-                            <a href="#" class="link-pill color-highlight dynamic-link" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포구 통합</a>
-                            <a href="#" class="link-pill color-highlight dynamic-link" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산구 통합</a>
-                            <a href="#" class="link-pill color-highlight dynamic-link" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울시 통합</a>
-                            <a href="https://naver.me/xIFJSb28" class="link-pill color-highlight" target="_blank"><i data-lucide="map" size="14"></i> 도서관 지도</a>
-                        </div>
-                    </div>
-
                     <div class="link-group">
                         <div class="link-group-title"><i data-lucide="smartphone" size="16" color="#f59e0b"></i> 1. 즐겨찾는 도서관 </div>
                         <div class="link-grid">
@@ -346,11 +287,38 @@
                 </div>
             </div>
 
-            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid #4f46e5; box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);">
-                <div class="section-title" style="color: #4f46e5; align-items: flex-start; justify-content: space-between;">
+        </div>
+
+        <div class="right-panel">
+            
+            <div id="apiHashtagBox" class="card hidden">
+                <div class="section-title"><i data-lucide="hash"></i> 독자들이 꼽은 핵심 키워드</div>
+                <div id="apiHashtags" class="hashtag-container">
+                    <div class="loading-msg">키워드 분석 중...</div>
+                </div>
+            </div>
+
+            <div id="apiRecommendBox" class="card hidden">
+                <div class="section-title"><i data-lucide="sparkles"></i> 관련 추천 도서</div>
+                <div id="recommendScroll" class="recommend-scroll">
+                    <div class="loading-msg">추천 도서를 불러오는 중입니다...</div>
+                </div>
+            </div>
+
+            <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe;">
+                <div class="section-title" style="color: #3730a3; margin-bottom: 10px;"><i data-lucide="external-link"></i> 실시간 대출 도서관 바로가기</div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="14"></i> 마포구 통합</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="14"></i> 용산구 통합</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="14"></i> 서울시 통합</a>
+                    <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width: max-content;" target="_blank"><i data-lucide="map" size="14"></i> 도서관 지도</a>
+                </div>
+            </div>
+
+            <div id="apiLibraryBox" class="card hidden" style="border: 2px solid var(--primary); box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);">
+                <div class="section-title" style="color: var(--primary); align-items: flex-start; justify-content: space-between;">
                     <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;"><i data-lucide="bell-ring" style="margin-top:2px;"></i> <span id="libBoxTitle">대출 가능 여부</span></span>
                 </div>
-                
                 <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 가져옵니다. (기타 지역은 상단 버튼 이용)</p>
                 <ul id="libraryList" class="library-list"><li class="loading-msg">관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li></ul>
             </div>
@@ -415,28 +383,62 @@
             document.getElementById('linksCard').classList.add('hidden'); 
             document.getElementById('apiHashtagBox').classList.add('hidden');
             document.getElementById('apiRecommendBox').classList.add('hidden');
+            document.getElementById('quickLinkBox').classList.add('hidden');
             document.getElementById('apiLibraryBox').classList.add('hidden');
 
             document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 가져오는 중...`;
-            document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>도서 정보를 찾고 있습니다...</div>";
+            document.getElementById('searchResultsList').innerHTML = "<div class='loading-msg'>도서 정보를 통합 검색 중입니다...</div>";
 
             fetchBookListApi(keyword);
         }
 
-        /* 검색 로직 수정: title 대신 keyword 사용 (저자명, 출판사 통합검색 가능), 띄어쓰기 꼼수 제거 */
-        async function fetchBookListApi(keyword) {
+        /* * 검색 로직 대폭 개선: 
+         * 책 제목, 저자명, 출판사명 3곳을 동시에 찔러서 결과를 합치는 '병렬 통합 검색' 도입!
+         */
+        async function fetchBookListApi(keyword, isRetry = false) {
             try {
-                const searchUrl = `https://data4library.kr/api/srchBooks?authKey=${apiKey}&keyword=${encodeURIComponent(keyword)}&pageNo=1&pageSize=10&format=json`;
-                const searchRes = await fetch(searchUrl);
-                const searchData = await searchRes.json();
+                // 3개의 요청을 동시에 보냅니다. (속도 향상 및 누락 방지)
+                const [resTitle, resAuthor, resPub] = await Promise.all([
+                    fetch(`https://data4library.kr/api/srchBooks?authKey=${apiKey}&title=${encodeURIComponent(keyword)}&pageNo=1&pageSize=10&format=json`).then(r => r.json()).catch(() => ({response: {docs: []}})),
+                    fetch(`https://data4library.kr/api/srchBooks?authKey=${apiKey}&author=${encodeURIComponent(keyword)}&pageNo=1&pageSize=10&format=json`).then(r => r.json()).catch(() => ({response: {docs: []}})),
+                    fetch(`https://data4library.kr/api/srchBooks?authKey=${apiKey}&publisher=${encodeURIComponent(keyword)}&pageNo=1&pageSize=5&format=json`).then(r => r.json()).catch(() => ({response: {docs: []}}))
+                ]);
+
+                let combinedDocs = [];
+                const seenIsbns = new Set();
+
+                // 합치면서 중복된 책(ISBN 동일)은 제거합니다.
+                const addDocs = (res) => {
+                    if (res && res.response && res.response.docs) {
+                        res.response.docs.forEach(item => {
+                            const isbn = item.doc.isbn13 || item.doc.isbn;
+                            if (isbn && !seenIsbns.has(isbn)) {
+                                seenIsbns.add(isbn);
+                                combinedDocs.push(item);
+                            }
+                        });
+                    }
+                };
+
+                addDocs(resTitle);
+                addDocs(resAuthor);
+                addDocs(resPub);
                 
-                if(!searchData.response.docs || searchData.response.docs.length === 0) {
+                // 만약 3곳에서 모두 찾지 못했다면?
+                if(combinedDocs.length === 0) {
+                    // 사용자가 띄어쓰기를 잘못 쳤을 가능성을 대비해 공백 제거 후 1회 재검색 로직은 살려둡니다.
+                    const spacelessKeyword = keyword.replace(/\s+/g, '');
+                    if (!isRetry && keyword !== spacelessKeyword) {
+                        document.getElementById('searchResultCountText').innerText = `띄어쓰기를 교정하여 재검색 중입니다...`;
+                        return fetchBookListApi(spacelessKeyword, true);
+                    }
+
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
                     const kyoboUrl = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(keyword)}`;
                     document.getElementById('searchResultsList').innerHTML = `
                         <div class='loading-msg' style='display:flex; flex-direction:column; align-items:center; gap:15px; width: 100%;'>
-                            <span>관련된 도서가 도서관 DB에 없습니다.<br>우측(또는 하단)의 <b>[온/오프라인 서점]</b> 버튼을 이용해 보세요!</span>
-                            <a href="${kyoboUrl}" target="_blank" style="background-color:#4f46e5; color:white; padding:12px 20px; border-radius:10px; font-weight:bold; text-decoration:none; font-size:14px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); display: flex; align-items: center; gap: 8px;">
+                            <span>도서관 DB에 등록되지 않은 도서/작가입니다.<br>우측(또는 하단)의 <b>[온/오프라인 서점]</b> 버튼을 이용해 보세요!</span>
+                            <a href="${kyoboUrl}" target="_blank" style="background-color:var(--primary); color:white; padding:12px 20px; border-radius:10px; font-weight:bold; text-decoration:none; font-size:14px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); display: flex; align-items: center; gap: 8px;">
                                 <i data-lucide="book-open" size="18"></i> 교보문고에서 바로 검색하기
                             </a>
                         </div>
@@ -446,8 +448,8 @@
                     return;
                 }
 
-                currentBooksList = searchData.response.docs;
-                document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 (10건)`;
+                currentBooksList = combinedDocs.slice(0, 15); // 결과를 최대 15건까지만 자름
+                document.getElementById('searchResultCountText').innerText = `'${keyword}' 통합 검색 결과 (${currentBooksList.length}건)`;
                 
                 let listHtml = '';
                 currentBooksList.forEach((item, index) => {
@@ -473,6 +475,8 @@
         function showEmptyBookState(keyword) {
             document.getElementById('mainBookResultCard').classList.remove('hidden');
             document.getElementById('linksCard').classList.remove('hidden');
+            document.getElementById('quickLinkBox').classList.remove('hidden');
+            
             document.getElementById('mainBookTitle').innerText = `'${keyword}'`;
             document.getElementById('mainBookAuthor').innerText = "도서관 정보나루에 데이터가 없습니다.";
             document.getElementById('mainBookCover').src = 'https://via.placeholder.com/100x145?text=No+Info';
@@ -500,11 +504,12 @@
             document.getElementById('linksCard').classList.remove('hidden');
             document.getElementById('apiHashtagBox').classList.remove('hidden');
             document.getElementById('apiRecommendBox').classList.remove('hidden');
+            document.getElementById('quickLinkBox').classList.remove('hidden');
             document.getElementById('apiLibraryBox').classList.remove('hidden');
 
             document.getElementById('mainBookTitle').innerText = book.bookname;
             
-            // 출간 연도 데이터 추가
+            // 출간 연도가 있으면 뒤에 (2023년) 형식으로 붙여줍니다.
             const pubYear = book.publication_year ? ` (${book.publication_year}년)` : '';
             document.getElementById('mainBookAuthor').innerText = `${book.authors} / ${book.publisher}${pubYear}`;
             
