@@ -207,7 +207,7 @@
                 
                 <div id="kyoboDirectBtnContainer" style="margin-top: 15px; display: none; justify-content: center;">
                     <a id="kyoboDirectBtn" href="#" target="_blank" class="kyobo-mini-btn">
-                        <i data-lucide="book-open" size="14"></i> 입력한 검색어로 교보문고 찾아보기
+                        <i data-lucide="book-open" size="14"></i> 교보문고에서 검색
                     </a>
                 </div>
             </div>
@@ -322,9 +322,9 @@
             <div id="quickLinkBox" class="card hidden" style="background-color: #e0e7ff; border: 1px solid #c7d2fe; padding: 15px;">
                 <div class="section-title" style="color: #3730a3; margin-bottom: 10px; font-size: 14px;"><i data-lucide="external-link" size="16"></i> 실시간 대출 도서관 바로가기</div>
                 <div style="display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px;">
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="12"></i> 마포 전체</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="12"></i> 용산 전체</a>
-                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="12"></i> 서울 전체</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://mplib.mapo.go.kr/mcl/MENU1039/PGM3007/plusSearchResultList.do?searchType=SIMPLE&searchCategory=BOOK&searchKey=TITLE&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="building-2" size="12"></i> 마포</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://www.yslibrary.or.kr/dream/menu/10102/program/30037/searchResultList.do?searchType=SIMPLE&searchCategory=ALL&searchKey=ALL&searchKeyword={kw}&searchLibrary=ALL" target="_blank"><i data-lucide="landmark" size="12"></i> 용산</a>
+                    <a href="#" class="lib-minimal-btn dynamic-link" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" data-template="https://meta.seoul.go.kr/libseoul/index.php/result?text1={kw}" target="_blank"><i data-lucide="library" size="12"></i> 서울</a>
                     <a href="https://naver.me/xIFJSb28" class="lib-minimal-btn" style="background-color:#ffffff; border-color:#a5b4fc; color:#4f46e5; flex:1; min-width:0; padding: 6px 2px; font-size: 11px; letter-spacing: -0.5px;" target="_blank"><i data-lucide="map" size="12"></i> 지도</a>
                 </div>
             </div>
@@ -333,7 +333,7 @@
                 <div class="section-title" style="color: var(--primary); align-items: flex-start; justify-content: space-between;">
                     <span style="display:flex; align-items:center; gap:8px; line-height: 1.3;"><i data-lucide="bell-ring" style="margin-top:2px;"></i> <span id="libBoxTitle">대출 가능 여부</span></span>
                 </div>
-                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 확인합니다. (기타 지역은 상단 버튼 이용)</p>
+                <p style="font-size:12px; color:var(--sec-text); margin: 0 0 10px 0;">*마포구 및 용산구 도서관의 실시간 데이터를 확인합니다. </p>
                 <div id="libraryList" class="library-list">
                     </div>
             </div>
@@ -491,7 +491,7 @@
                         <div class='loading-msg' style='display:flex; flex-direction:column; align-items:center; gap:15px; width: 100%;'>
                             <span>도서관 DB에 등록되지 않은 도서/작가입니다.</span>
                             <a href="${kyoboUrl}" target="_blank" class="kyobo-mini-btn">
-                                <i data-lucide="book-open" size="14"></i> 입력한 검색어로 교보문고 찾아보기
+                                <i data-lucide="book-open" size="14"></i> 교보문고에서 검색
                             </a>
                         </div>
                     `;
