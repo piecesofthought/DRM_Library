@@ -229,6 +229,7 @@
             </div>
 
             <div id="linksCard" class="card hidden">
+                <div class="section-title"><i data-lucide="book-open"></i> 전자책 둘러보기</div>
                 <div class="links-container" style="border-top: none; padding-top: 0;">
                     
                     <div class="link-group">
@@ -409,7 +410,6 @@
             fetchBookListApi(keyword);
         }
 
-        /* 1. 스마트 순차 검색 도입 (가장 시급한 API 절약) */
         async function fetchBookListApi(keyword) {
             try {
                 const originalKw = keyword.trim();
@@ -419,7 +419,6 @@
                 const createUrl = (query, size=15) => `https://data4library.kr/api/srchBooks?authKey=${apiKey}&${query}&pageNo=1&pageSize=${size}&format=json`;
                 const safeFetch = (url) => fetch(url).then(r => r.json()).catch(() => ({response: {docs: []}}));
 
-                // [1단계] 기본 검색 딱 2번만 먼저 찔러봅니다 (가장 가벼운 API 호출)
                 const baseReqs = [
                     safeFetch(createUrl(`title=${encodeURIComponent(originalKw)}`)),
                     safeFetch(createUrl(`author=${encodeURIComponent(originalKw)}`))
@@ -444,19 +443,15 @@
 
                 baseResults.forEach(addDocs);
 
-                // [2단계] 기본 검색에서 결과가 0개일 때만! 추가 정밀 검색(Fallback)을 돌립니다.
                 if (combinedDocs.length === 0) {
                     const fallbackReqs = [];
-                    // 출판사 검색 추가
                     fallbackReqs.push(safeFetch(createUrl(`publisher=${encodeURIComponent(originalKw)}`)));
                     
-                    // 띄어쓰기 무시 검색 추가
                     if (originalKw !== spacelessKw) {
                         fallbackReqs.push(safeFetch(createUrl(`title=${encodeURIComponent(spacelessKw)}`)));
                         fallbackReqs.push(safeFetch(createUrl(`author=${encodeURIComponent(spacelessKw)}`)));
                     }
 
-                    // 외국인 필터링용 데이터 뭉치 호출 추가
                     let authorFilterPromise = null;
                     if (words.length > 1) {
                         const lastWord = words[words.length - 1]; 
@@ -469,7 +464,6 @@
                     const fallbackResults = await Promise.all(fallbackReqs);
                     fallbackResults.forEach(addDocs);
 
-                    // 필터링 적용
                     if (authorFilterPromise) {
                         const fallbackRes = await authorFilterPromise;
                         if (fallbackRes && fallbackRes.response && fallbackRes.response.docs) {
@@ -488,7 +482,6 @@
                     }
                 }
 
-                // 1, 2단계를 모두 거쳤는데도 책이 없다면 빈 결과 출력
                 if(combinedDocs.length === 0) {
                     document.getElementById('kyoboDirectBtnContainer').style.display = 'none'; 
                     document.getElementById('searchResultCountText').innerText = `'${keyword}' 검색 결과 없음`;
@@ -507,7 +500,6 @@
                     return;
                 }
 
-                // 결과 렌더링
                 currentBooksList = combinedDocs.slice(0, 15); 
                 document.getElementById('searchResultCountText').innerText = `'${keyword}' 통합 검색 결과 (${currentBooksList.length}건)`;
                 
@@ -522,18 +514,19 @@
                     `;
                 });
                 
-                // 2. 자동 로딩 금지: 결과를 리스트에 뿌리기만 하고, 사용자에게 책을 클릭해달라는 안내문을 추가합니다.
-                listHtml += `
-                    <div style="display:flex; align-items:center; justify-content:center; min-width:120px; padding:0 10px;">
-                        <span style="font-size:12px; color:var(--primary); font-weight:bold; word-break:keep-all;">👈 도서를<br>선택해주세요!</span>
-                    </div>
-                `;
-                
                 document.getElementById('searchResultsList').innerHTML = listHtml;
                 document.getElementById('kyoboDirectBtnContainer').style.display = 'flex';
                 document.getElementById('kyoboDirectBtn').href = `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(originalKw)}`;
                 
-                // 삭제됨: selectBook(0); <- 자동 선택을 해제하여 쓸데없는 API 호출 방지
+                // 검색어 그대로 링크를 갱신하고 외부 링크 칸을 바로 보여줍니다.
+                const encodedKeyword = encodeURIComponent(originalKw);
+                document.querySelectorAll('.dynamic-link').forEach(link => {
+                    const template = link.getAttribute('data-template');
+                    if (template) {
+                        link.href = template.replace(/\{kw\}/g, encodedKeyword);
+                    }
+                });
+                document.getElementById('linksCard').classList.remove('hidden');
 
             } catch(e) {
                 console.error(e);
@@ -569,7 +562,6 @@
             document.querySelectorAll('.search-result-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`book-item-${index}`).classList.add('active');
 
-            // 사용자가 책을 클릭했을 때 비로소 하단 패널들을 보여줍니다.
             document.getElementById('mainBookResultCard').classList.remove('hidden');
             document.getElementById('linksCard').classList.remove('hidden');
             document.getElementById('apiHashtagBox').classList.remove('hidden');
@@ -596,6 +588,7 @@
             let cleanTitle = book.bookname.split(' =')[0].split(':')[0].trim();
             const encodedKeyword = encodeURIComponent(cleanTitle);
             
+            // 책을 선택하면 링크들이 '책 제목'으로 다시 갱신됩니다.
             document.querySelectorAll('.dynamic-link').forEach(link => {
                 const template = link.getAttribute('data-template');
                 if (template) {
@@ -606,16 +599,13 @@
             const isBookmarked = (JSON.parse(localStorage.getItem('myBookmarks')) || []).some(b => b.isbn === isbn);
             updateBookmarkBtnUI(isBookmarked);
 
-            // 데이터 패널 초기화
             document.getElementById('apiHashtags').innerHTML = "<div class='loading-msg'>키워드 분석 중...</div>";
             document.getElementById('recommendScroll').innerHTML = "<div class='loading-msg'>추천 도서 불러오는 중...</div>";
             
-            // 3. 실시간 대출 상태 수동화: 클릭 즉시 조회하지 않고 조회 버튼을 띄워줍니다.
             if(isbn) {
                 fetchHashtags(isbn);
                 fetchRecommendations(isbn);
                 
-                // 대출 상태 조회 수동 버튼 세팅 (안전한 문자열 처리를 위해 따옴표 변환)
                 const safeBookName = book.bookname.replace(/'/g, "\\'");
                 document.getElementById('libraryList').innerHTML = `
                     <div style="text-align:center; padding: 15px 0;">
@@ -776,7 +766,6 @@
             }
         }
 
-        // 수동으로 호출되는 실시간 대출 상태 조회 함수
         async function fetchRealTimeLibraryStatus(isbn, bookName) {
             const container = document.getElementById('libraryList');
             container.innerHTML = `<li class='loading-msg'>관심 도서관 데이터를 실시간으로 확인하고 있습니다...</li>`;
